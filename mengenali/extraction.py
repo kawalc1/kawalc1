@@ -99,7 +99,7 @@ def extract(file, targetpath):
             left=int((28-mnistsize[0]))/2
             box=(left,3)
             outputim.paste(test_im,box)
-            digits[i]=np.array(outputim)
+            #digits[i]=np.array(outputim)
         else:
             pil_im=Image.fromarray(cropped)
             mnistsize=22,int((22.0/w)*h)
@@ -109,7 +109,7 @@ def extract(file, targetpath):
             top=int((28-mnistsize[1]))/2
             box=(3,top)
             outputim.paste(test_im,box)
-            digits[i]=np.array(outputim)
+            #digits[i]=np.array(outputim)
     
     digitresult = []
     for i in range(0, len(digits)) :
@@ -120,10 +120,11 @@ def extract(file, targetpath):
     for i, digit in enumerate(digits):
         if digit is not None:
             #if isPossiblyCross(digit) and not isMinus(digit) :
-            digitFile = tailPart + "~" + str(i) + ".tif"
+            #digitFile = tailPart + "~" + str(i) + ".tif"
+            digitFile = tailPart + "~" + str(i) + ".jpg"
             extracted = join(outputdir, digitFile)
             cv2.imwrite(extracted,digit)
-            digitresult[i]["filename"] = digitFile
+            digitresult[i]["filename"] = 'extracted/' + digitFile
     print >> None, digitresult
     
     return json.dumps(digitresult)

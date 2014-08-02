@@ -55,15 +55,24 @@
         <div ng-controller="imageRegistrationController" ng-show="$flow.files.length"
              flow-file-progress="updateProgress($file)" flow-file-added="setImage(null)"
              flow-file-success="setImage($message)" style="float: left;">
-            <div class="tumbnail">
-                <img ng-src="{{uploadUrl}}" width="200"/>
-            </div>
-            <div class="progress progress-striped" ng-class="{active: $flow.file.isUploading()}">
-                <div class="progress-bar" role="progressbar"
-                     ng-style="{width: (progress * 100) + '%'}">
-                    <span class="sr-only">{{progress * 100}}% Complete</span>
+            <div>
+                <div class="tumbnail" style="float: left">
+                    <img ng-src="{{uploadUrl}}" width="200"/>
+                    <div class="progress progress-striped"
+                         ng-class="{active: $flow.file.isUploading()}">
+                        <div class="progress-bar" role="progressbar"
+                             ng-style="{width: (progress * 100) + '%'}">
+                            <span class="sr-only">{{progress * 100}}% Complete</span>
+                        </div>
+                        <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
+                    </div>
                 </div>
-                <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
+
+                <div style="float: right; padding-left: 10px; width: 100px;">
+                    <div ng-repeat="extractedImage in extractedImages" style="float: left; padding: 2px;">
+                        <img src="{{extractedImage.filename}}"/>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -9,14 +9,15 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.uploadUrl = null; //UploadedImage.getUrl();
 		$scope.progress = 0;
 		$scope.numbers = null;
+		$scope.extractedImages = []
 
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
 			if (transformed !== null) {
 				$scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
 				$http.get('../extract.wsgi',
-					{ params: { filename: $scope.uploadUrl }}).success(function(data) {
-						alert(data);
+					{ params: { filename: $scope.uploadUrl }}).success(function(result) {
+						$scope.extractedImages = result
 					});
 
 			}
