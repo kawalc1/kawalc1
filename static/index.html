@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="app" flow-init
+      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+      flow-files-submitted="$flow.upload()">
+<head>
+    <title>Kawal C1</title>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.js"></script>
+    <script src="dist/angular-resource/angular-resource.js"></script>
+    <script src="dist/ng-flow-standalone.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/services.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+          rel="stylesheet"/>
+    <style>
+        .thumbnail {
+            max-width: 200px;
+            line-height: 20px;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            background: #b3d4fc;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Kawal C1</h1>
+    <hr class="soften"/>
+
+    <div>
+        <div class="thumbnail" ng-hide="$flow.files.length">
+            <img src="http://www.placehold.it/200x282/EFEFEF/AAAAAA&text=no+image"/>
+        </div>
+        <div>
+            <div style="float: left;">
+                <div class="thumbnail" ng-show="$flow.files.length">
+                    <img flow-img="$flow.files[0]"/>
+                </div>
+                <div>
+                    <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn
+                       flow-attrs="{accept:'image/*'}">Pilih formulir</a>
+                    <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
+                       flow-attrs="{accept:'image/*'}">Ganti</a>
+                    <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
+                       ng-click="$flow.cancel()">
+                        Hapus
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div ng-controller="imageRegistrationController" ng-show="$flow.files.length"
+             flow-file-progress="updateProgress($file)" flow-file-added="setImage(null)"
+             flow-file-success="setImage($message)" style="float: left;">
+            <div class="tumbnail">
+                <img ng-src="{{uploadUrl}}" width="200"/>
+            </div>
+            <div class="progress progress-striped" ng-class="{active: $flow.file.isUploading()}">
+                <div class="progress-bar" role="progressbar"
+                     ng-style="{width: (progress * 100) + '%'}">
+                    <span class="sr-only">{{progress * 100}}% Complete</span>
+                </div>
+                <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
