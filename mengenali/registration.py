@@ -93,5 +93,4 @@ def checkHomography(M):
 def printResult(resultWriter, iteration, file, homography, transform, result) :
     row = [str(iteration), file, str(datetime.datetime.now()), homography, transform, result]
     print >> resultWriter, "output: " + str(row)
-    #resultWriter.writerow(row)
     print row

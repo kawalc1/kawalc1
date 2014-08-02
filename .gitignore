@@ -1,5 +1,6 @@
 /static/upload
 /static/transformed
+/static/extracted
 
 *.py[cod]
 !/static/transformed/readme.txt
@@ -8,3 +9,24 @@
 !/static/upload/1239656-000029800104.jpg
 !/static/upload/opzenkop.jpg
 !/static/upload/readme.txt
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~0.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~1.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~10.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~11.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~2.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~3.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~4.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~5.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~6.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~7.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~8.tif
+!/static/extracted/~trans~hom0.00400515366974~warp0~opzenkop~9.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~0.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~1.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~11.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~2.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~4.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~5.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~6.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~7.tif
+!/static/extracted/~trans~hom0.0157258950975~warp1.36711172227e-06~1240389-000029700104~8.tif

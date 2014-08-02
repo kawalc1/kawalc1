@@ -5,6 +5,7 @@ from PIL import ImageFilter
 from PIL import Image
 from scipy import ndimage
 from os.path import join
+import json
 
 def getBoundingBox(ar,index):
     indices=np.where(ar == index)
@@ -26,52 +27,51 @@ def getAvgBorderDistance(ar,index):
     return bpix/float(len(xs))    
 
 def extract(file, targetpath):
-    img1 = Image.open(join(targetpath, file))
-    img1.load()
-    pil_im=img1.filter(ImageFilter.UnsharpMask(radius=15,percent=350,threshold=3))
-    #pil_im.show()
+    image = Image.open(join(targetpath, file))
+    image.load()
+    pil_im=image.filter(ImageFilter.UnsharpMask(radius=15,percent=350,threshold=3))
     
     outputdir = join(targetpath, 'extracted')
 
-    img1=np.array(pil_im)
+    image=np.array(pil_im)
         
-    #cut out the images 
-    images=[img1[261:323,693:721],
-    img1[261:323,726:754],
-    img1[261:323,759:787],
-    img1[327:389,693:721],
-    img1[327:389,726:754],
-    img1[327:389,759:787],
-    img1[395:457,693:721],
-    img1[395:457,726:754],
-    img1[395:457,759:787],
-    img1[463:525,693:721],
-    img1[463:525,726:754],
-    img1[463:525,759:787]]
+    #cut out the digits 
+    digits=[image[261:323,693:721],
+    image[261:323,726:754],
+    image[261:323,759:787],
+    image[327:389,693:721],
+    image[327:389,726:754],
+    image[327:389,759:787],
+    image[395:457,693:721],
+    image[395:457,726:754],
+    image[395:457,759:787],
+    image[463:525,693:721],
+    image[463:525,726:754],
+    image[463:525,759:787]]
 
-    #save the images
+    #save the digits
     head, tail = os.path.split(file)
     tailPart, ext = os.path.splitext(tail)
 
     #create atructureing element for the connected component analysis
     s = [[1,1,1],[1,1,1],[1,1,1]]
 
-    for i, im in enumerate(images):
-        ret, thresholded=cv2.threshold(im,180,1,type=cv2.THRESH_BINARY_INV)
+    for i, digit in enumerate(digits):
+        ret, thresholded=cv2.threshold(digit,180,1,type=cv2.THRESH_BINARY_INV)
 
         #do connected component analysis
-        images[i], nrOfObjects=ndimage.measurements.label(thresholded,s)
+        digits[i], nrOfObjects=ndimage.measurements.label(thresholded,s)
         #determine the sizes of the objects
-        sizes=np.bincount(np.reshape(images[i],-1))
+        sizes=np.bincount(np.reshape(digits[i],-1))
         selectedObject=-1
         maxSize=0
         for j in range(1,nrOfObjects+1):
             if sizes[j]<11:
                 continue #this is too small to be a number
-            maxy,miny,maxx,minx=getBoundingBox(images[i],j)
+            maxy,miny,maxx,minx=getBoundingBox(digits[i],j)
             if (maxy-miny < 3 and (miny<2 or maxy>59) ) or (maxx-minx < 3 and (minx<2 or maxx>25)):
                 continue #this is likely a border artifact
-            borderdist=getAvgBorderDistance(images[i],j)
+            borderdist=getAvgBorderDistance(digits[i],j)
             #print borderdist
             if(borderdist>0.2):
                 continue #this is likely a border artifact
@@ -81,11 +81,11 @@ def extract(file, targetpath):
                 selectedObject=j
             
         if selectedObject==-1:
-            images[i]=None
+            digits[i]=None
             continue
 
-        loc = ndimage.find_objects(images[i])[selectedObject-1]
-        cropped=images[i][loc]
+        loc = ndimage.find_objects(digits[i])[selectedObject-1]
+        cropped=digits[i][loc]
         #replace the shape number by 255
         cropped[cropped==selectedObject]=255
 
@@ -99,7 +99,7 @@ def extract(file, targetpath):
             left=int((28-mnistsize[0]))/2
             box=(left,3)
             outputim.paste(test_im,box)
-            images[i]=np.array(outputim)
+            digits[i]=np.array(outputim)
         else:
             pil_im=Image.fromarray(cropped)
             mnistsize=22,int((22.0/w)*h)
@@ -109,13 +109,21 @@ def extract(file, targetpath):
             top=int((28-mnistsize[1]))/2
             box=(3,top)
             outputim.paste(test_im,box)
-            images[i]=np.array(outputim)
-
-    for i, im in enumerate(images):
-        if im is not None:
-            #if isPossiblyCross(im) and not isMinus(im) :
-            tiffie = join(outputdir, tailPart + "~" + str(i) + ".tif")
-            print tiffie
-            cv2.imwrite(tiffie,im)
-        
-    return 'bla'
+            digits[i]=np.array(outputim)
+    
+    digitresult = []
+    for i in range(0, len(digits)) :
+        entry = {}
+        entry["index"] = i
+        entry["filename"] = None
+        digitresult.append(entry)
+    for i, digit in enumerate(digits):
+        if digit is not None:
+            #if isPossiblyCross(digit) and not isMinus(digit) :
+            digitFile = tailPart + "~" + str(i) + ".tif"
+            extracted = join(outputdir, digitFile)
+            cv2.imwrite(extracted,digit)
+            digitresult[i]["filename"] = digitFile
+    print >> None, digitresult
+    
+    return json.dumps(digitresult)
