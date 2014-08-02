@@ -93,7 +93,7 @@
             <h3>Menyesuai formulir</h3>
 
             <div class="tumbnail" >
-                <img ng-src="{{uploadUrl}}" width="200"/>
+                <img ng-src="{{uploadUrl}}" width="200" ng-show="$flow.files.length"/>
 
                 <div class="progress progress-striped"
                      ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length">
@@ -109,7 +109,7 @@
             <h3>Deteksi angka</h3>
 
             <div style="padding-left: 10px; width: 100px;">
-                <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left">
+                <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left" ng-show="$flow.files.length">
                     <img src="{{extractedImage.filename}}"/>
                 </div>
             </div>
