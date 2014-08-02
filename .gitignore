@@ -2,3 +2,9 @@
 /static/transformed
 
 *.py[cod]
+!/static/transformed/readme.txt
+!/static/transformed/~trans~hom0.00400515366974~warp0~opzenkop.jpg
+!/static/transformed/~trans~hom0.01436730769~warp1.00953838922e-06~1239656-000029800104.jpg
+!/static/upload/1239656-000029800104.jpg
+!/static/upload/opzenkop.jpg
+!/static/upload/readme.txt

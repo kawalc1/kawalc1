@@ -14,8 +14,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 			var transformed = angular.fromJson(image);
 			if (transformed !== null) {
 				$scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
-				$http.get('http://localhost:81/imaging/extract.wsgi',
-					{ params: { filename: transformed.transformedUrl }}).success(function(data) {
+				$http.get('../extract.wsgi',
+					{ params: { filename: $scope.uploadUrl }}).success(function(data) {
 						alert(data);
 					});
 

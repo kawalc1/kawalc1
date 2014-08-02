@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.conf import settings
 from os import path
 import registration
+import extraction
 
 
 from django.views.static import serve as static_serve
@@ -15,6 +16,11 @@ def handle_uploaded_file(f, filename):
     with open(path.join(settings.STATIC_DIR, 'upload/' + filename), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+
+def extract(request):
+    filename = request.GET.get("filename", "")
+    output = extraction.extract(filename, settings.STATIC_DIR)
+    return HttpResponse(output)
 
 def transform(request):
     if request.method == 'POST':
