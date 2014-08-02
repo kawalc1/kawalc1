@@ -9,7 +9,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.uploadUrl = null; //UploadedImage.getUrl();
 		$scope.progress = 0;
 		$scope.numbers = null;
-		$scope.extractedImages = []
+		$scope.extractedImages = [];
+		$scope.Math = window.Math;
 
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
