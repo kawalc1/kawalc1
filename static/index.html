@@ -16,9 +16,11 @@
         body {
             font-family: Helvetica, sans-serif;
         }
+
         h1, h2, h3, h4 {
             font-family: Corbel, sans-serif;
         }
+
         .thumbnail {
             max-width: 200px;
             line-height: 20px;
@@ -60,7 +62,9 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" ng-controller="imageRegistrationController"
+     flow-file-progress="updateProgress($file)" flow-file-added="setImage(null)"
+     flow-file-success="setImage($message)">
     <div class="logo"></div>
     <h1 class="title">Tukang Verifikator C1</h1>
     <hr class="soften"/>
@@ -69,11 +73,17 @@
 
         <h3>Mengunggah formulir</h3>
 
-        <div class="thumbnail" ng-hide="$flow.files.length">
-            <img src="http://www.placehold.it/200x282/EFEFEF/AAAAAA&text=no+image"/>
-        </div>
-        <div class="thumbnail" ng-show="$flow.files.length">
-            <img flow-img="$flow.files[0]"/>
+        <div class="tumbnail" >
+            <img ng-src="{{uploadUrl}}" width="200"/>
+
+            <div class="progress progress-striped"
+                 ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length">
+                <div class="progress-bar" role="progressbar"
+                     ng-style="{width: (progress * 100) + '%'}">
+                    <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
+                </div>
+                <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
+            </div>
         </div>
         <div>
             <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn
@@ -86,32 +96,13 @@
             </a>
         </div>
     </div>
-    <div ng-controller="imageRegistrationController"
-         flow-file-progress="updateProgress($file)" flow-file-added="setImage(null)"
-         flow-file-success="setImage($message)" class="block">
-        <div class="block column">
-            <h3>Menyesuai formulir</h3>
+    <div class="block column">
+        <h3>Deteksi angka</h3>
 
-            <div class="tumbnail" >
-                <img ng-src="{{uploadUrl}}" width="200" ng-show="$flow.files.length"/>
-
-                <div class="progress progress-striped"
-                     ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length">
-                    <div class="progress-bar" role="progressbar"
-                         ng-style="{width: (progress * 100) + '%'}">
-                        <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
-                    </div>
-                    <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
-                </div>
-            </div>
-        </div>
-        <div class="block column">
-            <h3>Deteksi angka</h3>
-
-            <div style="padding-left: 10px; width: 100px;">
-                <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left" ng-show="$flow.files.length">
-                    <img src="{{extractedImage.filename}}"/>
-                </div>
+        <div style="padding-left: 10px; width: 100px;">
+            <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
+                 ng-show="$flow.files.length">
+                <img src="{{extractedImage.filename}}"/>
             </div>
         </div>
     </div>

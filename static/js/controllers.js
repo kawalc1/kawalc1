@@ -6,11 +6,16 @@ var imageProcessingControllers = angular.module('imageProcessingControllers', []
 
 imageProcessingControllers.controller('imageRegistrationController',
 	['$scope', '$http', function($scope, $http) {
-		$scope.uploadUrl = null; //UploadedImage.getUrl();
+		var placeHolderUrl = 'img/placeholder.jpg';
+		$scope.uploadUrl = placeHolderUrl; //UploadedImage.getUrl();
 		$scope.progress = 0;
 		$scope.numbers = null;
 		$scope.extractedImages = [];
 		$scope.Math = window.Math;
+
+		$scope.hasProcessStarted= function() {
+			return $scope.uploadUrl !== placeHolderUrl;
+		};
 
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
