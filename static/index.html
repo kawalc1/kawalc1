@@ -117,6 +117,12 @@
                         3
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="2" class="warning">
+                        <b>Perhatian:</b> untuk sementara data ini hanya berfungsi sebagai contoh,
+                        dan bukan angka yang terdeksi dari formulir di sebelah ini.
+                    </td>
+                </tr>
             </table>
         </div>
         <div>
@@ -147,7 +153,8 @@
                         H. Prabowo Subianto
                     </td>
                     <td>
-                        <input ng-model="correction.prabowo" type="number" max="999"  ng-maxlength="3" ng-show="correction" />
+                        <input ng-model="correction.prabowo" type="number" max="999"  ng-maxlength="3" ng-show="correction && !submitted" />
+                        <span ng-show="correction && submitted">{{correction.prabowo}}</span>
                         <span ng-show="correct">{{mostProbableOutcome.prabowo}}</span>
                     </td>
                 </tr>
@@ -156,7 +163,8 @@
                         Ir. H. Joko Widodo
                     </td>
                     <td>
-                        <input ng-model="correction.jokowi" type="number" max="999"  ng-maxlength="3" ng-show="correction"/>
+                        <input ng-model="correction.jokowi" type="number" max="999"  ng-maxlength="3" ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{correction.jokowi}}</span>
                         <span ng-show="correct">{{mostProbableOutcome.jokowi}}</span>
                     </td>
                 </tr>
@@ -185,7 +193,7 @@
                 Kirim
             </a>
             <span ng-show="submitted">
-                Terima kasih, formulir C1 telah dikirim.
+                <b>Terima kasih:</b> formulir C1 telah dikirim.
             </span>
         </div>
     </div>
