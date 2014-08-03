@@ -21,7 +21,48 @@
             font-family: Corbel, sans-serif;
         }
 
+        p {
+            padding: 10px;
+        }
+
+        hr {
+            -moz-border-bottom-colors: none;
+            -moz-border-left-colors: none;
+            -moz-border-right-colors: none;
+            -moz-border-top-colors: none;
+            border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+            border-image: none;
+            border-left: 0 none;
+            border-right: 0 none;
+            border-style: solid none;
+            border-width: 1px 0;
+            margin: 20px 0;
+        }
+
+
+        .container:before, .container:after {
+            content: "";
+            display: table;
+            line-height: 0;
+        }
+        .container:after {
+            clear: both;
+        }
+        .container:before, .container:after {
+            content: "";
+            display: table;
+            line-height: 0;
+        }
+        .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+            width: 1170px;
+        }
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .thumbnail {
+            background-color: #F5F5F5;
             max-width: 200px;
             line-height: 20px;
             margin-bottom: 5px;
@@ -30,6 +71,9 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
             display: block;
             padding: 4px;
+            width: 200px;
+            height: 283px;
+            clip: rect(0px,200px,283px,0px);
             transition: all 0.2s ease-in-out 0s;
         }
 
@@ -57,8 +101,19 @@
             width: 75px;
         }
 
+        .btn {
+            margin-top: 5px;
+        }
+
         .title {
             padding-top: 27px;
+        }
+
+        .result {
+            background-color: #F5F5F5;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px 4px 4px 4px;
+            min-height: 290px;
         }
 
         .column {
@@ -95,10 +150,11 @@
         <h3>Mengunggah C1</h3>
 
         <div >
-            <img ng-src="{{uploadUrl}}" width="200" class="thumbnail"/>
+            <img ng-src="{{uploadUrl}}" class="thumbnail" ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
+            <img class="thumbnail" flow-img="$flow.files[0]" ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
 
             <div class="progress progress-striped"
-                 ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length">
+                 ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length && !hasUploadFinished()">
                 <div class="progress-bar" role="progressbar"
                      ng-style="{width: (progress * 100) + '%'}">
                     <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
@@ -108,28 +164,42 @@
         <div>
             <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn
                flow-attrs="{accept:'image/*'}">Pilih formulir</a>
-            <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
+<!--            <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
                flow-attrs="{accept:'image/*'}">Ganti</a>
             <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
                ng-click="$flow.cancel()">
                 Hapus
-            </a>
+            </a>-->
         </div>
     </div>
     <div class="block column" ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed()}">
         <h3>Deteksi angka</h3>
 
-        <div style="padding-left: 10px; width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
+        <div class="result" style="padding-left: 108px; width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
             <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
                  ng-show="$flow.files.length">
                 <img src="{{extractedImage.filename}}"/>
             </div>
         </div>
-        <div style="padding-left: 10px; width: 100px;" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
-            <pre>
-                
-            </pre>
+        <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+            <p>
+                Mohon maaf, <br/>
+                sepertinya angka2 dalam formulir ini tidak bisa terdeksi. <br/>
+                Apakah formulir ini memang formulir yang benar?
+            </p>
 
+        </div>
+        <div>
+            <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
+               ng-click="$flow.cancel()">
+                Batal
+            </a>
+            <!--            <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
+                           flow-attrs="{accept:'image/*'}">Ganti</a>
+                        <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
+                           ng-click="$flow.cancel()">
+                            Hapus
+                        </a>-->
         </div>
     </div>
 </div>

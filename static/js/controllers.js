@@ -19,7 +19,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		};
 
 		$scope.hasRegistrationFailed = function() {
-			return $scope.uploadUrl === true;
+			return $scope.registrationFailed === true;
 		};
 
 		$scope.hasExtractionSucceeded = function() {
@@ -33,7 +33,10 @@ imageProcessingControllers.controller('imageRegistrationController',
 
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
-			if (transformed !== null && transformed.success === true) {
+			if (transformed === null) {
+				return;
+			}
+			if (transformed.success === true) {
 				$scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
 				$http.get('../extract.wsgi',
 					{ params: { filename: $scope.uploadUrl }}).success(function(result) {
@@ -42,6 +45,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 					});
 
 			} else {
+				$scope.uploadUrl = null;
 				$scope.registrationFailed = true;
 			}
 		};

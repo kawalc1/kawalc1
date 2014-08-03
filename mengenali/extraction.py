@@ -115,7 +115,7 @@ def extract(file, targetpath):
     for i in range(0, len(digits)) :
         entry = {}
         entry["index"] = i
-        entry["filename"] = None
+        entry["filename"] = 'img/empty.png'
         digitresult.append(entry)
     for i, digit in enumerate(digits):
         if digit is not None:

@@ -4,6 +4,7 @@ from django.conf import settings
 from os import path
 import registration
 import extraction
+import json
 
 
 from django.views.static import serve as static_serve
@@ -27,7 +28,10 @@ def transform(request):
         filename = request.POST.get("flowFilename", "")
         handle_uploaded_file(request.FILES['file'], filename)
 
-        output = registration.processFile(None, 1, settings.STATIC_DIR, filename)
+        try :
+            output = registration.processFile(None, 1, settings.STATIC_DIR, filename)
+        except: 
+            output = json.dumps({'transformedUrl':None, 'success': False}, separators=(',', ':'))
         #output = settings.STATIC_DIR + 'poop'
         return HttpResponse(output)
     else :
