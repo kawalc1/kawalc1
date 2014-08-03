@@ -128,7 +128,7 @@
             border-radius: 4px 4px 4px 4px;
             padding: 10px;
             margin: 5px;
-            min-height: 430px;
+            min-height: 410px;
         }
 
         .column.success {
@@ -202,6 +202,20 @@
             </a>
         </div>
     </div>
+    <div class="block column" >
+        <h3>Verifikasi hasil</h3>
+
+        <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+            <p>
+                Mohon maaf, <br/>
+                sepertinya angka2 dalam formulir ini tidak bisa terdeksi. <br/>
+                Apakah formulir ini memang formulir yang benar?
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
 
 
