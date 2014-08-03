@@ -25,6 +25,12 @@
             max-width: 200px;
             line-height: 20px;
             margin-bottom: 5px;
+            border: 1px solid #DDDDDD;
+            border-radius: 4px 4px 4px 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            display: block;
+            padding: 4px;
+            transition: all 0.2s ease-in-out 0s;
         }
 
         .progress-bar {
@@ -73,8 +79,8 @@
 
         <h3>Mengunggah formulir</h3>
 
-        <div class="tumbnail" >
-            <img ng-src="{{uploadUrl}}" width="200"/>
+        <div >
+            <img ng-src="{{uploadUrl}}" width="200" class="thumbnail"/>
 
             <div class="progress progress-striped"
                  ng-class="{active: $flow.file.isUploading()}" ng-show="$flow.files.length">
