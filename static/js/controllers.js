@@ -60,6 +60,9 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.registrationFailed = null;
 		$scope.extractionFinished = false;
 		$scope.mostProbableOutcome = null;
+		$scope.correction = null;
+		$scope.submitted = null;
+		$scope.correct = null;
 
 		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
@@ -92,6 +95,18 @@ imageProcessingControllers.controller('imageRegistrationController',
 				params : { probabilities : matrix }}).success(function(result) {
 				$scope.mostProbableOutcome = result.probabilityMatrix[0]
 			});
+		};
+
+		$scope.disagree = function() {
+			$scope.correction = angular.copy($scope.mostProbableOutcome);
+		};
+
+		$scope.agree = function() {
+			$scope.correct = true;
+		};
+
+		$scope.submit = function() {
+			$scope.submitted = true;
 		};
 
 		$scope.setImage = function(image) {

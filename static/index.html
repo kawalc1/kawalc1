@@ -12,156 +12,7 @@
     <script src="js/services.js"></script>
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
           rel="stylesheet"/>
-    <style>
-        body {
-            font-family: Helvetica, sans-serif;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: Corbel, sans-serif;
-        }
-
-        p {
-            padding: 10px;
-        }
-
-        hr {
-            -moz-border-bottom-colors: none;
-            -moz-border-left-colors: none;
-            -moz-border-right-colors: none;
-            -moz-border-top-colors: none;
-            border-color: #EEEEEE -moz-use-text-color #FFFFFF;
-            border-image: none;
-            border-left: 0 none;
-            border-right: 0 none;
-            border-style: solid none;
-            border-width: 1px 0;
-            margin: 20px 0;
-        }
-
-
-        .container:before, .container:after {
-            content: "";
-            display: table;
-            line-height: 0;
-        }
-        .container:after {
-            clear: both;
-        }
-        .container:before, .container:after {
-            content: "";
-            display: table;
-            line-height: 0;
-        }
-        .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-            width: 1170px;
-        }
-        .container {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .thumbnail {
-            background-color: #F5F5F5;
-            max-width: 200px;
-            line-height: 20px;
-            margin-bottom: 5px;
-            border: 1px solid #DDDDDD;
-            border-radius: 4px 4px 4px 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-            display: block;
-            padding: 4px;
-            width: 200px;
-            height: 283px;
-            clip: rect(0px,200px,283px,0px);
-            transition: all 0.2s ease-in-out 0s;
-        }
-
-        .progress-bar {
-            background: #F26522;
-            color: white;
-        }
-
-        .progress.progress-striped {
-            width: 200px;
-        }
-
-        .block {
-            display: inline-block;
-            vertical-align: top;
-        }
-
-        .done {
-            zoom: 1;
-            filter: alpha(opacity=50);
-            opacity: 0.5;
-        }
-
-        .logo {
-            background: url("img/logo-kotak.png") no-repeat scroll 0 0 / 75px 107px rgba(0, 0, 0, 0);
-            float: left;
-            height: 107px;
-            left: -5px;
-            position: relative;
-            top: 10px;
-            width: 75px;
-        }
-
-        .btn {
-            margin-top: 5px;
-        }
-
-        .title {
-            padding-top: 27px;
-        }
-
-        .result {
-            background-color: #F5F5F5;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 4px 4px 4px 4px;
-            min-height: 290px;
-        }
-
-        .column {
-            width: 210px;
-            background-color: #f0f0f0;
-            border-radius: 4px 4px 4px 4px;
-            padding: 10px;
-            margin: 5px;
-            min-height: 410px;
-        }
-
-        .column.success {
-            background-color: #b0f0b0;
-        }
-
-        .column.failure {
-            background-color: #f0b0b0;
-        }
-
-        .bottomright {
-            float: right;
-            margin-right: 206px;
-        }
-        table.hasil {
-            width: 100%;
-            position: relative;
-            top: 50%;
-        }
-
-        table.hasil td {
-            text-align: left;
-            padding-left: 5px;
-        }
-        table.hasil td+td {
-            text-align: right;
-            padding-right: 5px;
-        }
-        tr .jumlah {
-            border-top: 1px solid #000000;
-        }
-
-    </style>
+    <link href="css/site.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container" ng-controller="imageRegistrationController"
@@ -201,7 +52,7 @@
     <div class="block column" ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
         <h3>Deteksi angka</h3>
 
-        <div class="result" style="padding-left: 108px; width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
+        <div class="result numbers" style="width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
             <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
                  ng-show="$flow.files.length">
                 <img src="{{extractedImage.filename}}"/>
@@ -222,8 +73,8 @@
             <!--</a>-->
         <!--</div>-->
     </div>
-    <div class="block column" ng-class="{success : mostProbableOutcome}">
-        <h3>Hasil deteksi</h3>
+    <div class="block column" ng-class="{success : mostProbableOutcome, failure : (correction && !submitted), done: (correction || correct)}">
+        <h3>Verifikasi data</h3>
         <div ng-show="mostProbableOutcome" class="result">
             <table class="hasil">
                 <tr>
@@ -268,9 +119,75 @@
                 </tr>
             </table>
         </div>
+        <div>
+            <a href="#" class="btn btn-success" ng-show="mostProbableOutcome && !correction && !correct"
+               ng-click="agree()">
+                Sesuai
+            </a>
+            <a href="#" class="btn btn-danger" ng-show="mostProbableOutcome && !correction && !correct"
+               ng-click="disagree()">
+                Tidak Sesuai
+            </a>
+        </div>
     </div>
-    <div class="block column" >
-        <h3>Verifikasi hasil</h3>
+    <div class="block column" ng-class="{success : submitted}" >
+        <h3>Koreksi data</h3>
+        <div ng-show="correction || correct" class="result">
+            <table class="hasil">
+                <tr>
+                    <th>
+                        Calon
+                    </th>
+                    <th>
+                        Jumlah
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        H. Prabowo Subianto
+                    </td>
+                    <td>
+                        <input ng-model="correction.prabowo" type="number" max="999"  ng-maxlength="3" ng-show="correction" />
+                        <span ng-show="correct">{{mostProbableOutcome.prabowo}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Ir. H. Joko Widodo
+                    </td>
+                    <td>
+                        <input ng-model="correction.jokowi" type="number" max="999"  ng-maxlength="3" ng-show="correction"/>
+                        <span ng-show="correct">{{mostProbableOutcome.jokowi}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Suara sah
+                    </td>
+                    <td class="jumlah">
+                        <span ng-show="correction">{{ correction.prabowo +  correction.jokowi}}</span>
+                        <span ng-show="correct">{{ mostProbableOutcome.total }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tidak sah
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <a href="#" class="btn btn-success" ng-show="(correction && !submitted) || (correct && !submitted)"
+               ng-click="submit()">
+                Kirim
+            </a>
+            <span ng-show="submitted">
+                Terima kasih, formulir C1 telah dikirim.
+            </span>
+        </div>
     </div>
     <br/>
     <a href="contoh-formulir.zip" class="bottomright">Mengunduh formulir contoh (1 MB)</a>
