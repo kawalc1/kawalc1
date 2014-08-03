@@ -1,0 +1,173 @@
+body {
+	font-family: Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4 {
+	font-family: Corbel, sans-serif;
+}
+
+p {
+	padding: 10px;
+}
+
+hr {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+	border-image: none;
+	border-left: 0 none;
+	border-right: 0 none;
+	border-style: solid none;
+	border-width: 1px 0;
+	margin: 20px 0;
+}
+
+
+.container:before, .container:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+.container:after {
+	clear: both;
+}
+.container:before, .container:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+	width: 1170px;
+}
+.container {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.thumbnail {
+	background-color: #F5F5F5;
+	max-width: 200px;
+	line-height: 20px;
+	margin-bottom: 5px;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 4px 4px 4px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+	display: block;
+	padding: 4px;
+	width: 200px;
+	height: 283px;
+	clip: rect(0px,200px,283px,0px);
+	transition: all 0.2s ease-in-out 0s;
+}
+
+.progress-bar {
+	background: #F26522;
+	color: white;
+}
+
+.progress.progress-striped {
+	width: 200px;
+}
+
+.block {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.done {
+	zoom: 1;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.logo {
+	background: url("../img/logo-kotak.png") no-repeat scroll 0 0 / 75px 107px rgba(0, 0, 0, 0);
+	float: left;
+	height: 107px;
+	left: -5px;
+	position: relative;
+	top: 10px;
+	width: 75px;
+}
+
+.btn {
+	margin-top: 5px;
+	float: right;
+	margin-left: 3px;
+}
+
+.title {
+	padding-top: 27px;
+}
+
+.result {
+	background-color: #F5F5F5;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 4px 4px 4px 4px;
+	min-height: 290px;
+}
+
+.result.numbers {
+	padding-left: 54px;
+	padding-right: 54px;
+	padding-top: 10px;
+	min-height: 280px;
+}
+
+.column {
+	width: 210px;
+	background-color: #f0f0f0;
+	border-radius: 4px 4px 4px 4px;
+	padding: 10px;
+	margin: 5px;
+	min-height: 410px;
+}
+
+.column.success {
+	background-color: #b0f0b0;
+}
+
+.column.failure {
+	background-color: #f0b0b0;
+}
+
+.bottomright {
+	float: right;
+	margin-right: 206px;
+}
+
+table.hasil {
+	width: 100%;
+	position: relative;
+	top: 50%;
+}
+
+table.hasil td {
+	text-align: left;
+	padding-left: 5px;
+}
+table.hasil td+td {
+	text-align: right;
+	padding-right: 5px;
+}
+tr .jumlah {
+	border-top: 1px solid #000000;
+}
+
+input.ng-invalid {
+	border: 1px solid red;
+}
+input.ng-valid {
+	border: 1px solid green;
+}
+
+input {
+	width: 26px;
+	text-align: right;
+}
+
+td.warning {
+	color: red;
+}
