@@ -91,6 +91,12 @@
             vertical-align: top;
         }
 
+        .done {
+            zoom: 1;
+            filter: alpha(opacity=50);
+            opacity: 0.5;
+        }
+
         .logo {
             background: url("img/logo-kotak.png") no-repeat scroll 0 0 / 75px 107px rgba(0, 0, 0, 0);
             float: left;
@@ -145,7 +151,7 @@
     <h1 class="title">Tukang Verifikator C1</h1>
     <hr class="soften"/>
 
-    <div class="block column" ng-class="{success : hasUploadFinished()}">
+    <div class="block column" ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
 
         <h3>Mengunggah C1</h3>
 
