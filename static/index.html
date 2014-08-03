@@ -190,16 +190,10 @@
 
         </div>
         <div>
-            <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
-               ng-click="$flow.cancel()">
+            <a href="#" class="btn btn-danger" ng-show="hasExtractionFinished()"
+               ng-click="abort()">
                 Batal
             </a>
-            <!--            <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
-                           flow-attrs="{accept:'image/*'}">Ganti</a>
-                        <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
-                           ng-click="$flow.cancel()">
-                            Hapus
-                        </a>-->
         </div>
     </div>
 </div>

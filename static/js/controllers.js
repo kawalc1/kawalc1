@@ -13,6 +13,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.extractedImages = [];
 		$scope.Math = window.Math;
 		$scope.registrationFailed = null;
+		$scope.extractionFinished = false;
+
 
 		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
@@ -28,6 +30,14 @@ imageProcessingControllers.controller('imageRegistrationController',
 
 		$scope.hasExtractionFailed = function() {
 			return $scope.hasUploadFinished() && $scope.hasRegistrationFailed() && $scope.extractedImages.length === 0;
+		};
+
+		$scope.hasExtractionFinished = function() {
+			return $scope.extractionFinished === true;
+		};
+
+		$scope.abort = function() {
+			location.reload();
 		};
 
 
@@ -48,6 +58,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 				$scope.uploadUrl = null;
 				$scope.registrationFailed = true;
 			}
+			$scope.extractionFinished = true;
+
 		};
 
 		$scope.updateProgress = function(image) {
