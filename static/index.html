@@ -62,8 +62,23 @@
         }
 
         .column {
-            width: 300px;
+            width: 210px;
+            background-color: #f0f0f0;
+            border-radius: 4px 4px 4px 4px;
+            padding: 10px;
+            margin: 5px;
+            min-height: 430px;
         }
+
+        .column.success {
+            background-color: #b0f0b0;
+        }
+
+        .column.failure {
+            background-color: #f0b0b0;
+        }
+
+
 
     </style>
 </head>
@@ -75,9 +90,9 @@
     <h1 class="title">Tukang Verifikator C1</h1>
     <hr class="soften"/>
 
-    <div class="block column">
+    <div class="block column" ng-class="{success : hasUploadFinished()}">
 
-        <h3>Mengunggah formulir</h3>
+        <h3>Mengunggah C1</h3>
 
         <div >
             <img ng-src="{{uploadUrl}}" width="200" class="thumbnail"/>
@@ -88,7 +103,6 @@
                      ng-style="{width: (progress * 100) + '%'}">
                     <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
                 </div>
-                <!--                        <div class="progress bar" role="progressbar" ng-style="{'width' : uploadProgress + '%'}"></div>-->
             </div>
         </div>
         <div>
@@ -102,14 +116,20 @@
             </a>
         </div>
     </div>
-    <div class="block column">
+    <div class="block column" ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed()}">
         <h3>Deteksi angka</h3>
 
-        <div style="padding-left: 10px; width: 100px;">
+        <div style="padding-left: 10px; width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
             <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
                  ng-show="$flow.files.length">
                 <img src="{{extractedImage.filename}}"/>
             </div>
+        </div>
+        <div style="padding-left: 10px; width: 100px;" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+            <pre>
+                
+            </pre>
+
         </div>
     </div>
 </div>

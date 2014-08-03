@@ -12,20 +12,37 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.numbers = null;
 		$scope.extractedImages = [];
 		$scope.Math = window.Math;
+		$scope.registrationFailed = null;
 
-		$scope.hasProcessStarted= function() {
+		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
 		};
 
+		$scope.hasRegistrationFailed = function() {
+			return $scope.uploadUrl === true;
+		};
+
+		$scope.hasExtractionSucceeded = function() {
+			return $scope.hasUploadFinished() && !$scope.hasRegistrationFailed() && $scope.extractedImages.length > 0;
+		};
+
+		$scope.hasExtractionFailed = function() {
+			return $scope.hasUploadFinished() && $scope.hasRegistrationFailed() && $scope.extractedImages.length === 0;
+		};
+
+
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
-			if (transformed !== null) {
+			if (transformed !== null && transformed.success === true) {
 				$scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
 				$http.get('../extract.wsgi',
 					{ params: { filename: $scope.uploadUrl }}).success(function(result) {
-						$scope.extractedImages = result
+						$scope.extractedImages = result;
+						$scope.registrationFailed = false;
 					});
 
+			} else {
+				$scope.registrationFailed = true;
 			}
 		};
 
