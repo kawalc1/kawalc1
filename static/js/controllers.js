@@ -52,6 +52,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 					{ params: { filename: $scope.uploadUrl }}).success(function(result) {
 						$scope.extractedImages = result;
 						$scope.registrationFailed = false;
+					}).error(function() {
+						$scope.registrationFailed = true;
 					});
 
 			} else {
