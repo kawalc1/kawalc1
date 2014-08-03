@@ -24,7 +24,7 @@
 
     <div class="block column" ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
 
-        <h3>Mengunggah C1</h3>
+        <h3>Unggah C1</h3>
 
         <div >
             <img ng-src="{{uploadUrl}}" class="thumbnail" ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
@@ -66,12 +66,11 @@
             </p>
 
         </div>
-        <!--<div>-->
-            <!--<a href="#" class="btn btn-danger" ng-show="hasExtractionFinished()"-->
-               <!--ng-click="abort()">-->
-                <!--Batal-->
-            <!--</a>-->
-        <!--</div>-->
+        <div>
+            <a href="#" class="btn btn-danger" ng-show="(hasUploadFinished() && hasRegistrationFailed())" ng-click="abort()">
+                Batal
+            </a>
+        </div>
     </div>
     <div class="block column" ng-class="{success : mostProbableOutcome, failure : (correction && !submitted), done: (correction || correct)}">
         <h3>Verifikasi data</h3>
@@ -186,15 +185,20 @@
                     </td>
                 </tr>
             </table>
+            <div ng-show="submitted" class="beritaBerhasil">
+                <b>Terima kasih:</b> formulir C1 telah dikirim.
+            </div>
         </div>
         <div>
             <a href="#" class="btn btn-success" ng-show="(correction && !submitted) || (correct && !submitted)"
                ng-click="submit()">
                 Kirim
             </a>
-            <span ng-show="submitted">
-                <b>Terima kasih:</b> formulir C1 telah dikirim.
-            </span>
+            <div>
+                <a href="#" class="btn btn-success" ng-show="submitted" ng-click="abort()">
+                    Unggah formulir lain
+                </a>
+            </div>
         </div>
     </div>
     <br/>
