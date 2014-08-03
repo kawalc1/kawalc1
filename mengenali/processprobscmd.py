@@ -8,6 +8,7 @@ import itertools
 import string
 import numpy
 import operator
+import json
 #setup the argument parser
 
 CATEGORIES_COUNT = 11
@@ -132,18 +133,20 @@ with open(inputcsv, 'rb') as f:
     reader = csv.reader(f)
     row = reader.next()
 
-    while True:
-        print ""
-        print row[12]
-        print ""
+#     while True:
+    print ""
+    print row[12]
+    print ""
 
-        probmatrix = numpy.zeros(shape=(12, 11), dtype='f')
-        for square in range(0, 12):
-            if square == getCurrentSquare(row):
-                probmatrix[square] = getProbs(row)
-                row = reader.next()
-            else:
-                probmatrix[square] = numpy.zeros(11)
-                probmatrix[square][X_INDEX] = 1.
+    probmatrix = numpy.zeros(shape=(12, 11), dtype='f')
+    for square in range(0, 12):
+        if square == getCurrentSquare(row):
+            probmatrix[square] = getProbs(row)
+            row = reader.next()
+        else:
+            probmatrix[square] = numpy.zeros(11)
+            probmatrix[square][X_INDEX] = 1.
 
-        print_list_of_numbers(probmatrix)
+    print json.dumps({'probabilityMatrix': probmatrix.tolist()}, separators=(',', ':'))
+#     print "mat" + str(probmatrix)
+    print_list_of_numbers(probmatrix)

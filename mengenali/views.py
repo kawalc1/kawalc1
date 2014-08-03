@@ -5,6 +5,9 @@ from os import path
 import registration
 import extraction
 import json
+import processprobs
+import numpy as np
+import decimal
 
 
 from django.views.static import serve as static_serve
@@ -21,6 +24,26 @@ def handle_uploaded_file(f, filename):
 def extract(request):
     filename = request.GET.get("filename", "")
     output = extraction.extract(filename, settings.STATIC_DIR)
+    return HttpResponse(output)
+
+def getprobsresult(request):
+    rows = request.GET.getlist("probabilities")
+    matrix = []
+    probmatrix = np.ndarray(shape=(12, 11), dtype='f')
+    for i, row in enumerate(rows):
+        probmatrix[i]  = json.loads(row)
+    
+    print "blergh!!!"
+    
+    print >> None, "bladie: " + str(matrix)
+    
+
+    outcomes = processprobs.getpossibleoutcomes(probmatrix)
+    results = []
+    for outcome in outcomes:
+        results.append(outcome)
+    output = json.dumps({'probabilityMatrix': outcomes}, separators=(',', ':'))
+    
     return HttpResponse(output)
 
 def transform(request):
