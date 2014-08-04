@@ -164,7 +164,7 @@ input.ng-valid {
 }
 
 input {
-	width: 26px;
+	width: 36px;
 	text-align: right;
 }
 
@@ -174,4 +174,13 @@ td.warning {
 
 div.beritaBerhasil {
 	padding: 12px;
+}
+
+input[type='number'] {
+	-moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
 }
