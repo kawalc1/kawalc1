@@ -49,7 +49,9 @@ app.config(function($translateProvider) {
 		CORRECTION_TITLE: 'Correct data',
 		BUTTON_SEND: 'Send',
 		BUTTON_RESTART: 'Upload another form',
-		LINK_RESTART: 'Download example forms (1 MB)'
+		LINK_RESTART: 'Download example forms (1 MB)',
+		SUBMITTED_THANKS: 'Thank you:',
+		SUBMITTED_MESSAGE: 'the form has been submitted.'
 	}).translations('id', {
 		HEADLINE: 'Tukang Verifikator C1',
 		TITLE: 'Tukang Verifikator C1',
@@ -67,7 +69,9 @@ app.config(function($translateProvider) {
 		CORRECTION_TITLE: 'Koreksi data',
 		BUTTON_SEND: 'Kirim',
 		BUTTON_RESTART: 'Unggah formulir lain',
-		LINK_RESTART: 'Mengunduh formulir contoh (1 MB)'
+		LINK_RESTART: 'Mengunduh formulir contoh (1 MB)',
+		SUBMITTED_THANKS: 'Terima kasih:',
+		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.'
 	});
 	$translateProvider.determinePreferredLanguage(function() {
 		var browserLang = navigator.language.substr(0,2);
