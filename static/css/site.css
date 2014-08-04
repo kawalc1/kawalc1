@@ -39,7 +39,7 @@ hr {
 	line-height: 0;
 }
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 1170px;
+	width: 1090px;
 }
 .container {
 	margin-left: auto;
@@ -168,7 +168,7 @@ hr {
 
 .bottomright {
 	float: right;
-	margin-right: 206px;
+	margin-right: 118px;
 }
 
 table.hasil {
