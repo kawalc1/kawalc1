@@ -50,7 +50,7 @@ var matrix =
 		];
 
 imageProcessingControllers.controller('imageRegistrationController',
-	['$scope', '$http', function($scope, $http) {
+	['$scope', '$http', '$translate', function($scope, $http, $translate) {
 		var placeHolderUrl = 'img/placeholder.jpg';
 		$scope.uploadUrl = placeHolderUrl; //UploadedImage.getUrl();
 		$scope.progress = 0;
@@ -63,6 +63,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.correction = null;
 		$scope.submitted = null;
 		$scope.correct = null;
+		$scope.currentLangue = $translate.use();
 
 		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
@@ -107,6 +108,11 @@ imageProcessingControllers.controller('imageRegistrationController',
 
 		$scope.submit = function() {
 			$scope.submitted = true;
+		};
+
+		$scope.switchLang = function(langKey) {
+			$translate.use(langKey);
+			$scope.currentLangue = langKey;
 		};
 
 		$scope.setImage = function(image) {

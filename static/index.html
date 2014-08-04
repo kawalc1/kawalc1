@@ -3,9 +3,10 @@
       flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
       flow-files-submitted="$flow.upload()">
 <head>
-    <title>Tukang Verifikator C1</title>
+    <title>{{ 'TITLE' | translate }}</title>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.js"></script>
     <script src="dist/angular-resource/angular-resource.js"></script>
+    <script src="dist/angular-translate/angular-translate.min.js"></script>
     <script src="dist/ng-flow-standalone.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
@@ -19,12 +20,17 @@
      flow-file-progress="updateProgress($file)" flow-file-added="setImage(null)"
      flow-file-success="setImage($message)">
     <div class="logo"></div>
-    <h1 class="title">Tukang Verifikator C1</h1>
+    <h1 class="title">{{ 'HEADLINE' | translate }}</h1>
+    <div class="langSwitch">
+        <img src="img/flags/id.png" ng-click="switchLang('id')" ng-class="{selected: currentLangue == 'id'}">
+        <img src="img/flags/en.png" ng-click="switchLang('en')" ng-class="{selected: currentLangue == 'en'}">
+    </div>
     <hr class="soften"/>
+
 
     <div class="block column" ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
 
-        <h3>Unggah C1</h3>
+        <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
 
         <div >
             <img ng-src="{{uploadUrl}}" class="thumbnail" ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
@@ -40,7 +46,7 @@
         </div>
         <div>
             <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn
-               flow-attrs="{accept:'image/*'}">Pilih formulir</a>
+               flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</a>
 <!--            <a href="#" class="btn" ng-show="$flow.files.length" flow-btn
                flow-attrs="{accept:'image/*'}">Ganti</a>
             <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
@@ -50,7 +56,7 @@
         </div>
     </div>
     <div class="block column" ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
-        <h3>Deteksi angka</h3>
+        <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
 
         <div class="result numbers" style="width: 100px;" ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
             <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
@@ -60,9 +66,9 @@
         </div>
         <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
             <p>
-                Mohon maaf, <br/>
-                sepertinya angka2 dalam formulir ini tidak bisa terdeksi. <br/>
-                Apakah formulir ini memang formulir yang benar?
+                {{ 'UPLOAD_ERROR_EXCUSE' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_DIAGNOSIS' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_SUGGESTION' | translate }}
             </p>
 
         </div>
@@ -73,7 +79,7 @@
         </div>
     </div>
     <div class="block column" ng-class="{success : mostProbableOutcome, failure : (correction && !submitted), done: (correction || correct)}">
-        <h3>Verifikasi data</h3>
+        <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
         <div ng-show="mostProbableOutcome" class="result">
             <table class="hasil">
                 <tr>
@@ -118,8 +124,9 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="warning">
-                        <b>Perhatian:</b> untuk sementara data ini hanya berfungsi sebagai contoh,
-                        dan bukan angka yang terdeksi dari formulir di sebelah ini.
+                        <b>{{ 'SAMPLE_WARNING' | translate }}</b>
+                         {{ 'SAMPLE_MESSAGE' | translate }}
+
                     </td>
                 </tr>
             </table>
@@ -127,16 +134,16 @@
         <div>
             <a href="#" class="btn btn-success" ng-show="mostProbableOutcome && !correction && !correct"
                ng-click="agree()">
-                Sesuai
+                {{ 'BUTTON_CORRECT' | translate }}
             </a>
             <a href="#" class="btn btn-danger" ng-show="mostProbableOutcome && !correction && !correct"
                ng-click="disagree()">
-                Tidak Sesuai
+                {{ 'BUTTON_NOT_CORRECT' | translate }}
             </a>
         </div>
     </div>
     <div class="block column" ng-class="{success : submitted}" >
-        <h3>Koreksi data</h3>
+        <h3>{{ 'CORRECTION_TITLE' | translate }}</h3>
         <div ng-show="correction || correct" class="result">
             <table class="hasil">
                 <tr>
@@ -192,17 +199,17 @@
         <div>
             <a href="#" class="btn btn-success" ng-show="(correction && !submitted) || (correct && !submitted)"
                ng-click="submit()">
-                Kirim
+                {{ 'BUTTON_SEND' | translate }}
             </a>
             <div>
                 <a href="#" class="btn btn-success" ng-show="submitted" ng-click="abort()">
-                    Unggah formulir lain
+                    {{ 'BUTTON_RESTART' | translate }}
                 </a>
             </div>
         </div>
     </div>
     <br/>
-    <a href="contoh-formulir.zip" class="bottomright">Mengunduh formulir contoh (1 MB)</a>
+    <a href="contoh-formulir.zip" class="bottomright">{{ 'LINK_RESTART' | translate }}</a>
 </div>
 
 

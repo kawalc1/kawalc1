@@ -92,6 +92,39 @@ hr {
 	width: 75px;
 }
 
+.langSwitch {
+	background-color: #F0F0F0;
+	border-radius: 4px 4px 4px 4px;
+	float: right;
+	left: -126px;
+	padding: 5px;
+	position: relative;
+	top: -53px;
+}
+
+.langSwitch img.selected {
+	border-color : #D0D0D0;
+	background-color: #D0D0D0;
+}
+
+.langSwitch img:hover {
+	cursor: pointer;
+}
+
+.langSwitch img {
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent;
+	border-radius: 4px 4px 4px 4px;
+	background-color: transparent;
+	margin-left: 4px;
+}
+
+.langSwitch img+img {
+	margin-left: 6px;
+	margin-right: 4px;
+}
+
 .btn {
 	margin-top: 5px;
 	float: right;
