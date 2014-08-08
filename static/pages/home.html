@@ -1,0 +1,197 @@
+<div flow-init="{singleFile:true}"
+     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+     flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
+     flow-file-added="setImage(null)"
+     flow-file-success="setImage($message)">
+    <div class="block column"
+         ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
+
+        <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
+
+        <div>
+            <img ng-src="{{uploadUrl}}" class="thumbnail"
+                 ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
+            <img class="thumbnail" flow-img="$flow.files[0]"
+                 ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
+
+            <div class="progress progress-striped"
+                 ng-class="{active: $flow.file.isUploading()}"
+                 ng-show="$flow.files.length && !hasUploadFinished()">
+                <div class="progress-bar" role="progressbar"
+                     ng-style="{width: (progress * 100) + '%'}">
+                    <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <span class="btn" ng-hide="$flow.files.length" flow-btn
+                   flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</span>
+        </div>
+    </div>
+    <div class="block column"
+         ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
+        <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
+
+        <div class="result numbers" style="width: 100px;"
+             ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
+            <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
+                 ng-show="$flow.files.length">
+                <img src="{{extractedImage.filename}}"/>
+            </div>
+        </div>
+        <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+            <p>
+                {{ 'UPLOAD_ERROR_EXCUSE' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_DIAGNOSIS' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_SUGGESTION' | translate }}
+            </p>
+
+        </div>
+        <div>
+            <a href="#" class="btn btn-danger"
+               ng-show="(hasUploadFinished() && hasRegistrationFailed())" ng-click="abort()">
+                Batal
+            </a>
+        </div>
+    </div>
+    <div class="block column"
+         ng-class="{success : mostProbableOutcome, failure : (correction && !submitted), done: (correction || correct)}">
+        <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
+
+        <div ng-show="mostProbableOutcome" class="result">
+            <table class="hasil">
+                <tr>
+                    <th>
+                        Calon
+                    </th>
+                    <th>
+                        Jumlah
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        H. Prabowo Subianto
+                    </td>
+                    <td>
+                        {{ mostProbableOutcome.prabowo }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Ir. H. Joko Widodo
+                    </td>
+                    <td>
+                        {{ mostProbableOutcome.jokowi }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Suara sah
+                    </td>
+                    <td class="jumlah">
+                        {{ mostProbableOutcome.total }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tidak sah
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="warning">
+                        <b>{{ 'SAMPLE_WARNING' | translate }}</b>
+                        {{ 'SAMPLE_MESSAGE' | translate }}
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <span class="btn btn-success"
+               ng-show="mostProbableOutcome && !correction && !correct"
+               ng-click="agree()">
+                {{ 'BUTTON_CORRECT' | translate }}
+            </span>
+            <span class="btn btn-danger"
+               ng-show="mostProbableOutcome && !correction && !correct"
+               ng-click="disagree()">
+                {{ 'BUTTON_NOT_CORRECT' | translate }}
+            </span>
+        </div>
+    </div>
+    <div class="block column" ng-class="{success : submitted}">
+        <h3>{{ 'CORRECTION_TITLE' | translate }}</h3>
+
+        <div ng-show="correction || correct" class="result">
+            <table class="hasil">
+                <tr>
+                    <th>
+                        Calon
+                    </th>
+                    <th>
+                        Jumlah
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        H. Prabowo Subianto
+                    </td>
+                    <td>
+                        <input ng-model="correction.prabowo" type="number" max="999"
+                               ng-maxlength="3" ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{correction.prabowo}}</span>
+                        <span ng-show="correct">{{mostProbableOutcome.prabowo}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Ir. H. Joko Widodo
+                    </td>
+                    <td>
+                        <input ng-model="correction.jokowi" type="number" max="999" ng-maxlength="3"
+                               ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{correction.jokowi}}</span>
+                        <span ng-show="correct">{{mostProbableOutcome.jokowi}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Suara sah
+                    </td>
+                    <td class="jumlah">
+                        <span ng-show="correction">{{ correction.prabowo +  correction.jokowi}}</span>
+                        <span ng-show="correct">{{ mostProbableOutcome.total }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Tidak sah
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+            </table>
+            <div ng-show="submitted" class="beritaBerhasil">
+                <b>{{ 'SUBMITTED_THANKS' | translate }}</b> {{ 'SUBMITTED_MESSAGE' | translate }}
+            </div>
+        </div>
+        <div>
+            <span class="btn btn-success"
+               ng-show="(correction && !submitted) || (correct && !submitted)"
+               ng-click="submit()">
+                {{ 'BUTTON_SEND' | translate }}
+            </span>
+
+            <div>
+                <a href="#" class="btn btn-success" ng-show="submitted" ng-click="abort()">
+                    {{ 'BUTTON_RESTART' | translate }}
+                </a>
+            </div>
+        </div>
+    </div>
+    <a href="contoh-formulir.zip" class="bottomright">{{ 'LINK_RESTART' | translate }}</a>
+</div>

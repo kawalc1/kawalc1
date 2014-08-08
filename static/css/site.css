@@ -22,6 +22,7 @@ hr {
 	border-style: solid none;
 	border-width: 1px 0;
 	margin: 20px 0;
+	width: 904px;
 }
 
 
@@ -88,7 +89,7 @@ hr {
 	height: 107px;
 	left: -5px;
 	position: relative;
-	top: 10px;
+	top: 0;
 	width: 75px;
 }
 
@@ -102,22 +103,50 @@ hr {
 	top: -53px;
 }
 
-.langSwitch img.selected {
+.langSwitch img.selected, .langSwitch a.selected {
 	border-color : #D0D0D0;
 	background-color: #D0D0D0;
 }
 
-.langSwitch img:hover {
+.langSwitch img:hover, .langSwitch a:hover {
 	cursor: pointer;
+	background-color: #FF8551;
+	border-color : #FF8551;
+	color: #FFFFFF;
 }
 
-.langSwitch img {
+.langSwitch a:hover, .langSwitch a:focus {
+	text-decoration: none;
+}
+
+.langSwitch img, .langSwitch a {
 	border-width: 5px;
 	border-style: solid;
 	border-color: transparent;
 	border-radius: 4px 4px 4px 4px;
 	background-color: transparent;
 	margin-left: 4px;
+	font-weight: bold;
+}
+
+.langSwitch .splitter {
+	display: block;
+	margin: 5px;
+	min-height: 22px;
+	float: left;
+	margin-left: 10px;
+	border-color: #E0E0E0;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.langSwitch a {
+	display: block;
+	float: left;
+	color: #333333;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-left: 8px;
 }
 
 .langSwitch img+img {
@@ -216,4 +245,16 @@ input[type='number'] {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
+}
+
+.langSwitch .navbar .nav > li > a {
+	padding: 0 4px;
+}
+
+.langSwitch .navbar {
+	margin-bottom: 0;
+}
+
+#main {
+	clear:both;
 }

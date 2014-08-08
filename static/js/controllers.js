@@ -49,8 +49,17 @@ var matrix =
 				1.866429920482915e-05, 0.013099499978125095]
 		];
 
+imageProcessingControllers.controller('PageController', ['$scope', '$translate', '$route', function($scope, $translate, $route) {
+	$scope.currentLangue = $translate.use();
+	$scope.route = $route;
+	$scope.switchLang = function(langKey) {
+		$translate.use(langKey);
+		$scope.currentLangue = langKey;
+	};
+}]);
+
 imageProcessingControllers.controller('imageRegistrationController',
-	['$scope', '$http', '$translate', function($scope, $http, $translate) {
+	['$scope', '$http', function($scope, $http) {
 		var placeHolderUrl = 'img/placeholder.jpg';
 		$scope.uploadUrl = placeHolderUrl; //UploadedImage.getUrl();
 		$scope.progress = 0;
@@ -63,7 +72,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.correction = null;
 		$scope.submitted = null;
 		$scope.correct = null;
-		$scope.currentLangue = $translate.use();
+
 
 		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
@@ -110,10 +119,6 @@ imageProcessingControllers.controller('imageRegistrationController',
 			$scope.submitted = true;
 		};
 
-		$scope.switchLang = function(langKey) {
-			$translate.use(langKey);
-			$scope.currentLangue = langKey;
-		};
 
 		$scope.setImage = function(image) {
 			var transformed = angular.fromJson(image);
@@ -143,6 +148,5 @@ imageProcessingControllers.controller('imageRegistrationController',
 			if (image !== undefined) {
 				$scope.progress = image.progress();
 			}
-		}
-
+		};
 	}]);

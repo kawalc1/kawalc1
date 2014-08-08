@@ -7,8 +7,21 @@
  * @type {angular.Module}
  */
 var app = angular.module('app',
-	[    'flow', 'imageProcessingControllers', 'imageProcessingServices', 'pascalprecht.translate'
+	['flow', 'imageProcessingControllers', 'imageProcessingServices', 'pascalprecht.translate',
+		'ngRoute'
 	]);
+
+app.config(function($routeProvider) {
+	$routeProvider.when('/', {
+		templateUrl: 'pages/home.html',
+		controller: 'imageRegistrationController'
+	}).when('/about', {
+		templateUrl: 'pages/about.html'
+	}).when('/contact', {
+		templateUrl: 'pages/contact.html'
+	});
+
+});
 
 app.config(['flowFactoryProvider', function(flowFactoryProvider) {
 	flowFactoryProvider.defaults = {
@@ -21,20 +34,17 @@ app.config(['flowFactoryProvider', function(flowFactoryProvider) {
 		simultaneousUploads: 4,
 		singleFile: true
 	};
-	flowFactoryProvider.on('catchAll', function(event) {
-		console.log('catchAll', arguments);
-	});
-	flowFactoryProvider.on('fileSuccess', function(file) {
-		console.log('bladie', file.name);
-	});
-	// Can be used with different implementations of Flow.js
-	// flowFactoryProvider.factory = fustyFlowFactory;
+
+	flowFactoryProvider.factory = fustyFlowFactory;
 }]);
 
 app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
-		HEADLINE: 'Automated election form verification',
-		TITLE: 'Automated election form verification',
+		HEADLINE: 'Verify C1',
+		TITLE: 'Automated C1 election form verification',
+		PAGE_HOME : 'Home',
+		PAGE_ABOUT: 'About',
+		PAGE_CONTACT: 'Contact',
 		UPLOAD_TITLE: 'Upload form',
 		UPLOAD_BUTTON: 'Browse',
 		DETECTION_TITLE: 'Detect numbers',
@@ -53,8 +63,11 @@ app.config(function($translateProvider) {
 		SUBMITTED_THANKS: 'Thank you:',
 		SUBMITTED_MESSAGE: 'the form has been submitted.'
 	}).translations('id', {
-		HEADLINE: 'Tukang Verifikator C1',
-		TITLE: 'Tukang Verifikator C1',
+		HEADLINE: 'Verifikasi C1',
+		TITLE: 'Verifikasi C1 secara otomatis',
+		PAGE_HOME : 'Beranda',
+		PAGE_ABOUT: 'Tentang',
+		PAGE_CONTACT: 'Kontak',
 		UPLOAD_TITLE: 'Unggah C1',
 		UPLOAD_BUTTON: 'Pilih formulir',
 		DETECTION_TITLE: 'Deteksi angka',
@@ -74,8 +87,16 @@ app.config(function($translateProvider) {
 		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.'
 	});
 	$translateProvider.determinePreferredLanguage(function() {
-		var browserLang = navigator.language.substr(0,2);
-		return  browserLang === 'id' ? 'id': 'en';
+		var navigator = window.navigator;
+		var language = 'en-US';
+		if (navigator.language !== undefined) {
+			language = navigator.language;
+		}
+		if (navigator.userLanguage !== undefined) {
+			language = navigator.userLanguage;
+		}
+		var browserLang = language.substr(0, 2);
+		return  browserLang === 'id' ? 'id' : 'en';
 	});
 
 });
