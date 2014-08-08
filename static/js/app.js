@@ -40,14 +40,15 @@ app.config(['flowFactoryProvider', function(flowFactoryProvider) {
 
 app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
-		HEADLINE: 'Verify C1',
-		TITLE: 'Automated C1 election form verification',
+		HEADLINE: 'Guarding C1',
+		TITLE: 'Guarding C1 - Automatic verification of election forms',
 		PAGE_HOME : 'Home',
 		PAGE_ABOUT: 'About',
 		PAGE_CONTACT: 'Contact',
 		UPLOAD_TITLE: 'Upload form',
 		UPLOAD_BUTTON: 'Browse',
 		DETECTION_TITLE: 'Detect numbers',
+		UPLOAD_CANCEL: 'Batal',
 		UPLOAD_ERROR_EXCUSE: 'Excuse me',
 		UPLOAD_ERROR_DIAGNOSIS: 'it seems the numbers in the form could not be recognized.',
 		UPLOAD_ERROR_SUGGESTION: 'Are you sure you uploaded the correct form?',
@@ -63,14 +64,15 @@ app.config(function($translateProvider) {
 		SUBMITTED_THANKS: 'Thank you:',
 		SUBMITTED_MESSAGE: 'the form has been submitted.'
 	}).translations('id', {
-		HEADLINE: 'Verifikasi C1',
-		TITLE: 'Verifikasi C1 secara otomatis',
+		HEADLINE: 'Kawal C1',
+		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
 		PAGE_HOME : 'Beranda',
 		PAGE_ABOUT: 'Tentang',
 		PAGE_CONTACT: 'Kontak',
 		UPLOAD_TITLE: 'Unggah C1',
 		UPLOAD_BUTTON: 'Pilih formulir',
 		DETECTION_TITLE: 'Deteksi angka',
+		UPLOAD_CANCEL: 'Batal',
 		UPLOAD_ERROR_EXCUSE: 'Mohon maaf',
 		UPLOAD_ERROR_DIAGNOSIS: 'sepertinya angka2 dalam formulir ini tidak bisa terdeksi.',
 		UPLOAD_ERROR_SUGGESTION: 'Apakah formulir ini memang formulir yang benar?',
@@ -96,7 +98,10 @@ app.config(function($translateProvider) {
 			language = navigator.userLanguage;
 		}
 		var browserLang = language.substr(0, 2);
-		return  browserLang === 'id' ? 'id' : 'en';
+		if (browserLang === 'id' || browserLang === 'ms') {
+			return 'id';
+		}
+		return 'en';
 	});
 
 });
