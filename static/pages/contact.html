@@ -1,7 +1,16 @@
 <div class="textPage">
-    <h1>Contact info</h1>
+    <div ng-show="currentLangue == 'en'">
+        <h1>Contact info</h1>
 
-    <p>
-        Email to <a href="mailto:info.kawalc1@gmail.com">info.kawalc1@gmail.com</a>.
-    </p>
+        <p>
+            Email to <a href="mailto:info.kawalc1@gmail.com">info.kawalc1@gmail.com</a>.
+        </p>
+    </div>
+    <div ng-show="currentLangue == 'id'">
+        <h1>Informasi kontak</h1>
+
+        <p>
+            Kirim email ke <a href="mailto:info.kawalc1@gmail.com">info.kawalc1@gmail.com</a>.
+        </p>
+    </div>
 </div>
