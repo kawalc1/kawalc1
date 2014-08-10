@@ -7,8 +7,8 @@
  * @type {angular.Module}
  */
 var app = angular.module('app',
-	['flow', 'ui.bootstrap', 'imageProcessingControllers', 'imageProcessingServices', 'pascalprecht.translate',
-		'ngRoute'
+	['flow', 'ui.bootstrap', 'imageProcessingControllers', 'imageProcessingServices',
+		'pascalprecht.translate', 'ngRoute'
 	]);
 
 app.config(function($routeProvider) {
@@ -42,7 +42,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic verification of election forms',
-		PAGE_HOME : 'Home',
+		PAGE_HOME: 'Home',
 		PAGE_ABOUT: 'About',
 		PAGE_CONTACT: 'Contact',
 		UPLOAD_TITLE: 'Upload form',
@@ -62,11 +62,16 @@ app.config(function($translateProvider) {
 		BUTTON_RESTART: 'Upload another form',
 		LINK_RESTART: 'Download example forms (1 MB)',
 		SUBMITTED_THANKS: 'Thank you:',
-		SUBMITTED_MESSAGE: 'the form has been submitted.'
+		SUBMITTED_MESSAGE: 'the form has been submitted.',
+		FORM_CANDIDATE: 'Candidate',
+		FORM_TOTAL: 'Total',
+		FORM_VOTES_INVALID: 'Invalid',
+		FORM_VOTES_VALID: 'Valid',
+		WITHNESS_SIGNATURES: 'Witness signatures'
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
-		PAGE_HOME : 'Beranda',
+		PAGE_HOME: 'Beranda',
 		PAGE_ABOUT: 'Tentang',
 		PAGE_CONTACT: 'Kontak',
 		UPLOAD_TITLE: 'Unggah C1',
@@ -78,7 +83,7 @@ app.config(function($translateProvider) {
 		UPLOAD_ERROR_SUGGESTION: 'Apakah formulir ini memang formulir yang benar?',
 		VERIFICATION_TITLE: 'Verifikasi data',
 		SAMPLE_WARNING: 'Perhatian:',
-		SAMPLE_MESSAGE: 'untuk sementara data ini hanya berfungsi sebagai contoh, dan bukan angka yang terdeksi dari formulir di sebelah ini.',
+		SAMPLE_MESSAGE: 'untuk sementara data ini hanya contoh saja, dan bukan angka yang terdeksi dari formulir di sebelah ini.',
 		BUTTON_CORRECT: 'Sesuai',
 		BUTTON_NOT_CORRECT: 'Tidak Sesuai',
 		CORRECTION_TITLE: 'Koreksi data',
@@ -86,7 +91,12 @@ app.config(function($translateProvider) {
 		BUTTON_RESTART: 'Unggah formulir lain',
 		LINK_RESTART: 'Mengunduh formulir contoh (1 MB)',
 		SUBMITTED_THANKS: 'Terima kasih:',
-		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.'
+		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.',
+		FORM_CANDIDATE: 'Calon',
+		FORM_TOTAL: 'Jumlah',
+		FORM_VOTES_INVALID: 'Tidak sah',
+		FORM_VOTES_VALID: 'Suara sah',
+		WITHNESS_SIGNATURES: 'Tanda tangan saksi'
 	});
 	$translateProvider.determinePreferredLanguage(function() {
 		var navigator = window.navigator;

@@ -108,7 +108,7 @@ def extract(file, targetpath):
     image[463:525,726:754],
     image[463:525,759:787]]
 
-    signatures=[image[930:974,594:749],image[976:1020,594:749]]
+    signatures=[image[932:972,597:745],image[977:1018,597:745]]
 
     #save the digits
     head, tail = os.path.split(file)
