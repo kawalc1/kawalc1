@@ -7,7 +7,7 @@
  * @type {angular.Module}
  */
 var app = angular.module('app',
-	['flow', 'imageProcessingControllers', 'imageProcessingServices', 'pascalprecht.translate',
+	['flow', 'ui.bootstrap', 'imageProcessingControllers', 'imageProcessingServices', 'pascalprecht.translate',
 		'ngRoute'
 	]);
 

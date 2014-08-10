@@ -26,12 +26,71 @@ def getAvgBorderDistance(ar,index):
             bpix=bpix+1
     return bpix/float(len(xs))    
 
+
+def processImage(cropped):
+    h, w = cropped.shape
+    if h > w:
+        pil_im = Image.fromarray(cropped)
+        mnistsize = int((22.0 / h) * w), 22
+        test_im = pil_im.resize(mnistsize, Image.ANTIALIAS)
+        #now place the image into a 28x28 array
+        outputim = Image.fromarray(np.zeros((28, 28)))
+        left = int((28 - mnistsize[0])) / 2
+        box = left, 3
+        outputim.paste(test_im, box)
+    else:
+        pil_im = Image.fromarray(cropped)
+        mnistsize = 22, int((22.0 / w) * h)
+        test_im = pil_im.resize(mnistsize, Image.ANTIALIAS)
+        #now place the image into a 28x28 array
+        outputim = Image.fromarray(np.zeros((28, 28)))
+        top = int((28 - mnistsize[1])) / 2
+        box = 3, top
+        #digits[i]=np.array(outputim)
+        outputim.paste(test_im, box)
+
+
+def processSignature(signatures, structuring_element, i, signature):
+    ret, thresholded = cv2.threshold(signature, 180, 1, type=cv2.THRESH_BINARY_INV)
+    signatures[i], nrOfObjects = ndimage.measurements.label(thresholded, structuring_element)
+    #determine the sizes of the objects
+    sizes = np.bincount(np.reshape(signatures[i], -1))
+    selectedObject = -1
+    maxSize = 0
+    for j in range(1, nrOfObjects + 1):
+        if sizes[j]<11:
+            continue #this is too small to be a number
+        maxy,miny,maxx,minx=getBoundingBox(signatures[i],j)
+        if (maxy-miny < 3 and (miny<2 or maxy>59) ) or (maxx-minx < 3 and (minx<2 or maxx>25)):
+            continue #this is likely a border artifact
+        borderdist=getAvgBorderDistance(signatures[i],j)
+        #print borderdist
+        if(borderdist>0.2):
+            continue #this is likely a border artifact
+        
+        if sizes[j] > maxSize:
+            maxSize=sizes[j]
+            selectedObject=j
+    return (selectedObject != -1)
+
+
+def prepareResults(images):
+    results = [] 
+    for i in range(0, len(images)):
+        entry = {}
+        entry["index"] = i
+        entry["filename"] = 'img/empty.png'
+        results.append(entry)
+    return results
+    
+
+
 def extract(file, targetpath):
     image = Image.open(join(targetpath, file))
     image.load()
-    pil_im=image.filter(ImageFilter.UnsharpMask(radius=15,percent=350,threshold=3))
-    
     outputdir = join(targetpath, 'extracted')
+
+    pil_im=image.filter(ImageFilter.UnsharpMask(radius=15,percent=350,threshold=3))
 
     image=np.array(pil_im)
         
@@ -48,6 +107,8 @@ def extract(file, targetpath):
     image[463:525,693:721],
     image[463:525,726:754],
     image[463:525,759:787]]
+
+    signatures=[image[930:974,594:749],image[976:1020,594:749]]
 
     #save the digits
     head, tail = os.path.split(file)
@@ -89,34 +150,21 @@ def extract(file, targetpath):
         #replace the shape number by 255
         cropped[cropped==selectedObject]=255
 
-        h,w = cropped.shape
-        if h > w:
-            pil_im=Image.fromarray(cropped)
-            mnistsize=int((22.0/h)*w), 22
-            test_im=pil_im.resize(mnistsize, Image.ANTIALIAS)
-            #now place the image into a 28x28 array
-            outputim=Image.fromarray(np.zeros((28,28)))
-            left=int((28-mnistsize[0]))/2
-            box=(left,3)
-            outputim.paste(test_im,box)
+        processImage(cropped)
             #digits[i]=np.array(outputim)
-        else:
-            pil_im=Image.fromarray(cropped)
-            mnistsize=22,int((22.0/w)*h)
-            test_im=pil_im.resize(mnistsize, Image.ANTIALIAS)
-            #now place the image into a 28x28 array
-            outputim=Image.fromarray(np.zeros((28,28)))
-            top=int((28-mnistsize[1]))/2
-            box=(3,top)
-            outputim.paste(test_im,box)
-            #digits[i]=np.array(outputim)
-    
-    digitresult = []
-    for i in range(0, len(digits)) :
-        entry = {}
-        entry["index"] = i
-        entry["filename"] = 'img/empty.png'
-        digitresult.append(entry)
+    signatureResult = []
+    signatureResult = prepareResults(signatures)
+    for i, signature in enumerate(signatures):
+        isValid = processSignature(signatures, s, i, signature)
+        signatureFile = tailPart + "~sign~" + str(i) + ".jpg"
+        extracted = join(outputdir, signatureFile)
+        cv2.imwrite(extracted, signature)
+        signatureResult[i]["filename"] = 'extracted/' + signatureFile
+        signatureResult[i]["isValid"] = isValid
+                #return False
+
+           
+    digitResult = prepareResults(digits)
     for i, digit in enumerate(digits):
         if digit is not None:
             #if isPossiblyCross(digit) and not isMinus(digit) :
@@ -124,7 +172,12 @@ def extract(file, targetpath):
             digitFile = tailPart + "~" + str(i) + ".jpg"
             extracted = join(outputdir, digitFile)
             cv2.imwrite(extracted,digit)
-            digitresult[i]["filename"] = 'extracted/' + digitFile
-    print >> None, digitresult
+            digitResult[i]["filename"] = 'extracted/' + digitFile
     
-    return json.dumps(digitresult)
+    result = {}
+    result["digits"] = digitResult
+    result["signatures"] = signatureResult
+    print >> None, result
+    
+    
+    return json.dumps(result)

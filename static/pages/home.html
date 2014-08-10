@@ -100,11 +100,37 @@
                         3
                     </td>
                 </tr>
+
                 <tr>
                     <td colspan="2" class="warning">
                         <b>{{ 'SAMPLE_WARNING' | translate }}</b>
                         {{ 'SAMPLE_MESSAGE' | translate }}
 
+                    </td>
+                </tr>
+            </table>
+            <table class="hasil tandaTangan">
+                <tr>
+                    <th colspan="2">
+                        Tanda tangan saksi
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        H. Prabowo Subianto
+                    </td>
+                    <td>
+                        <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"  ng-show="signatures[0].isValid">Ada</span>
+                        <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"  ng-show="!signatures[0].isValid">Absen</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Ir. H. Joko Widodo
+                    </td>
+                    <td>
+                        <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"  ng-show="signatures[1].isValid">Ada</span>
+                        <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"  ng-show="!signatures[1].isValid">Absen</span>
                     </td>
                 </tr>
             </table>

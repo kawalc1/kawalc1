@@ -65,6 +65,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.progress = 0;
 		$scope.numbers = null;
 		$scope.extractedImages = [];
+		$scope.signatures = [];
 		$scope.Math = window.Math;
 		$scope.registrationFailed = null;
 		$scope.extractionFinished = false;
@@ -73,6 +74,12 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.submitted = null;
 		$scope.correct = null;
 
+		$scope.getToolTip = function(image){
+			if (image === undefined) {
+				return '';
+			}
+			return "<img class='tooltipImage' src='" + image.filename + "' />";
+		};
 
 		$scope.hasUploadFinished = function() {
 			return $scope.uploadUrl !== placeHolderUrl;
@@ -129,7 +136,8 @@ imageProcessingControllers.controller('imageRegistrationController',
 				$scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
 				$http.get('../extract.wsgi',
 					{ params: { filename: $scope.uploadUrl }}).success(function(result) {
-						$scope.extractedImages = result;
+						$scope.extractedImages = result.digits;
+						$scope.signatures = result.signatures;
 						$scope.registrationFailed = false;
 						$scope.getResult();
 					}).error(function() {

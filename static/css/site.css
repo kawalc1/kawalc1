@@ -244,8 +244,28 @@ input {
 	text-align: right;
 }
 
-td.warning {
+.warning {
 	color: red;
+}
+
+.tandaTangan .warning {
+	font-weight: bold;
+}
+
+.tooltipImage {
+	border-style: solid;
+	border-width: 3px;
+	border-color: white;
+}
+
+.tooltip-inner {
+	padding: 5px;
+	background-color: #E0E0E0;
+}
+
+.okay {
+	font-weight: bold;
+	color: green;
 }
 
 div.beritaBerhasil {
