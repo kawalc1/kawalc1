@@ -25,6 +25,9 @@ hr {
 	-moz-border-left-colors: none;
 	-moz-border-right-colors: none;
 	-moz-border-top-colors: none;
+	-webkit-margin-before: none;
+	-webkit-margin-after: none;
+
 	border-color: #EEEEEE -moz-use-text-color #FFFFFF;
 	border-image: none;
 	border-left: 0 none;
@@ -35,6 +38,15 @@ hr {
 	width: 904px;
 }
 
+
+.ruler {
+	border-top: black;
+	border-top-style: solid;
+	border-color: #f0f0f0;
+	border-top-width: 1px;
+	max-width: 970px;
+	margin-top: 20px;
+}
 
 .container:before, .container:after {
 	content: "";
@@ -114,6 +126,7 @@ pre {
 	left: -126px;
 	padding: 5px;
 	position: relative;
+	min-width: 315px;
 	top: -53px;
 }
 
