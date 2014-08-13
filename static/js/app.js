@@ -15,6 +15,8 @@ app.config(function($routeProvider) {
 	$routeProvider.when('/', {
 		templateUrl: 'pages/home.html',
 		controller: 'imageRegistrationController'
+	}).when('/faq', {
+		templateUrl: 'pages/faq.html'
 	}).when('/about', {
 		templateUrl: 'pages/about.html'
 	}).when('/contact', {
@@ -44,6 +46,7 @@ app.config(function($translateProvider) {
 		TITLE: 'Guarding C1 - Automatic verification of election forms',
 		PAGE_HOME: 'Home',
 		PAGE_ABOUT: 'About',
+		PAGE_FAQ: 'FAQ',
 		PAGE_CONTACT: 'Contact',
 		UPLOAD_TITLE: 'Upload form',
 		UPLOAD_BUTTON: 'Browse',
@@ -73,6 +76,7 @@ app.config(function($translateProvider) {
 		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
 		PAGE_HOME: 'Beranda',
 		PAGE_ABOUT: 'Tentang',
+		PAGE_FAQ: 'FAQ',
 		PAGE_CONTACT: 'Kontak',
 		UPLOAD_TITLE: 'Unggah C1',
 		UPLOAD_BUTTON: 'Pilih formulir',
