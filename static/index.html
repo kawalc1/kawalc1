@@ -45,7 +45,7 @@
             <a ng-class="{selected: route.current.loadedTemplateUrl == 'pages/about.html'}" href="#about">{{ 'PAGE_ABOUT' | translate }}</a>
             <a ng-class="{selected: route.current.loadedTemplateUrl == 'pages/faq.html'}" href="#faq">{{ 'PAGE_FAQ' | translate }}</a>
             <a ng-class="{selected: route.current.loadedTemplateUrl == 'pages/contact.html'}" href="#contact">{{ 'PAGE_CONTACT' | translate }}</a>
-            <div class="splitter" ></div>
+            <a class="splitter" ></a>
             <img src="img/flags/id.png" ng-click="switchLang('id')"
                  ng-class="{selected: currentLangue == 'id'}">
             <img src="img/flags/en.png" ng-click="switchLang('en')"

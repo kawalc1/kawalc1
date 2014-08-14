@@ -126,7 +126,6 @@ pre {
 	left: -126px;
 	padding: 5px;
 	position: relative;
-	min-width: 315px;
 	top: -53px;
 }
 
@@ -154,6 +153,8 @@ pre {
 	background-color: transparent;
 	margin-left: 4px;
 	font-weight: bold;
+	display: block;
+	float: left;
 }
 
 .langSwitch .splitter {
@@ -165,6 +166,11 @@ pre {
 	border-color: #E0E0E0;
 	border-width: 1px;
 	border-style: solid;
+}
+
+.langSwitch a.splitter:hover {
+	border-color: #E0E0E0;
+	cursor: default;
 }
 
 .langSwitch a {
@@ -179,6 +185,7 @@ pre {
 .langSwitch img+img {
 	margin-left: 6px;
 	margin-right: 4px;
+	float: left;
 }
 
 .btn {
