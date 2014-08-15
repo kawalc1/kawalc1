@@ -173,6 +173,14 @@ pre {
 	cursor: default;
 }
 
+.carousel {
+	width: 390px;
+}
+
+.carousel .carousel-control {
+	top: 89%;
+}
+
 .langSwitch a {
 	display: block;
 	float: left;

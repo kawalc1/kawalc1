@@ -2,13 +2,26 @@
     <div ng-show="currentLangue == 'en'">
         <h2>What is this website about?</h2>
 
+        <div ng-controller="FormCarouselController" class="carousel">
+            <div carousel interval="5000">
+                <div slide ng-repeat="slide in slides" active="slide.active">
+                    <img ng-src="{{slide.image}}" style="margin: auto;">
+
+                    <div class="carousel-caption">
+                        <p>{{slide.text}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <p>
-            This is page is still under construction. See the <a href="#faq">faq</a> for more information.
+            This is page is still under construction. See the <a href="#faq">faq</a> for more
+            information.
         </p>
 
     </div>
     <div ng-show="currentLangue == 'id'">
         <h2>Situs ini tentang apa?</h2>
+
         <p>
             Maaf, halaman ini belum selesai. Untuk sementara mohon lihat <a href="#faq">faq</a>.
         </p>
