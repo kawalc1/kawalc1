@@ -44,8 +44,8 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic verification of election forms',
-		INTRODUCTION: 'This application automatically counts election forms',
-		INTRODUCTION_TRYIT: 'Try it yourself using ',
+		INTRODUCTION: 'This application automatically counts election form results',
+		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK : 'this form',
 		PAGE_HOME: 'Home',
 		PAGE_ABOUT: 'About',
