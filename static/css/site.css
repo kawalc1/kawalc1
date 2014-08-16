@@ -61,10 +61,8 @@ hr {
 	display: table;
 	line-height: 0;
 }
-.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-	width: 1090px;
-}
-.container {
+.kawalc1 .container {
+	width: 982px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -123,10 +121,10 @@ pre {
 	background-color: #F0F0F0;
 	border-radius: 4px 4px 4px 4px;
 	float: right;
-	left: -126px;
 	padding: 5px;
 	position: relative;
 	top: -53px;
+	margin-right: 10px;
 }
 
 .langSwitch img.selected, .langSwitch a.selected {
@@ -171,6 +169,27 @@ pre {
 .langSwitch a.splitter:hover {
 	border-color: #E0E0E0;
 	cursor: default;
+}
+
+
+
+.introduction {
+	margin: 10px;
+	color: white;
+	font-size:	24px;
+	font-style: italic;
+	padding: 24px 0 24px 24px;
+	background-color: #FF8551;
+	border-radius: 4px 4px 4px 4px;
+}
+
+.introduction a {
+	color: #DBDBDB;
+	font-weight: bold;
+}
+
+.introduction a:hover {
+	color: #0000CC;
 }
 
 .carousel {
@@ -224,9 +243,11 @@ pre {
 	width: 210px;
 	background-color: #f0f0f0;
 	border-radius: 4px 4px 4px 4px;
-	padding: 10px;
-	margin: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-left: 10px;
 	min-height: 410px;
+	text-align: center;
 }
 
 .column.success {
@@ -239,7 +260,7 @@ pre {
 
 .bottomright {
 	float: right;
-	margin-right: 118px;
+	margin-right: 10px;
 }
 
 table.hasil {

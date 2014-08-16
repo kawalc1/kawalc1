@@ -61,6 +61,8 @@ def processFile(resultWriter, count, root, file):
 def check_match(homography, transform):
     if homography < 0.01 :
         return True
+    if homography > 0.1 :
+        return False
     return transform < 0.1
 
 def filter_matches(kp1, kp2, matches, ratio = 0.75):

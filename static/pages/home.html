@@ -3,6 +3,11 @@
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
      flow-file-success="setImage($message)">
+<div class="introduction">
+    {{ 'INTRODUCTION' | translate }}. <a target="_blank" download="1773007-005324400804.jpg"
+                                         href="img/forms/1773007-005324400804.jpg">{{
+    'INTRODUCTION_TRYIT' | translate }}</a>
+</div>
 <div class="block column"
      ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
 
@@ -229,5 +234,5 @@
         </div>
     </form>
 </div>
-<a href="contoh-formulir.zip" class="bottomright">{{ 'LINK_RESTART' | translate }}</a>
+<a class="bottomright" href="contoh-formulir.zip">{{ 'LINK_DOWNLOAD_FORMS' | translate }}</a>
 </div>

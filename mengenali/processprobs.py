@@ -98,7 +98,7 @@ def print_possible(after_reduction):
         outcome["prabowo"] = int(x[0][0])
         outcome["jokowi"] = int(x[0][1])
         outcome["total"] = int(x[0][2])
-        outcome["invalid"] = int(3)
+        outcome["invalid"] = int(2)
         outcome["confidence"] = float(x[1])
         print(outcome)
         outcomes.append(outcome)
