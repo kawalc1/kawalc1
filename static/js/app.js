@@ -45,7 +45,7 @@ app.config(function($translateProvider) {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic verification of election forms',
 		INTRODUCTION: 'This application can automatically count Indonesian election forms',
-		INTRODUCTION_TRYIT: 'Try with this form!',
+		INTRODUCTION_TRYIT: 'Try this form!',
 		PAGE_HOME: 'Home',
 		PAGE_ABOUT: 'About',
 		PAGE_FAQ: 'FAQ',
