@@ -202,7 +202,7 @@ pre {
 }
 
 .carousel {
-	width: 390px;
+	width: 310px;
 }
 
 
@@ -376,8 +376,10 @@ input::-webkit-inner-spin-button {
 }
 
 .formCarousel.thumbnail {
-	width: 400px;
-	max-width: 400px;
+	width: 320px;
+	max-width: 320px;
+	float: right;
+	margin: 10px;
 }
 
 .formCarousel .carousel-indicators {
