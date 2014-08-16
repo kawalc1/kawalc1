@@ -78,9 +78,17 @@ hr {
 	display: block;
 	padding: 4px;
 	width: 200px;
-	height: 283px;
 	clip: rect(0px,200px,283px,0px);
 	transition: all 0.2s ease-in-out 0s;
+}
+
+.textPage .thumbnail {
+	background-color: #FF8551;
+	color: white;
+}
+
+.textPage .thumbnail .caption {
+	color: white;
 }
 
 .progress-bar {
@@ -175,6 +183,7 @@ pre {
 
 .introduction {
 	margin: 10px;
+	margin-top: 0;
 	color: white;
 	font-size:	24px;
 	font-style: italic;
@@ -184,7 +193,7 @@ pre {
 }
 
 .introduction a {
-	color: #DBDBDB;
+	color: #DBDBFF;
 	font-weight: bold;
 }
 
@@ -196,9 +205,6 @@ pre {
 	width: 390px;
 }
 
-.carousel .carousel-control {
-	top: 89%;
-}
 
 .langSwitch a {
 	display: block;
@@ -229,24 +235,27 @@ pre {
 	background-color: #F5F5F5;
 	border: 1px solid rgba(0, 0, 0, 0.15);
 	border-radius: 4px 4px 4px 4px;
-	min-height: 290px;
+	min-height: 280px;
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .result.numbers {
-	padding-left: 54px;
-	padding-right: 54px;
+	padding-left: 45px;
+	padding-right: 37px;
 	padding-top: 10px;
 	min-height: 280px;
 }
 
 .column {
-	width: 210px;
+	width: 222px;
 	background-color: #f0f0f0;
 	border-radius: 4px 4px 4px 4px;
 	padding-left: 10px;
 	padding-right: 10px;
 	margin-left: 10px;
-	min-height: 410px;
+	min-height: 390px;
 	text-align: center;
 }
 
@@ -291,6 +300,7 @@ input.ng-valid {
 input {
 	width: 36px;
 	text-align: right;
+	margin: 2px;
 }
 
 .warning {
@@ -346,4 +356,54 @@ input::-webkit-inner-spin-button {
 .textPage {
 	width: 890px;
 	padding-left: 20px;
+}
+
+.fader {
+	opacity: 1.0;
+	display: block !important;
+	-webkit-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) opacity;
+	-moz-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) opacity;
+	-ms-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) opacity;
+	-o-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) opacity;
+	transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) opacity;
+}
+
+.fader.ng-hide {
+	height: 0;
+	margin: 0;
+	padding: 0;
+	opacity: 0;
+}
+
+.formCarousel.thumbnail {
+	width: 400px;
+	max-width: 400px;
+}
+
+.formCarousel .carousel-indicators {
+	display: none;
+}
+
+.formCarousel .carousel {
+	margin-bottom: 0;
+	float: left;
+}
+
+.formCarousel .carousel-caption {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.50);
+	bottom: 0;
+	padding-bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.thumbnail.sampleForm {
+	float: right;
+	width: 320px;
+	max-width: 320px;
+	margin: 10px;
+}
+
+.caption {
+	text-align: left;
 }

@@ -3,10 +3,10 @@
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
      flow-file-success="setImage($message)">
-<div class="introduction">
-    {{ 'INTRODUCTION' | translate }}. <a target="_blank" download="1773007-005324400804.jpg"
+<div class="introduction fader" ng-hide="$flow.files.length" >
+    {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank" download="1773007-005324400804.jpg"
                                          href="img/forms/1773007-005324400804.jpg">{{
-    'INTRODUCTION_TRYIT' | translate }}</a>
+    'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
 </div>
 <div class="block column"
      ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div>
-            <span class="btn" ng-hide="$flow.files.length" flow-btn
+            <span class="btn btn-primary" ng-hide="$flow.files.length" flow-btn
                   flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</span>
     </div>
 </div>
@@ -37,7 +37,7 @@
      ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
     <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
 
-    <div class="result numbers" style="width: 100px;"
+    <div class="result numbers"
          ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
         <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
              ng-show="$flow.files.length">

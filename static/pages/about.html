@@ -1,8 +1,28 @@
 <div class="textPage">
     <div ng-show="currentLangue == 'en'">
+        <div class="thumbnail sampleForm">
+            <img src="img/forms/sample.jpg"/>
+
+            <div class="caption">Example of a C1 election form</div>
+        </div>
         <h2>What is this website about?</h2>
 
-        <div ng-controller="FormCarouselController" class="carousel">
+        <h3>Background</h3>
+
+        <p>
+        The 2014 Indonesian presidential elections in july has been a tight race between two
+        candidates:
+        Prabowo Subianto and Joko Widodo. For the first time in history the national election
+        commission
+        KPU has <a target="_blank" href="http://pilpres2014.kpu.go.id/c1.php">published </a>
+        scans of all (around 500.000) vote tallying forms.<br/>
+        Because of this, in principle, anybody can verify the official results. But who is willing
+        or able to do this? That is why we decided to download all the forms and try to count
+        them using a computer. This attempt was cut short for two reasons. <br/>
+        The <em>first</em> being that it turned that there were too many forms that were not filled
+        out in the standard way. To train the computer to handle all of these cases is too difficult. <br/>
+        </p>
+        <div ng-controller="FormCarouselController" class="formCarousel thumbnail">
             <div carousel interval="5000">
                 <div slide ng-repeat="slide in slides" active="slide.active">
                     <img ng-src="{{slide.image}}" style="margin: auto;">
@@ -12,10 +32,35 @@
                     </div>
                 </div>
             </div>
+            <div class="caption">Examples of problematic forms</div>
         </div>
         <p>
-            This is page is still under construction. See the <a href="#faq">faq</a> for more
-            information.
+            The <em>second</em> reason was that we heard about the great
+            <a href="http://www.kawalpemilu.org/">kawal pemilu</a> initiative that has now achieved
+            through crowd-sourcing, exactly what have attemped to do automatically.
+        </p>
+        <h3>The purpose</h3>
+        <p>
+            So currently there is no great need for an additional verification
+            of the C1 form based count. <br/>
+            However, for coming elections this software could improve both the <em>quality</em> and
+            <em>speed</em>
+            of the manual verification. <br/>
+        </p>
+        <h5>Quality</h5>
+
+        <p>The number of C1 forms reported there as problematic is more than 5% for some provinces.
+            Kawal C1 can improve this situation. By detecting problems in the form (unclear
+            handwriting,
+            calculation errors, missing witness signatures, etc.) and giving the uploader the
+            opportunity to type in the totals.</p>
+        <h5>Speed</h5>
+
+        <p>
+            The manual counting teams can focus their efforts on forms that have been flagged by
+            kawal C1
+            as problematic. The numbers of forms that are not problematic will immediately be
+            available.
         </p>
 
     </div>

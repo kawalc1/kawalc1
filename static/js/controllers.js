@@ -49,7 +49,6 @@ imageProcessingControllers.controller('PageController',
 	}]);
 
 imageProcessingControllers.controller('FormCarouselController', ['$scope', function($scope) {
-	$scope.myInterval = 5000;
 	$scope.slides = [
 		{ image: 'img/forms/crumpled.jpg', text: 'Crumpled'},
 		{ image: 'img/forms/incorrectchecksum.jpg', text: 'Incorrectly counted'},
