@@ -1,4 +1,63 @@
 import time
+
+
+
+
+def classifyNumber(inputfile, order, layers):
+    inputimage = Image.open(inputfile)
+    inputimage = np.array(inputimage.getdata()).reshape(inputimage.size[0], inputimage.size[1])
+    inputimage /= 255.0
+    inputimage = inputimage.reshape((inputimage.shape[0], inputimage.shape[1], 1))
+#run through the layers
+    firstFullyConnected = True
+    for layername, type in order:
+        if type == 'conv':
+            inputimage = convolveImageStack(inputimage, layers[layername])
+        elif type == 'pool':
+            inputimage = poolImageStack(inputimage, layers[layername])
+        else:
+            if firstFullyConnected:
+                inputimage = np.swapaxes(inputimage, 1, 2)
+                inputimage = np.swapaxes(inputimage, 0, 1)
+                inputimage = inputimage.flatten('C')
+                firstFullyConnected = False
+            inputimage = applyFullyConnected(inputimage, layers[layername])
+    
+#input image now contains the raw network output, apply softmax
+    inputimage = np.exp(inputimage)
+    sum = np.sum(inputimage)
+    out = inputimage / sum
+    #print file
+    return out
+
+def classifyNumbers(inputdir, order, layers):
+    for file in os.listdir(inputdir):
+        inputfile = inputdir + "\\" + file;
+        classifyNumber(inputfile, order, layers)
+
+def parseNetwork(network):
+    xmlnet = etree.parse(network)
+#store the layer info
+    order = []
+    layers = dict()
+    for child in xmlnet.getroot():
+        if child.tag == "layer":
+            tp = child.find('type')
+            if tp != None:
+                print tp.text
+                nm = child.attrib['name']
+                if tp.text == 'conv':
+                    order.append((nm, tp.text))
+                    layers[nm] = parseConvLayer(child)
+                elif tp.text == 'pool':
+                    order.append((nm, tp.text))
+                    layers[nm] = parsePoolLayer(child)
+                elif tp.text == 'fc':
+                    order.append((nm, tp.text))
+                    layers[nm] = parseFullyConnectedLayer(child)
+    
+    return order, layers
+
 start_time = time.time()
 import numpy as np
 import cv2
@@ -126,83 +185,4 @@ def parseFullyConnectedLayer(element):
     weights=np.asarray(longlist)
     weights=weights.reshape(rows,cols)
 
-    return (float(dropout),neuron,bias,weights)
-
-#setup the argument parser
-parser = argparse.ArgumentParser()
-parser.add_argument("inputdirectory",help="location of the image files")
-parser.add_argument("networkparameters",help="the network file") 
-parser.add_argument("outputdir",help="The directory where the straightened form is dumped")
-args = parser.parse_args()
-
-inputdir=args.inputdirectory
-network=args.networkparameters
-outputdir=args.outputdir
-
-#read the network data
-xmlnet=etree.parse(network)
-
-#store the layer info
-order=[]
-layers=dict()
-
-for child in xmlnet.getroot():
-    if child.tag=="layer":
-        tp=child.find('type')
-        if tp == None:
-            continue
-        print tp.text
-        nm=child.attrib['name']
-        if tp.text=='conv':
-            order.append((nm,tp.text))
-            layers[nm]=parseConvLayer(child)
-        elif tp.text=='pool':
-            order.append((nm,tp.text))
-            layers[nm]=parsePoolLayer(child)
-        elif tp.text=='fc':
-            order.append((nm,tp.text))
-            layers[nm]=parseFullyConnectedLayer(child)
-
-#now we have the network in memory, start the convolution process
-start_time = time.time()
-for file in os.listdir(inputdir):
-    
-    if not file.endswith('.tif'):
-        continue
-
-    inputimage = Image.open(inputdir+"\\"+file)
-    inputimage=np.array(inputimage.getdata()).reshape(inputimage.size[0],inputimage.size[1])
-
-    inputimage/=255.0
-
-    inputimage=inputimage.reshape((inputimage.shape[0],inputimage.shape[1],1))
-    
-    #run through the layers
-    firstFullyConnected=True
-    for (layername,type) in order:
-        if type == 'conv':
-            inputimage=convolveImageStack(inputimage,layers[layername])
-        elif type == 'pool':
-            inputimage=poolImageStack(inputimage,layers[layername])
-        else:
-            if firstFullyConnected:
-                inputimage=np.swapaxes(inputimage,1,2)
-                inputimage=np.swapaxes(inputimage,0,1)
-                inputimage=inputimage.flatten('C')
-                firstFullyConnected=False
-            inputimage=applyFullyConnected(inputimage,layers[layername])
-
-    #input image now contains the raw network output, apply softmax
-    inputimage=np.exp(inputimage)
-    sum=np.sum(inputimage)
-    out=inputimage/sum
-
-    print file
-    print out
-
-print "The classification script took ", time.time() - start_time, " to run"
-
-    
-    
-
-    
+    return (float(dropout),neuron,bias,weights)    

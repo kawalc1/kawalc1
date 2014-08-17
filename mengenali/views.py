@@ -29,13 +29,11 @@ def extract(request):
 def getprobsresult(request):
     rows = request.GET.getlist("probabilities")
     matrix = []
-    probmatrix = np.ndarray(shape=(12, 11), dtype='f')
+    probmatrix = np.ndarray(shape=(12, 10), dtype='f')
     for i, row in enumerate(rows):
         probmatrix[i]  = json.loads(row)
-    
-    print "blergh!!!"
-    
-    print >> None, "bladie: " + str(matrix)
+
+    print >> None, str(matrix)
     
 
     outcomes = processprobs.getpossibleoutcomes(probmatrix)

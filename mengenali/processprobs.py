@@ -11,7 +11,7 @@ import operator
 import json
 #setup the argument parser
 
-CATEGORIES_COUNT = 11
+CATEGORIES_COUNT = 10
 X_INDEX = 10
 def getProbs(row):
     rowprobs = []
@@ -106,7 +106,7 @@ def print_possible(after_reduction):
 
 
 def getpossibleoutcomes(all_squares):
-    all_numbers_matrix = all_squares.reshape(4, 3, 11)
+    all_numbers_matrix = all_squares.reshape(4, 3, CATEGORIES_COUNT)
 
     def matrix_to_number(number_matrix):
         possible_values = get_possible_values(number_matrix)

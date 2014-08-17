@@ -6,6 +6,7 @@ from PIL import Image
 from scipy import ndimage
 from os.path import join
 import json
+import imageclassifier
 
 def getBoundingBox(ar,index):
     indices=np.where(ar == index)
@@ -24,8 +25,7 @@ def getAvgBorderDistance(ar,index):
     for idx0,idx1 in zip(xs,ys):
         if idx0<2 or idx0>w-2 or idx1<2 or idx1>h-2:
             bpix=bpix+1
-    return bpix/float(len(xs))    
-
+    return bpix/float(len(xs))
 
 def processImage(cropped):
 
@@ -168,22 +168,30 @@ def extract(file, targetpath):
 
            
     digitResult = prepareResults(digits)
+    
+    order, layers = imageclassifier.parseNetwork(join(targetpath, "network10.xml"))
+    probmatrix = np.ndarray(shape=(12, 10), dtype='f')
+        
     for i, digit in enumerate(digits):
         if digit is not None:
-            #if isPossiblyCross(digit) and not isMinus(digit) :
-            #digitFile = tailPart + "~" + str(i) + ".tif"
             digitFile = tailPart + "~" + str(i) + ".jpg"
             extracted = join(outputdir, digitFile)
             cv2.imwrite(extracted,digit)
             
+            ret, thresholdedTif=cv2.threshold(digit,128,255,type=cv2.THRESH_BINARY)
             digitTif = tailPart + "~" + str(i) + ".tif"
-            extracted = join(outputdir, digitTif)
-            cv2.imwrite(extracted,digit)            
+            extractedTif = join(outputdir, digitTif)
+            cv2.imwrite(extractedTif,thresholdedTif)
+            
+            probmatrix[i] = imageclassifier.classifyNumber(extractedTif, order, layers)
+                        
             digitResult[i]["filename"] = 'extracted/' + digitFile
+           
     
     result = {}
     result["digits"] = digitResult
     result["signatures"] = signatureResult
+    result["probabilities"] = probmatrix.tolist()
     print >> None, result
     
     

@@ -107,9 +107,9 @@ imageProcessingControllers.controller('imageRegistrationController',
 			location.reload();
 		};
 
-		$scope.getResult = function() {
+		$scope.getResult = function(probabilityMatrix) {
 			$http.get('../processprobs.wsgi', {
-				params: { probabilities: matrix }}).success(function(result) {
+				params: { probabilities: probabilityMatrix }}).success(function(result) {
 				$scope.mostProbableOutcome = result.probabilityMatrix[0]
 			});
 		};
@@ -138,7 +138,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 						$scope.extractedImages = result.digits;
 						$scope.signatures = result.signatures;
 						$scope.registrationFailed = false;
-						$scope.getResult();
+						$scope.getResult(result.probabilities);
 					}).error(function() {
 						$scope.registrationFailed = true;
 					});
