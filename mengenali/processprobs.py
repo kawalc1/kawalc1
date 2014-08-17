@@ -9,9 +9,8 @@ import string
 import numpy
 import operator
 import json
-#setup the argument parser
 
-
+NUMBER_COUNT = 4
 X_INDEX = 10
 
 def get_possible_values(list_of_probs, threshold=.10):
@@ -86,7 +85,7 @@ def print_possible(after_reduction):
         outcome["prabowo"] = int(x[0][0])
         outcome["jokowi"] = int(x[0][1])
         outcome["total"] = int(x[0][2])
-        outcome["invalid"] = int(2)
+        outcome["invalid"] = int(x[0][3])
         outcome["confidence"] = float(x[1])
         print(outcome)
         outcomes.append(outcome)
@@ -100,7 +99,7 @@ def getpossibleoutcomes(all_squares, categories_count):
         possible_values = get_possible_values(number_matrix)
         return map(lambda x: make_number(x[0], x[1]), possible_values)
 
-    all_numbers = map(matrix_to_number, all_numbers_matrix[0:3])
+    all_numbers = map(matrix_to_number, all_numbers_matrix[0:NUMBER_COUNT])
 
     possibilities = get_possible_end_results(all_numbers)
 
@@ -108,11 +107,10 @@ def getpossibleoutcomes(all_squares, categories_count):
         if p[0][0] + p[0][1] == p[0][2]:
             return p
         else:
-            #return p
             return p[0], p[1] * .005
 
     results = map(reduce_probability_if_checksum_is_wrong,
                   filter(lambda x: x[1] > 0, possibilities))
 
     results.sort(key=lambda x: -x[1])
-    return print_possible(results[0:3])
+    return print_possible(results[0:NUMBER_COUNT])

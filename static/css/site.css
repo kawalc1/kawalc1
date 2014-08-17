@@ -285,6 +285,7 @@ table.hasil td {
 table.hasil td+td {
 	text-align: right;
 	padding-right: 5px;
+	width: 0;
 }
 tr .jumlah {
 	border-top: 1px solid #000000;
