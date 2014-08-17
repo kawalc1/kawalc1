@@ -14,15 +14,27 @@ imageProcessingControllers.controller('PageController',
 		};
 	}]);
 
-imageProcessingControllers.controller('FormCarouselController', ['$scope', function($scope) {
-	$scope.slides = [
-		{ image: 'img/forms/crumpled.jpg', text: 'Crumpled'},
-		{ image: 'img/forms/incorrectchecksum.jpg', text: 'Incorrectly counted'},
-		{ image: 'img/forms/inonecolumn.jpg', text: 'All numbers in one column'},
-		{ image: 'img/forms/corrected.jpg', text: 'Corrected'},
-		{ image: 'img/forms/tally.jpg', text: 'Tally'}
-	];
-}]);
+imageProcessingControllers.controller('FormCarouselController',
+	['$scope', '$translate', function($scope, $translate) {
+		if ($translate.use() == 'en') {
+			$scope.slides = [
+				{ image: 'img/forms/crumpled.jpg', text: 'Crumpled'},
+				{ image: 'img/forms/incorrectchecksum.jpg', text: 'Incorrectly counted'},
+				{ image: 'img/forms/inonecolumn.jpg', text: 'All numbers in one column'},
+				{ image: 'img/forms/corrected.jpg', text: 'Corrected'},
+				{ image: 'img/forms/tally.jpg', text: 'Tally'}
+			];
+		} else {
+			$scope.slides = [
+				{ image: 'img/forms/crumpled.jpg', text: 'Kusut'},
+				{ image: 'img/forms/incorrectchecksum.jpg', text: 'Salah hitung'},
+				{ image: 'img/forms/inonecolumn.jpg', text: 'Semua angka dalam satu kolom'},
+				{ image: 'img/forms/corrected.jpg', text: 'Koreksi angka'},
+				{ image: 'img/forms/tally.jpg', text: 'Turus'}
+			];
+
+		}
+	}]);
 
 imageProcessingControllers.controller('imageRegistrationController',
 	['$scope', '$http', function($scope, $http) {
