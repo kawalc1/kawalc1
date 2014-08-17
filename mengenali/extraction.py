@@ -28,6 +28,7 @@ def getAvgBorderDistance(ar,index):
 
 
 def processImage(cropped):
+
     h, w = cropped.shape
     if h > w:
         pil_im = Image.fromarray(cropped)
@@ -38,6 +39,7 @@ def processImage(cropped):
         left = int((28 - mnistsize[0])) / 2
         box = left, 3
         outputim.paste(test_im, box)
+        return outputim
     else:
         pil_im = Image.fromarray(cropped)
         mnistsize = 22, int((22.0 / w) * h)
@@ -48,6 +50,7 @@ def processImage(cropped):
         box = 3, top
         #digits[i]=np.array(outputim)
         outputim.paste(test_im, box)
+        return outputim
 
 
 def processSignature(signatures, structuring_element, i, signature):
@@ -150,8 +153,8 @@ def extract(file, targetpath):
         #replace the shape number by 255
         cropped[cropped==selectedObject]=255
 
-        processImage(cropped)
-            #digits[i]=np.array(outputim)
+        outputim = processImage(cropped)
+        digits[i]=np.array(outputim)
     signatureResult = []
     signatureResult = prepareResults(signatures)
     for i, signature in enumerate(signatures):
@@ -172,6 +175,10 @@ def extract(file, targetpath):
             digitFile = tailPart + "~" + str(i) + ".jpg"
             extracted = join(outputdir, digitFile)
             cv2.imwrite(extracted,digit)
+            
+            digitTif = tailPart + "~" + str(i) + ".tif"
+            extracted = join(outputdir, digitTif)
+            cv2.imwrite(extracted,digit)            
             digitResult[i]["filename"] = 'extracted/' + digitFile
     
     result = {}
