@@ -18,7 +18,9 @@ def isProbablyX(extractedTif, orderx, layersx):
 def classifyNumber(inputfile, order, layers):
     inputimage = Image.open(inputfile)
     inputimage = np.array(inputimage.getdata()).reshape(inputimage.size[0], inputimage.size[1])
-    inputimage /= 255.0
+    inputimage = inputimage.astype(np.float32)
+    inputimage /= inputimage.max()
+
     inputimage = inputimage.reshape((inputimage.shape[0], inputimage.shape[1], 1))
 #run through the layers
     firstFullyConnected = True
