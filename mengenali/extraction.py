@@ -173,8 +173,13 @@ def extract(file, targetpath):
     order, layers = imageclassifier.parseNetwork(join(targetpath, "network10.xml"))
     orderx, layersx = imageclassifier.parseNetwork(join(targetpath, "network11.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
+
+	#fill with 0 as most likely by default
     probmatrix.fill(0.001)
-        
+    for (x,y), element in np.ndenumerate(probmatrix) :
+        if (y == 0) :
+            probmatrix[x,y] = 0.999
+       
     for i, digit in enumerate(digits):
         if digit is not None:
             digitFile = tailPart + "~" + str(i) + ".jpg"

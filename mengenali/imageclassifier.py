@@ -10,8 +10,10 @@ import time
 
 def isProbablyX(extractedTif, orderx, layersx):
     matrix = classifyNumber(extractedTif, orderx, layersx)
-    print "x marks the spot"
-    return matrix[0][10] > 0.9
+    if matrix[0][10] > 0.9:
+        print "x marks the spot: " + extractedTif + " " + str(matrix[0][10])
+        return True
+    return False
 
 def classifyNumber(inputfile, order, layers):
     inputimage = Image.open(inputfile)

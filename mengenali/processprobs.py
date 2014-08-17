@@ -79,14 +79,14 @@ def make_number(digit_list, current_confidence):
             string.join(map(str, significant_part), "")), current_confidence
 
 
-def print_possible(after_reduction):
+def print_possible(after_reduction, invalid):
     outcomes = []
     for x in after_reduction:
         outcome = {}
         outcome["prabowo"] = int(x[0][0])
         outcome["jokowi"] = int(x[0][1])
         outcome["total"] = int(x[0][2])
-        outcome["invalid"] = int(x[0][3])
+        outcome["invalid"] = int(invalid)
         outcome["confidence"] = float(x[1])
         print(outcome)
         outcomes.append(outcome)
@@ -101,9 +101,18 @@ def getpossibleoutcomes(all_squares, categories_count):
         return map(lambda x: make_number(x[0], x[1]), possible_values)
 
     all_numbers = map(matrix_to_number, all_numbers_matrix[0:NUMBER_COUNT])
+    
+    invalids = all_numbers[3]
 
-    possibilities = get_possible_end_results(all_numbers)
+    invalid = 0
+    
+    if len(invalids) > 0:
+        invalids.sort(key=lambda x: -x[1])
+        invalid, prob = invalids[0]
+    print invalid 
 
+    possibilities = get_possible_end_results(all_numbers[0:3])
+    
     def reduce_probability_if_checksum_is_wrong(p):
         if p[0][0] + p[0][1] == p[0][2]:
             return p
@@ -112,6 +121,5 @@ def getpossibleoutcomes(all_squares, categories_count):
 
     results = map(reduce_probability_if_checksum_is_wrong,
                   filter(lambda x: x[1] > 0, possibilities))
-
-    results.sort(key=lambda x: -x[1])
-    return print_possible(results[0:NUMBER_COUNT])
+    
+    return print_possible(results[0:NUMBER_COUNT], invalid)
