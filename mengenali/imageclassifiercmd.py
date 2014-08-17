@@ -170,10 +170,12 @@ for file in os.listdir(inputdir):
     if not file.endswith('.tif'):
         continue
 
-    inputimage = Image.open(inputdir+"\\"+file)
+    inputimage=Image.open(inputdir+"\\"+file)
     inputimage=np.array(inputimage.getdata()).reshape(inputimage.size[0],inputimage.size[1])
 
-    inputimage/=255.0
+    inputimage=inputimage.astype(np.float32)
+
+    inputimage/=inputimage.max()
 
     inputimage=inputimage.reshape((inputimage.shape[0],inputimage.shape[1],1))
     
