@@ -111,8 +111,8 @@ pre {
 
 .done {
 	zoom: 1;
-	filter: alpha(opacity=50);
-	opacity: 0.5;
+	filter: alpha(opacity=75);
+	opacity: 0.75;
 }
 
 .logo {

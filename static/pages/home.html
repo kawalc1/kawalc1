@@ -60,7 +60,7 @@
     </div>
 </div>
 <div class="block column"
-     ng-class="{success : mostProbableOutcome, failure : (correction && !submitted), done: (correction || correct)}">
+     ng-class="{success : mostProbableOutcome, failure : ((correction && !submitted) || (!numbersAddUp() && !submitted)), done: (correction || correct)}">
     <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
 
     <div ng-show="mostProbableOutcome" class="result">
@@ -93,7 +93,7 @@
                 <td>
                     {{'FORM_VOTES_VALID'| translate }}
                 </td>
-                <td class="jumlah">
+                <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
                     {{ mostProbableOutcome.total }}
                 </td>
             </tr>
@@ -146,7 +146,7 @@
     </div>
     <div>
             <span class="btn btn-success"
-                  ng-show="mostProbableOutcome && !correction && !correct"
+                  ng-show="mostProbableOutcome && !correction && !correct && numbersAddUp()"
                   ng-click="agree()">
                 {{ 'BUTTON_CORRECT' | translate }}
             </span>

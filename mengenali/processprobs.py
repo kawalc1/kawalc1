@@ -120,7 +120,8 @@ def getpossibleoutcomes(all_squares):
         if p[0][0] + p[0][1] == p[0][2]:
             return p
         else:
-            return p[0], p[1] * .005
+            return p
+            #return p[0], p[1] * .005
 
     results = map(reduce_probability_if_checksum_is_wrong,
                   filter(lambda x: x[1] > 0, possibilities))
