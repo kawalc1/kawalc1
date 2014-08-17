@@ -109,19 +109,20 @@ app.config(function($translateProvider) {
 		WITNESS_SIGNATURES: 'Tanda tangan saksi'
 	});
 	$translateProvider.determinePreferredLanguage(function() {
-		var navigator = window.navigator;
-		var language = 'en-US';
-		if (navigator.language !== undefined) {
-			language = navigator.language;
-		}
-		if (navigator.userLanguage !== undefined) {
-			language = navigator.userLanguage;
-		}
-		var browserLang = language.substr(0, 2);
-		if (browserLang === 'id' || browserLang === 'ms') {
-			return 'id';
-		}
-		return 'en';
+		return 'id';
+//		var navigator = window.navigator;
+//		var language = 'en-US';
+//		if (navigator.language !== undefined) {
+//			language = navigator.language;
+//		}
+//		if (navigator.userLanguage !== undefined) {
+//			language = navigator.userLanguage;
+//		}
+//		var browserLang = language.substr(0, 2);
+//		if (browserLang === 'id' || browserLang === 'ms') {
+//			return 'id';
+//		}
+//		return 'en';
 	});
 
 });
