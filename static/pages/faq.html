@@ -1,63 +1,51 @@
 <div class="textPage">
     <div ng-show="currentLangue == 'en'">
         <h3>Where can I find C1 forms to try this out?</h3>
+
         <p>
-            You can download some <a href="contoh-formulir.zip" >example forms</a>. Otherwise,
+            You can download some <a href="contoh-formulir.zip">example forms</a>. Otherwise,
             all C1 forms for the national elections can be found
-            at the <a target="_blank" href="http://pilpres2014.kpu.go.id/c1.php" >KPU</a> site.
+            at the <a target="_blank" href="http://pilpres2014.kpu.go.id/c1.php">KPU</a> site.
         </p>
 
         <h3>Why do we need kawal C1 if we have KPU and kawal pemilu?</h3>
 
         <p>
-            This is a good question. Because of the fantastic <a href="http://www.kawalpemilu.org/">kawal
+            This application is not meant duplicate the work of KPU and <a
+                href="http://www.kawalpemilu.org/">kawal
             pemilu</a>
-            crowd-sourcing initiative, there is no great need for an additional verification
-            of the C1 based count. <br/>
-            However, for coming elections this software could improve both the <em>quality</em> and
+            but to complement and to make their work easier. The idea is for this application to
+            improve both the <em>quality</em> and
             <em>speed</em>
             of the manual verification. <br/>
         </p>
         <h5>Quality</h5>
 
-        <p>The number of C1 forms reported there as problematic is more than 5% for some provinces.
-            Kawal C1 can improve this situation. By detecting problems in the form (unclear
-            handwriting,
-            calculation errors, missing witness signatures, etc.) and giving the uploader the
-            opportunity to type in the totals.</p>
-        <h5>Speed</h5>
 
-        <p>
-            The manual counting teams can focus their efforts on forms that have been flagged by
-            kawal C1
-            as problematic. The numbers of forms that are not problematic will immediately be
-            available.
-        </p>
-
-
-        <h3>What is the accuracy of the software?</h3>
+        <h3>What is the accuracy of this application?</h3>
 
         <p>
             This is something we cannot give reliable numbers on yet. This website should be seen as
-            a
-            proof of concept.
+            a proof of concept.
             However, since all C1 forms and both the official KPU and <i>kawal pemilu</i> resuls are
             openly available,
-            it will be relatively easy to test and improve the accuracy. This our top priority now.
+            it will be relatively easy to test and improve the accuracy. This is our top priority
+            now.
         </p>
 
-        <h3>Does this software only work for pilpres 2014 C1 forms?</h3>
+        <h3>Does this application only work for C1 forms of the 2014 presidential election?</h3>
 
         <p>
             At the moment yes. But it will not be difficult to configure it for other forms like the
             ones that are used for local elections for example.
         </p>
 
-        <h3>Who can use this software?</h3>
+        <h3>Who can use this application?</h3>
 
         <p>
-            This software is completely <a href="https://github.com/sjappelodorus/verifikatorc1"
-                                           target="_blank">open source</a>.
+            This application is completely <a href="https://github.com/sjappelodorus/verifikatorc1"
+                                              target="_blank">open source</a> and can be integrated
+            to any existing software used in the election process.
         </p>
 
         <h3>Isn't human verification more reliable than computer verification?</h3>
@@ -65,71 +53,90 @@
         <p>
             Yes, in most cases. This software serves as a tool to improve human verification.
         </p>
+        <h3>What's next for this application?</h3>
+
+        <p>
+            These are some of the thing we would like to do in the near future:
+        </p>
+        <ul>
+            <li>Train the application using numbers that are taken from the actual forms instead
+                of the from the C1 forms instead of the American
+                <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> set. This should make the
+                detection more accurate as it will be more tuned to Indonesian handwriting and
+                the crosses and dashes that are often used.
+            </li>
+            <li>Add support for different kinds of forms. For example, the ones that contain
+                information about the number of people eligble to vote or forms for local elections</li>
+            <li>Make the datasets that are used by this application available to the
+                machine learning community.
+            </li>
+        </ul>
+        <h3>Which technologies do you use?</h3>
+
+        <ul>
+            <li>The website was built using <a href="https://angularjs.org/">AngularJS</a>. </li>
+            <li>The webservices use the <a href="https://www.djangoproject.com/">Django</a> library.</li>
+            <li>The image registration was written in <a href="https://www.python.org/">Python</a>,
+            using various image processing libraries like <a href="http://opencv.org/">OpenCV</a>,
+            <a href="http://scikit-image.org/">scikit-image</a> and <a href="http://www.scipy.org/">scipy</a>. </li>
+            <li>The number classification is done use using a convolutional neural network that was trained
+            on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> handwritten digit database.</li>
+        </ul>
     </div>
     <div ng-show="currentLangue == 'id'">
-        <h3>Di mana saya bisa mendapat formulir C1 untuk mencoba software ini?</h3>
+        <h3>Di mana saya bisa mendapat formulir C1 untuk mencoba aplikasi ini?</h3>
+
         <p>
-            Anda bisa mengunduh beberapa <a href="contoh-formulir.zip" >formulir percobaan</a>. Selain
+            Anda bisa mengunduh beberapa <a href="contoh-formulir.zip">formulir percobaan</a>.
+            Selain
             itu, semua formulir C1 dapat diunduh dari situs resmi
-            <a target="_blank" href="http://pilpres2014.kpu.go.id/c1.php" >KPU</a>.
+            <a target="_blank" href="http://pilpres2014.kpu.go.id/c1.php">KPU</a>.
         </p>
 
         <h3>Mengapa kita perlu kawal C1 jika sudah ada KPU dan kawal pemilu?</h3>
 
         <p>
-            Pertanyaan yang bagus. Berkat inisiatif 'crowd-sourcing' <a href="http://www.kawalpemilu.org/">kawal
-            pemilu</a> yang luar biasa, maka verifikasi untuk penghitungan formulir C1 sudah tidak terlalu
-            dibutuhkan lagi. <br/>
-            Namun, untuk pemilu yang akan datang, baik di tingkat daerah (pilkada) maupun di tingkat nasional,
-            software ini bisa meningkatkan <em>kwalitas</em> dan
+            Aplikasi ini tidak dimaksudkan untuk mengulangi pekerjaan KPU atau yang sudah dikerjakan
+            oleh <a href="http://www.kawalpemilu.org/">kawal
+            pemilu</a> melainkan untuk melengkapi dan memudahkan pekerjaan mereka. Kami membuat
+            aplikasi ini untuk bisa meningkatkan <em>kwalitas</em> dan
             <em>kecepatan</em> verifikasi secara manual. <br/>
         </p>
-        <h5>Kwalitas</h5>
-
-        <p>Jumlah formulir C1 yang dilaporkan sebagai 'Error' lebih dari 5% di beberapa propinsi.
-            Software kawal C1 bisa memperbaiki keadaan ini, dengan mendeteksi masalah dalam formulir
-            (misalnya tulisan tangan yang tidak jelas, kesalahan penjumlahan, tanda tangan saksi yang tidak ada,
-            mengunggah formulir yang salah, atau halaman kosong). <br/>
-            Jika masalah-masalah seperti ini terdeteksi pada saat mengunggah C1, si pengunggah bisa
-            langsung memperbaiki formulir atau memasukkan informasi tambahan dengan mengetikkan
-            angka2 sesuai formulir C1 tersebut.</p>
-        <h5>Kecepatan</h5>
-
-        <p>
-            Tim penghitung manual bisa memfokuskan upaya mereka untuk memeriksa formulir-formulir yang
-            terdeteksi sebagai bermasalah oleh software. Angka-angka dari formulir yang tidak
-            terdeteksi bermasalah akan terekam langsung di dalam database.
-        </p>
 
 
-        <h3>Seberapa akurat adalah software ini?</h3>
+        <h3>Seberapa akurat aplikasi ini?</h3>
 
         <p>
             Sayangnya kami belum bisa memberi presentase tingkat akurasi yang pasti. Untuk sementara
-            situs ini hanya berfungsi sebagai conoh saja. Namun, karena semua formulir C1 dan hasil resmi KPU dan
+            situs ini hanya berfungsi sebagai contoh saja. Namun, karena semua formulir C1 dan hasil
+            resmi KPU dan
             <a href="http://www.kawalpemilu.org/">kawal
-            pemilu</a> terbuka aksesnya untuk publik, maka tidak sulit bagi kami untuk menguji dan
+                pemilu</a> terbuka aksesnya untuk publik, maka tidak sulit bagi kami untuk menguji
+            dan
             meningkatkan akurasi. Ini adalah prioritas utama kami sekarang.
         </p>
 
-        <h3>Apakah software ini hanya bisa baca formulir C1 pilpres 2014?</h3>
+        <h3>Apakah aplikasi ini hanya bisa membaca formulir C1 pilpres 2014?</h3>
 
         <p>
             Untuk sementara ya. Tapi tidak sulit untuk mengubah konfigurasi sehingga bisa dipakai
-            untuk formulir lain yang digunakan untuk misalnya pilkada .
+            untuk formulir lain yang digunakan untuk pilkada misalnya.
         </p>
 
-        <h3>Siapa yang diperbolehkan menggunakan software ini?</h3>
+        <h3>Siapa yang dapat menggunakan aplikasi ini?</h3>
 
         <p>
-            Siapapun boleh menggunakan software ini karena seluruhnya <a href="https://github.com/sjappelodorus/verifikatorc1"
-                                           target="_blank">open source</a>.
+            Siapapun boleh menggunakan aplikasi ini karena seluruhnya <a
+                href="https://github.com/sjappelodorus/verifikatorc1"
+                target="_blank">open source</a> dan bisa diintegrasikan dengan software yang sudah
+            digunakan dalam proses pemilu.
         </p>
 
         <h3>Bukankah verifikasi oleh manusia lebih dapat dipercaya daripada komputer?</h3>
 
         <p>
-            Ya, biasanya. Software ini adalah alat untuk membantu verifikasi oleh manusia.
+            Ya, biasanya memang demikian. Aplikasi kawal C1 ini adalah alat untuk membantu
+            verifikasi oleh manusia.
         </p>
     </div>
 </div>
