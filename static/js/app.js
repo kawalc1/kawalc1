@@ -74,7 +74,9 @@ app.config(function($translateProvider) {
 		FORM_TOTAL: 'Total',
 		FORM_VOTES_INVALID: 'Invalid',
 		FORM_VOTES_VALID: 'Valid',
-		WITNESS_SIGNATURES: 'Witness signatures'
+		WITNESS_SIGNATURES: 'Witness signatures',
+		SIGNATURE_PRESENT: 'Present',
+		SIGNATURE_ABSENT: 'Missing'
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
@@ -108,7 +110,9 @@ app.config(function($translateProvider) {
 		FORM_TOTAL: 'Jumlah',
 		FORM_VOTES_INVALID: 'Tidak sah',
 		FORM_VOTES_VALID: 'Suara sah',
-		WITNESS_SIGNATURES: 'Tanda tangan saksi'
+		WITNESS_SIGNATURES: 'Tanda tangan saksi',
+		SIGNATURE_PRESENT: 'Ada',
+		SIGNATURE_ABSENT: 'Tidak ada'
 	});
 	$translateProvider.determinePreferredLanguage(function($routeParams) {
 		var searchParam = window.location.search;

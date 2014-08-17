@@ -118,9 +118,9 @@
                 </td>
                 <td>
                     <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"
-                          ng-show="signatures[0].isValid">Ada</span>
+                          ng-show="signatures[0].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>
                     <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"
-                          ng-show="!signatures[0].isValid">Absen</span>
+                          ng-show="!signatures[0].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>
                 </td>
             </tr>
             <tr>
@@ -129,9 +129,9 @@
                 </td>
                 <td>
                     <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"
-                          ng-show="signatures[1].isValid">Ada</span>
+                          ng-show="signatures[1].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>
                     <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"
-                          ng-show="!signatures[1].isValid">Absen</span>
+                          ng-show="!signatures[1].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>
                 </td>
             </tr>
         </table>
