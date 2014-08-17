@@ -44,6 +44,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic verification of election forms',
+		VERSION: 'Version 0.8 - August 17, 2014',
 		INTRODUCTION: 'This application automatically counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK : 'this form',
@@ -77,6 +78,7 @@ app.config(function($translateProvider) {
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
+		VERSION: 'Versi 0.8 - 17 Aug 2014',
 		INTRODUCTION: 'Applikasi ini dapat menghitung otomatis hasil formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK : 'formulir ini',
@@ -108,7 +110,12 @@ app.config(function($translateProvider) {
 		FORM_VOTES_VALID: 'Suara sah',
 		WITNESS_SIGNATURES: 'Tanda tangan saksi'
 	});
-	$translateProvider.determinePreferredLanguage(function() {
+	$translateProvider.determinePreferredLanguage(function($routeParams) {
+		var searchParam = window.location.search;
+		if (searchParam !== '') {
+			var arg = searchParam.split('&')[0];
+			return arg.split('=')[1];
+		}
 		return 'id';
 //		var navigator = window.navigator;
 //		var language = 'en-US';

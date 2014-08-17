@@ -205,7 +205,6 @@ pre {
 	width: 310px;
 }
 
-
 .langSwitch a {
 	display: block;
 	float: left;
@@ -409,4 +408,10 @@ input::-webkit-inner-spin-button {
 
 .caption {
 	text-align: left;
+}
+
+.version {
+	position: relative;
+	font-size: 11px;
+	top: -10px;
 }
