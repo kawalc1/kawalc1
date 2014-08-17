@@ -1,7 +1,17 @@
+import numpy as np
+import cv2
+import argparse
+import os.path
+import pickle
+from PIL import Image
+from scipy import ndimage
+from lxml import etree
 import time
 
-
-
+def isProbablyX(extractedTif, orderx, layersx):
+    matrix = classifyNumber(extractedTif, orderx, layersx)
+    print "x marks the spot"
+    return matrix[0][10] > 0.9
 
 def classifyNumber(inputfile, order, layers):
     inputimage = Image.open(inputfile)
@@ -59,14 +69,6 @@ def parseNetwork(network):
     return order, layers
 
 start_time = time.time()
-import numpy as np
-import cv2
-import argparse
-import os.path
-import pickle
-from PIL import Image
-from scipy import ndimage
-from lxml import etree
 
 np.set_printoptions(precision=6)
 np.set_printoptions(suppress=True)

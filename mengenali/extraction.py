@@ -7,6 +7,7 @@ from scipy import ndimage
 from os.path import join
 import json
 import imageclassifier
+import settings
 
 def getBoundingBox(ar,index):
     indices=np.where(ar == index)
@@ -170,7 +171,8 @@ def extract(file, targetpath):
     digitResult = prepareResults(digits)
     
     order, layers = imageclassifier.parseNetwork(join(targetpath, "network10.xml"))
-    probmatrix = np.ndarray(shape=(12, 10), dtype='f')
+    orderx, layersx = imageclassifier.parseNetwork(join(targetpath, "network11.xml"))
+    probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
         
     for i, digit in enumerate(digits):
         if digit is not None:
@@ -183,6 +185,8 @@ def extract(file, targetpath):
             extractedTif = join(outputdir, digitTif)
             cv2.imwrite(extractedTif,thresholdedTif)
             
+            if imageclassifier.isProbablyX(extractedTif, orderx, layersx):
+                continue            
             probmatrix[i] = imageclassifier.classifyNumber(extractedTif, order, layers)
                         
             digitResult[i]["filename"] = 'extracted/' + digitFile

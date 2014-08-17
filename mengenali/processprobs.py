@@ -11,20 +11,8 @@ import operator
 import json
 #setup the argument parser
 
-CATEGORIES_COUNT = 10
+
 X_INDEX = 10
-def getProbs(row):
-    rowprobs = []
-    for item in row[0:CATEGORIES_COUNT]:
-        rowprobs.append(float(item))
-    return rowprobs
-
-
-def getCurrentSquare(row):
-    filename = row[CATEGORIES_COUNT + 1]
-    splitter = filename.split("~")
-    return int(splitter[-1])
-
 
 def get_possible_values(list_of_probs, threshold=.10):
     """ [[digit, confidence]] -> [[digit], confidence]
@@ -105,8 +93,8 @@ def print_possible(after_reduction):
     return outcomes
 
 
-def getpossibleoutcomes(all_squares):
-    all_numbers_matrix = all_squares.reshape(4, 3, CATEGORIES_COUNT)
+def getpossibleoutcomes(all_squares, categories_count):
+    all_numbers_matrix = all_squares.reshape(4, 3, categories_count)
 
     def matrix_to_number(number_matrix):
         possible_values = get_possible_values(number_matrix)
@@ -120,8 +108,8 @@ def getpossibleoutcomes(all_squares):
         if p[0][0] + p[0][1] == p[0][2]:
             return p
         else:
-            return p
-            #return p[0], p[1] * .005
+            #return p
+            return p[0], p[1] * .005
 
     results = map(reduce_probability_if_checksum_is_wrong,
                   filter(lambda x: x[1] > 0, possibilities))
