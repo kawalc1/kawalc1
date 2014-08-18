@@ -1,17 +1,9 @@
-import argparse
-import os
-import fnmatch
-import shutil
-from os.path import join, getsize
-import csv
 import itertools
 import string
-import numpy
-import operator
-import json
 
 NUMBER_COUNT = 4
 X_INDEX = 10
+
 
 def get_possible_values(list_of_probs, threshold=.10):
     """ [[digit, confidence]] -> [[digit], confidence]
@@ -82,12 +74,13 @@ def make_number(digit_list, current_confidence):
 def print_possible(after_reduction):
     outcomes = []
     for x in after_reduction:
-        outcome = {}
-        outcome["prabowo"] = int(x[0][0])
-        outcome["jokowi"] = int(x[0][1])
-        outcome["total"] = int(x[0][2])
-        outcome["invalid"] = int(x[0][3])
-        outcome["confidence"] = float(x[1])
+        outcome = {
+            "prabowo": int(x[0][0]),
+            "jokowi": int(x[0][1]),
+            "total": int(x[0][2]),
+            "invalid": int(x[0][3]),
+            "confidence": float(x[1])
+        }
         print(outcome)
         outcomes.append(outcome)
     return outcomes
