@@ -275,6 +275,7 @@ table.hasil {
 	width: 100%;
 	position: relative;
 	top: 50%;
+	margin-top: 8px;
 }
 
 table.hasil td {
@@ -295,6 +296,7 @@ input.ng-invalid {
 }
 input.ng-valid {
 	border: 1px solid green;
+	border-radius: 4px;
 }
 
 input {

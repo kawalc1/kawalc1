@@ -72,8 +72,8 @@ app.config(function($translateProvider) {
 		SUBMITTED_MESSAGE: 'the form has been submitted.',
 		FORM_CANDIDATE: 'Candidate',
 		FORM_TOTAL: 'Total',
-		FORM_VOTES_INVALID: 'Invalid',
-		FORM_VOTES_VALID: 'Valid',
+		FORM_VOTES_INVALID: 'Invalid votes',
+		FORM_VOTES_VALID: 'Total valid votes',
 		WITNESS_SIGNATURES: 'Witness signatures',
 		SIGNATURE_PRESENT: 'Present',
 		SIGNATURE_ABSENT: 'Missing'
@@ -108,8 +108,8 @@ app.config(function($translateProvider) {
 		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.',
 		FORM_CANDIDATE: 'Calon',
 		FORM_TOTAL: 'Jumlah',
-		FORM_VOTES_INVALID: 'Tidak sah',
-		FORM_VOTES_VALID: 'Suara sah',
+		FORM_VOTES_INVALID: 'Suara tidak sah',
+		FORM_VOTES_VALID: 'Jumlah suara sah',
 		WITNESS_SIGNATURES: 'Tanda tangan saksi',
 		SIGNATURE_PRESENT: 'Ada',
 		SIGNATURE_ABSENT: 'Tidak ada'
