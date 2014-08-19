@@ -1,5 +1,6 @@
 import itertools
 import string
+import numpy as np
 
 NUMBER_COUNT = 4
 X_INDEX = 10
@@ -108,3 +109,13 @@ def getpossibleoutcomes(all_squares, categories_count):
 
     results.sort(key=lambda x: -x[1])
     return print_possible(results[0:NUMBER_COUNT])
+
+
+def readjson(data):
+    rows = data["probabilities"]
+    probmatrix = np.ndarray(shape=(12, 10), dtype='f')
+
+    for i, row in enumerate(rows):
+        probmatrix[i] = row
+
+    return probmatrix
