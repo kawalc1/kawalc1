@@ -28,16 +28,16 @@ def extract(request):
     return HttpResponse(output)
 
 
-def getprobsresult(request):
+def get_probabilities_result(request):
     rows = request.GET.getlist("probabilities")
     matrix = []
-    probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
+    probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
     for i, row in enumerate(rows):
-        probmatrix[i] = json.loads(row)
+        probability_matrix[i] = json.loads(row)
 
     print >> None, str(matrix)
 
-    outcomes = processprobs.getpossibleoutcomes(probmatrix, settings.CATEGORIES_COUNT)
+    outcomes = processprobs.get_possible_outcomes(probability_matrix, settings.CATEGORIES_COUNT)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -52,7 +52,7 @@ def transform(request):
         handle_uploaded_file(request.FILES['file'], filename)
 
         try:
-            output = registration.processFile(None, 1, settings.STATIC_DIR, filename)
+            output = registration.process_file(None, 1, settings.STATIC_DIR, filename)
         except:
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)

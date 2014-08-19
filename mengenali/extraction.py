@@ -10,7 +10,7 @@ import imageclassifier
 import settings
 
 
-def getBoundingBox(ar, index):
+def get_bounding_box(ar, index):
     indices = np.where(ar == index)
     maxy = np.max(indices[0])
     miny = np.min(indices[0])
@@ -19,7 +19,7 @@ def getBoundingBox(ar, index):
     return maxy, miny, maxx, minx
 
 
-def getAvgBorderDistance(ar, index):
+def get_avg_border_distance(ar, index):
     indices = np.where(ar == index)
     xs = indices[0]
     ys = indices[1]
@@ -31,53 +31,53 @@ def getAvgBorderDistance(ar, index):
     return bpix / float(len(xs))
 
 
-def processImage(cropped):
+def process_image(cropped):
     h, w = cropped.shape
     if h > w:
         pil_im = Image.fromarray(cropped)
-        mnistsize = int((22.0 / h) * w), 22
-        test_im = pil_im.resize(mnistsize, Image.ANTIALIAS)
+        mnist_size = int((22.0 / h) * w), 22
+        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
-        outputim = Image.fromarray(np.zeros((28, 28)))
-        left = int((28 - mnistsize[0])) / 2
+        output_image = Image.fromarray(np.zeros((28, 28)))
+        left = int((28 - mnist_size[0])) / 2
         box = left, 3
-        outputim.paste(test_im, box)
-        return outputim
+        output_image.paste(test_im, box)
+        return output_image
     else:
         pil_im = Image.fromarray(cropped)
-        mnistsize = 22, int((22.0 / w) * h)
-        test_im = pil_im.resize(mnistsize, Image.ANTIALIAS)
+        mnist_size = 22, int((22.0 / w) * h)
+        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
-        outputim = Image.fromarray(np.zeros((28, 28)))
-        top = int((28 - mnistsize[1])) / 2
+        output_image = Image.fromarray(np.zeros((28, 28)))
+        top = int((28 - mnist_size[1])) / 2
         box = 3, top
         #digits[i]=np.array(outputim)
-        outputim.paste(test_im, box)
-        return outputim
+        output_image.paste(test_im, box)
+        return output_image
 
 
-def processSignature(signatures, structuring_element, i, signature):
+def process_signature(signatures, structuring_element, i, signature):
     ret, thresholded = cv2.threshold(signature, 180, 1, type=cv2.THRESH_BINARY_INV)
     signatures[i], nrOfObjects = ndimage.measurements.label(thresholded, structuring_element)
     # determine the sizes of the objects
     sizes = np.bincount(np.reshape(signatures[i], -1))
-    selectedobject = -1
+    selected_object = -1
     maxsize = 0
     for j in range(1, nrOfObjects + 1):
         if sizes[j] < 11:
             continue  #this is too small to be a number
-        maxy, miny, maxx, minx = getBoundingBox(signatures[i], j)
+        maxy, miny, maxx, minx = get_bounding_box(signatures[i], j)
         if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
             continue  #this is likely a border artifact
-        borderdist = getAvgBorderDistance(signatures[i], j)
+        borderdist = get_avg_border_distance(signatures[i], j)
         #print borderdist
         if borderdist > 0.2:
             continue  #this is likely a border artifact
 
         if sizes[j] > maxsize:
             maxsize = sizes[j]
-            selectedobject = j
-    return selectedobject != -1
+            selected_object = j
+    return selected_object != -1
 
 
 def prepareResults(images):
@@ -91,7 +91,7 @@ def prepareResults(images):
 def extract(file, targetpath):
     image = Image.open(join(targetpath, file))
     image.load()
-    outputdir = join(targetpath, 'extracted')
+    output_dir = join(targetpath, 'extracted')
 
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
 
@@ -115,7 +115,7 @@ def extract(file, targetpath):
 
     #save the digits
     head, tail = os.path.split(file)
-    tailPart, ext = os.path.splitext(tail)
+    tail_part, ext = os.path.splitext(tail)
 
     #create atructureing element for the connected component analysis
     s = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
@@ -132,10 +132,10 @@ def extract(file, targetpath):
         for j in range(1, nrOfObjects + 1):
             if sizes[j] < 11:
                 continue  #this is too small to be a number
-            maxy, miny, maxx, minx = getBoundingBox(digits[i], j)
+            maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
             if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
                 continue  #this is likely a border artifact
-            borderdist = getAvgBorderDistance(digits[i], j)
+            borderdist = get_avg_border_distance(digits[i], j)
             #print borderdist
             if (borderdist > 0.2):
                 continue  #this is likely a border artifact
@@ -153,46 +153,46 @@ def extract(file, targetpath):
         #replace the shape number by 255
         cropped[cropped == selectedObject] = 255
 
-        outputim = processImage(cropped)
+        outputim = process_image(cropped)
         digits[i] = np.array(outputim)
     signatureResult = prepareResults(signatures)
     for i, signature in enumerate(signatures):
-        isValid = processSignature(signatures, s, i, signature)
-        signatureFile = tailPart + "~sign~" + str(i) + ".jpg"
-        extracted = join(outputdir, signatureFile)
+        is_valid = process_signature(signatures, s, i, signature)
+        signatureFile = tail_part + "~sign~" + str(i) + ".jpg"
+        extracted = join(output_dir, signatureFile)
         cv2.imwrite(extracted, signature)
         signatureResult[i]["filename"] = 'extracted/' + signatureFile
-        signatureResult[i]["isValid"] = isValid
+        signatureResult[i]["isValid"] = is_valid
         #return False
 
     digitResult = prepareResults(digits)
 
-    order, layers = imageclassifier.parseNetwork(join(targetpath, "network10.xml"))
-    orderx, layersx = imageclassifier.parseNetwork(join(targetpath, "network11.xml"))
+    order, layers = imageclassifier.parse_network(join(targetpath, "network10.xml"))
+    orderx, layersx = imageclassifier.parse_network(join(targetpath, "network11.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
     #fill with 0 as most likely by default
     probmatrix.fill(0.001)
     for (x, y), element in np.ndenumerate(probmatrix):
-        if (y == 0):
+        if y == 0:
             probmatrix[x, y] = 0.999
 
     for i, digit in enumerate(digits):
         if digit is not None:
-            digitFile = tailPart + "~" + str(i) + ".jpg"
-            extracted = join(outputdir, digitFile)
+            digit_file = tail_part + "~" + str(i) + ".jpg"
+            extracted = join(output_dir, digit_file)
             cv2.imwrite(extracted, digit)
 
             ret, thresholdedTif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
-            digitTif = tailPart + "~" + str(i) + ".tif"
-            extractedTif = join(outputdir, digitTif)
-            cv2.imwrite(extractedTif, thresholdedTif)
+            digit_tif = tail_part + "~" + str(i) + ".tif"
+            extracted_tif = join(output_dir, digit_tif)
+            cv2.imwrite(extracted_tif, thresholdedTif)
 
-            if imageclassifier.isProbablyX(extractedTif, orderx, layersx):
+            if imageclassifier.is_probably_x(extracted_tif, orderx, layersx):
                 continue
-            probmatrix[i] = imageclassifier.classifyNumber(extractedTif, order, layers)
+            probmatrix[i] = imageclassifier.classify_number(extracted_tif, order, layers)
 
-            digitResult[i]["filename"] = 'extracted/' + digitFile
+            digitResult[i]["filename"] = 'extracted/' + digit_file
 
     result = {"digits": digitResult, "signatures": signatureResult, "probabilities": probmatrix.tolist()}
     print >> None, result

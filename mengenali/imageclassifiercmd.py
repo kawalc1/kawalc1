@@ -143,21 +143,21 @@ parser.add_argument("networkparameters", help="the network file")
 parser.add_argument("outputdir", help="The directory where the straightened form is dumped")
 args = parser.parse_args()
 
-inputdir = args.inputdirectory
+input_dir = args.inputdirectory
 network = args.networkparameters
-outputdir = args.outputdir
+output_dir = args.outputdir
 
 #read the network data
-xmlnet = etree.parse(network)
+xml_net = etree.parse(network)
 
 #store the layer info
 order = []
 layers = dict()
 
-for child in xmlnet.getroot():
+for child in xml_net.getroot():
     if child.tag == "layer":
         tp = child.find('type')
-        if tp == None:
+        if tp is None:
             continue
         print tp.text
         nm = child.attrib['name']
@@ -173,39 +173,39 @@ for child in xmlnet.getroot():
 
 #now we have the network in memory, start the convolution process
 start_time = time.time()
-for file in os.listdir(inputdir):
+for file in os.listdir(input_dir):
 
     if not file.endswith('.tif'):
         continue
 
-    inputimage = Image.open(inputdir + "\\" + file)
-    inputimage = np.array(inputimage.getdata()).reshape(inputimage.size[0], inputimage.size[1])
+    input_image = Image.open(input_dir + "\\" + file)
+    input_image = np.array(input_image.getdata()).reshape(input_image.size[0], input_image.size[1])
 
-    inputimage = inputimage.astype(np.float32)
+    input_image = input_image.astype(np.float32)
 
-    inputimage /= inputimage.max()
+    input_image /= input_image.max()
 
-    inputimage = inputimage.reshape((inputimage.shape[0], inputimage.shape[1], 1))
+    input_image = input_image.reshape((input_image.shape[0], input_image.shape[1], 1))
 
     #run through the layers
     firstFullyConnected = True
     for (layername, type) in order:
         if type == 'conv':
-            inputimage = convolveImageStack(inputimage, layers[layername])
+            input_image = convolveImageStack(input_image, layers[layername])
         elif type == 'pool':
-            inputimage = poolImageStack(inputimage, layers[layername])
+            input_image = poolImageStack(input_image, layers[layername])
         else:
             if firstFullyConnected:
-                inputimage = np.swapaxes(inputimage, 1, 2)
-                inputimage = np.swapaxes(inputimage, 0, 1)
-                inputimage = inputimage.flatten('C')
+                input_image = np.swapaxes(input_image, 1, 2)
+                input_image = np.swapaxes(input_image, 0, 1)
+                input_image = input_image.flatten('C')
                 firstFullyConnected = False
-            inputimage = applyFullyConnected(inputimage, layers[layername])
+            input_image = applyFullyConnected(input_image, layers[layername])
 
     #input image now contains the raw network output, apply softmax
-    inputimage = np.exp(inputimage)
-    sum = np.sum(inputimage)
-    out = inputimage / sum
+    input_image = np.exp(input_image)
+    sum = np.sum(input_image)
+    out = input_image / sum
 
     print file
     print out

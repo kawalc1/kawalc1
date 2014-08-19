@@ -3,7 +3,7 @@ import json
 import processprobs as pp
 
 
-class ProcessProbsTest(unittest.TestCase):
+class ProcessProbabilitiesTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -12,12 +12,12 @@ class ProcessProbsTest(unittest.TestCase):
         json_file.close()
 
     def test_json_is_read_correctly(self):
-        numpy_table = pp.readjson(self.json_data)
+        numpy_table = pp.read_json(self.json_data)
         self.assertEqual(numpy_table[0][0], 0.00017933209892362356)
 
-    def test_getpossibleoutcomes_returns_correct_outcome(self):
-        numpy_table = pp.readjson(self.json_data)
-        outcomes = pp.getpossibleoutcomes(numpy_table, 10)
+    def test_get_possible_outcomes_returns_correct_outcome(self):
+        numpy_table = pp.read_json(self.json_data)
+        outcomes = pp.get_possible_outcomes(numpy_table, 10)
         most_likely = outcomes[0]
 
         self.assertEqual(most_likely['jokowi'], 186)

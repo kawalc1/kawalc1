@@ -87,7 +87,7 @@ def print_possible(after_reduction):
     return outcomes
 
 
-def getpossibleoutcomes(all_squares, categories_count):
+def get_possible_outcomes(all_squares, categories_count):
     all_numbers_matrix = all_squares.reshape(4, 3, categories_count)
 
     def matrix_to_number(number_matrix):
@@ -111,11 +111,11 @@ def getpossibleoutcomes(all_squares, categories_count):
     return print_possible(results[0:NUMBER_COUNT])
 
 
-def readjson(data):
+def read_json(data):
     rows = data["probabilities"]
-    probmatrix = np.ndarray(shape=(12, 10), dtype='f')
+    probability_matrix = np.ndarray(shape=(12, 10), dtype='f')
 
     for i, row in enumerate(rows):
-        probmatrix[i] = row
+        probability_matrix[i] = row
 
-    return probmatrix
+    return probability_matrix
