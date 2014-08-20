@@ -27,7 +27,7 @@ def get_avg_border_distance(ar, index):
     bpix = 0.0
     for idx0, idx1 in zip(xs, ys):
         if idx0 < 2 or idx0 > w - 2 or idx1 < 2 or idx1 > h - 2:
-            bpix = bpix + 1
+            bpix += 1
     return bpix / float(len(xs))
 
 
@@ -51,7 +51,7 @@ def process_image(cropped):
         output_image = Image.fromarray(np.zeros((28, 28)))
         top = int((28 - mnist_size[1])) / 2
         box = 3, top
-        #digits[i]=np.array(outputim)
+        # digits[i]=np.array(outputim)
         output_image.paste(test_im, box)
         return output_image
 
@@ -65,12 +65,12 @@ def process_signature(signatures, structuring_element, i, signature):
     maxsize = 0
     for j in range(1, nrOfObjects + 1):
         if sizes[j] < 11:
-            continue  #this is too small to be a number
+            continue  # this is too small to be a number
         maxy, miny, maxx, minx = get_bounding_box(signatures[i], j)
         if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
-            continue  #this is likely a border artifact
+            continue  # this is likely a border artifact
         borderdist = get_avg_border_distance(signatures[i], j)
-        #print borderdist
+        # print borderdist
         if borderdist > 0.2:
             continue  #this is likely a border artifact
 
@@ -113,7 +113,7 @@ def extract(file, targetpath):
 
     signatures = [image[932:972, 597:745], image[977:1018, 597:745]]
 
-    #save the digits
+    # save the digits
     head, tail = os.path.split(file)
     tail_part, ext = os.path.splitext(tail)
 
@@ -135,9 +135,9 @@ def extract(file, targetpath):
             maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
             if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
                 continue  #this is likely a border artifact
-            borderdist = get_avg_border_distance(digits[i], j)
+            border_dist = get_avg_border_distance(digits[i], j)
             #print borderdist
-            if (borderdist > 0.2):
+            if border_dist > 0.2:
                 continue  #this is likely a border artifact
 
             if sizes[j] > maxSize:
@@ -183,10 +183,10 @@ def extract(file, targetpath):
             extracted = join(output_dir, digit_file)
             cv2.imwrite(extracted, digit)
 
-            ret, thresholdedTif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
+            ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
             digit_tif = tail_part + "~" + str(i) + ".tif"
             extracted_tif = join(output_dir, digit_tif)
-            cv2.imwrite(extracted_tif, thresholdedTif)
+            cv2.imwrite(extracted_tif, thresholded_tif)
 
             if imageclassifier.is_probably_x(extracted_tif, orderx, layersx):
                 continue

@@ -27,14 +27,14 @@ def classify_number(input_file, order, layers):
         if type == 'conv':
             input_image = convolve_image_stack(input_image, layers[layer_name])
         elif type == 'pool':
-            input_image = poolImageStack(input_image, layers[layer_name])
+            input_image = pool_image_stack(input_image, layers[layer_name])
         else:
             if first_fully_connected:
                 input_image = np.swapaxes(input_image, 1, 2)
                 input_image = np.swapaxes(input_image, 0, 1)
                 input_image = input_image.flatten('C')
                 first_fully_connected = False
-            input_image = applyFullyConnected(input_image, layers[layer_name])
+            input_image = apply_fully_connected(input_image, layers[layer_name])
 
         #input image now contains the raw network output, apply softmax
     input_image = np.exp(input_image)
@@ -100,7 +100,7 @@ def convolve_image_stack(inputim, (channels, filters, filterSize, padding, dropo
         return results
 
 
-def poolImageStack(images, (outputDim, filterSize, stride, operation, neuron)):
+def pool_image_stack(images, (outputDim, filterSize, stride, operation, neuron)):
     results = np.zeros((outputDim, outputDim, images.shape[2]))
     for l in range(images.shape[2]):
         tempres = ndimage.filters.maximum_filter(images[:, :, l], size=(filterSize, filterSize))
@@ -114,7 +114,7 @@ def poolImageStack(images, (outputDim, filterSize, stride, operation, neuron)):
         return results
 
 
-def applyFullyConnected(images, (dropout, neuron, bias, weights)):
+def apply_fully_connected(images, (dropout, neuron, bias, weights)):
     results = np.dot(images, weights) + bias
 
     if neuron == 'relu':
