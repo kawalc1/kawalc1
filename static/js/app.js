@@ -8,7 +8,7 @@
  */
 var app = angular.module('app',
 	['flow', 'ui.bootstrap', 'imageProcessingControllers', 'imageProcessingServices',
-		'pascalprecht.translate', 'ngRoute'
+		'pascalprecht.translate', 'ngRoute', 'ngCookies'
 	]);
 
 app.config(function($routeProvider) {
@@ -43,7 +43,7 @@ app.config(['flowFactoryProvider', function(flowFactoryProvider) {
 app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
-		TITLE: 'Guarding C1 - Automatic verification of election forms',
+		TITLE: 'Guarding C1 - Automatic Verification of Election Forms',
 		VERSION: 'Version 0.8 - August 17, 2014',
 		INTRODUCTION: 'This application automatically counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
@@ -52,22 +52,22 @@ app.config(function($translateProvider) {
 		PAGE_ABOUT: 'About',
 		PAGE_FAQ: 'FAQ',
 		PAGE_CONTACT: 'Contact',
-		UPLOAD_TITLE: 'Upload form',
+		UPLOAD_TITLE: 'Upload Form',
 		UPLOAD_BUTTON: 'Browse',
-		DETECTION_TITLE: 'Detect numbers',
+		DETECTION_TITLE: 'Detect Numbers',
 		UPLOAD_CANCEL: 'Cancel',
 		UPLOAD_ERROR_EXCUSE: 'Excuse me',
 		UPLOAD_ERROR_DIAGNOSIS: 'it seems the numbers in the form could not be recognized.',
 		UPLOAD_ERROR_SUGGESTION: 'Are you sure you uploaded the correct form?',
-		VERIFICATION_TITLE: 'Verify data',
+		VERIFICATION_TITLE: 'Verify Data',
 		SAMPLE_WARNING: 'Notice:',
 		SAMPLE_MESSAGE: 'currently this software still has problems detecting crosses.',
 		BUTTON_CORRECT: 'Correct',
 		BUTTON_NOT_CORRECT: 'Not Correct',
-		CORRECTION_TITLE: 'Correct data',
+		CORRECTION_TITLE: 'Correct Data',
 		BUTTON_SEND: 'Send',
 		BUTTON_RESTART: 'Upload another form',
-		LINK_DOWNLOAD_FORMS: 'Download some more example forms (1 MB)',
+		LINK_DOWNLOAD_FORMS: 'Download More Example Forms (1 MB)',
 		SUBMITTED_THANKS: 'Thank you:',
 		SUBMITTED_MESSAGE: 'the form has been submitted.',
 		FORM_CANDIDATE: 'Candidate',
@@ -79,9 +79,9 @@ app.config(function($translateProvider) {
 		SIGNATURE_ABSENT: 'Missing'
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
-		TITLE: 'Kawal C1 - Verifikasi formulir secara otomatis',
+		TITLE: 'Kawal C1 - Verifikasi Formulir Secara Otomatis',
 		VERSION: 'Versi 0.8 - 17 Aug 2014',
-		INTRODUCTION: 'Applikasi ini dapat menghitung otomatis hasil formulir C1',
+		INTRODUCTION: 'Aplikasi ini dapat menghitung otomatis hasil formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK : 'formulir ini',
 		PAGE_HOME: 'Beranda',
@@ -89,21 +89,21 @@ app.config(function($translateProvider) {
 		PAGE_FAQ: 'FAQ',
 		PAGE_CONTACT: 'Kontak',
 		UPLOAD_TITLE: 'Unggah C1',
-		UPLOAD_BUTTON: 'Pilih formulir',
-		DETECTION_TITLE: 'Deteksi angka',
+		UPLOAD_BUTTON: 'Pilih Formulir',
+		DETECTION_TITLE: 'Deteksi Angka',
 		UPLOAD_CANCEL: 'Batal',
 		UPLOAD_ERROR_EXCUSE: 'Mohon maaf',
 		UPLOAD_ERROR_DIAGNOSIS: 'sepertinya angka2 dalam formulir ini tidak bisa terdeksi.',
 		UPLOAD_ERROR_SUGGESTION: 'Apakah formulir ini memang formulir yang benar?',
-		VERIFICATION_TITLE: 'Verifikasi data',
+		VERIFICATION_TITLE: 'Verifikasi Data',
 		SAMPLE_WARNING: 'Perhatian:',
 		SAMPLE_MESSAGE: 'saat ini aplikasi ini masih bermasalah dalam mendeteksi X.',
 		BUTTON_CORRECT: 'Sesuai',
 		BUTTON_NOT_CORRECT: 'Tidak Sesuai',
-		CORRECTION_TITLE: 'Koreksi data',
+		CORRECTION_TITLE: 'Koreksi Data',
 		BUTTON_SEND: 'Kirim',
 		BUTTON_RESTART: 'Unggah formulir lain',
-		LINK_DOWNLOAD_FORMS: 'Mengunduh formulir contoh tambahan (1 MB)',
+		LINK_DOWNLOAD_FORMS: 'Unduh Formulir Contoh Tambahan (1 MB)',
 		SUBMITTED_THANKS: 'Terima kasih:',
 		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.',
 		FORM_CANDIDATE: 'Calon',
@@ -114,26 +114,4 @@ app.config(function($translateProvider) {
 		SIGNATURE_PRESENT: 'Ada',
 		SIGNATURE_ABSENT: 'Tidak ada'
 	});
-	$translateProvider.determinePreferredLanguage(function($routeParams) {
-		var searchParam = window.location.search;
-		if (searchParam !== '') {
-			var arg = searchParam.split('&')[0];
-			return arg.split('=')[1];
-		}
-		return 'id';
-//		var navigator = window.navigator;
-//		var language = 'en-US';
-//		if (navigator.language !== undefined) {
-//			language = navigator.language;
-//		}
-//		if (navigator.userLanguage !== undefined) {
-//			language = navigator.userLanguage;
-//		}
-//		var browserLang = language.substr(0, 2);
-//		if (browserLang === 'id' || browserLang === 'ms') {
-//			return 'id';
-//		}
-//		return 'en';
-	});
-
 });

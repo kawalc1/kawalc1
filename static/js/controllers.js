@@ -5,12 +5,25 @@
 var imageProcessingControllers = angular.module('imageProcessingControllers', []);
 
 imageProcessingControllers.controller('PageController',
-	['$scope', '$translate', '$route', function($scope, $translate, $route) {
-		$scope.currentLangue = $translate.use();
+	['$scope', '$translate', '$route', '$cookies', function($scope, $translate, $route, $cookies) {
+		var supportedLanguages = ['id', 'en'];
+		var cookieLanguage = $cookies.language;	
+		
+		if (cookieLanguage === undefined || supportedLanguages.indexOf(cookieLanguage) === 0) {
+			// Set Indonesian as Default Language
+			cookieLanguage = 'id';
+			$cookies.language = cookieLanguage;
+		}
+		
+		$translate.use(cookieLanguage);
+		$scope.currentLangue = cookieLanguage;
 		$scope.route = $route;
+		
+		// Switch Language Function
 		$scope.switchLang = function(langKey) {
 			$translate.use(langKey);
-			$scope.currentLangue = langKey;
+			$scope.currentLangue = langKey;	
+			$cookies.language = langKey;
 		};
 	}]);
 
