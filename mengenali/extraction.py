@@ -72,7 +72,7 @@ def process_signature(signatures, structuring_element, i, signature):
         borderdist = get_avg_border_distance(signatures[i], j)
         # print borderdist
         if borderdist > 0.2:
-            continue  #this is likely a border artifact
+            continue  # this is likely a border artifact
 
         if sizes[j] > maxsize:
             maxsize = sizes[j]
@@ -88,15 +88,11 @@ def prepare_results(images):
     return results
 
 
-def extract(file_name, targetpath):
+def cut_images_and_signatures(file_name, targetpath):
     image = Image.open(join(targetpath, file_name))
     image.load()
-    output_dir = join(targetpath, 'extracted')
-
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
-
     image = np.array(pil_im)
-
     # cut out the digits
     digits = [image[261:323, 693:721],
               image[261:323, 726:754],
@@ -110,22 +106,17 @@ def extract(file_name, targetpath):
               image[463:525, 693:721],
               image[463:525, 726:754],
               image[463:525, 759:787]]
-
     signatures = [image[932:972, 597:745], image[977:1018, 597:745]]
+    return digits, signatures
 
-    # save the digits
-    head, tail = os.path.split(file_name)
-    tail_part, ext = os.path.splitext(tail)
 
-    #create atructureing element for the connected component analysis
-    s = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-
+def pre_process_digits(digits, structuring_element):
     for i, digit in enumerate(digits):
         ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
 
-        #do connected component analysis
-        digits[i], nr_of_objects = ndimage.measurements.label(thresholded, s)
-        #determine the sizes of the objects
+        # do connected component analysis
+        digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
+        # determine the sizes of the objects
         sizes = np.bincount(np.reshape(digits[i], -1))
         selected_object = -1
         max_size = 0
@@ -155,10 +146,24 @@ def extract(file_name, targetpath):
 
         outputim = process_image(cropped)
         digits[i] = np.array(outputim)
+
+
+def extract(file_name, targetpath):
+    digits, signatures = cut_images_and_signatures(file_name, targetpath)
+
+    # save the digits
+    head, tail = os.path.split(file_name)
+    base_file_name, ext = os.path.splitext(tail)
+
+    # create atructureing element for the connected component analysis
+    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
+
+    output_dir = join(targetpath, 'extracted')
     for i, signature in enumerate(signatures):
-        is_valid = process_signature(signatures, s, i, signature)
-        signature_file = tail_part + "~sign~" + str(i) + ".jpg"
+        is_valid = process_signature(signatures, structuring_element, i, signature)
+        signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
         extracted = join(output_dir, signature_file)
         cv2.imwrite(extracted, signature)
         signature_result[i]["filename"] = 'extracted/' + signature_file
@@ -179,12 +184,12 @@ def extract(file_name, targetpath):
 
     for i, digit in enumerate(digits):
         if digit is not None:
-            digit_file = tail_part + "~" + str(i) + ".jpg"
+            digit_file = base_file_name + "~" + str(i) + ".jpg"
             extracted = join(output_dir, digit_file)
             cv2.imwrite(extracted, digit)
 
             ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
-            digit_tif = tail_part + "~" + str(i) + ".tif"
+            digit_tif = base_file_name + "~" + str(i) + ".tif"
             extracted_tif = join(output_dir, digit_tif)
             cv2.imwrite(extracted_tif, thresholded_tif)
 
