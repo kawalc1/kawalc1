@@ -80,7 +80,7 @@ def process_signature(signatures, structuring_element, i, signature):
     return selected_object != -1
 
 
-def prepareResults(images):
+def prepare_results(images):
     results = []
     for i in range(0, len(images)):
         entry = {"index": i, "filename": 'img/empty.png'}
@@ -88,8 +88,8 @@ def prepareResults(images):
     return results
 
 
-def extract(file, targetpath):
-    image = Image.open(join(targetpath, file))
+def extract(file_name, targetpath):
+    image = Image.open(join(targetpath, file_name))
     image.load()
     output_dir = join(targetpath, 'extracted')
 
@@ -114,7 +114,7 @@ def extract(file, targetpath):
     signatures = [image[932:972, 597:745], image[977:1018, 597:745]]
 
     # save the digits
-    head, tail = os.path.split(file)
+    head, tail = os.path.split(file_name)
     tail_part, ext = os.path.splitext(tail)
 
     #create atructureing element for the connected component analysis
@@ -124,12 +124,12 @@ def extract(file, targetpath):
         ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
 
         #do connected component analysis
-        digits[i], nrOfObjects = ndimage.measurements.label(thresholded, s)
+        digits[i], nr_of_objects = ndimage.measurements.label(thresholded, s)
         #determine the sizes of the objects
         sizes = np.bincount(np.reshape(digits[i], -1))
-        selectedObject = -1
-        maxSize = 0
-        for j in range(1, nrOfObjects + 1):
+        selected_object = -1
+        max_size = 0
+        for j in range(1, nr_of_objects + 1):
             if sizes[j] < 11:
                 continue  #this is too small to be a number
             maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
@@ -140,35 +140,35 @@ def extract(file, targetpath):
             if border_dist > 0.2:
                 continue  #this is likely a border artifact
 
-            if sizes[j] > maxSize:
-                maxSize = sizes[j]
-                selectedObject = j
+            if sizes[j] > max_size:
+                max_size = sizes[j]
+                selected_object = j
 
-        if selectedObject == -1:
+        if selected_object == -1:
             digits[i] = None
             continue
 
-        loc = ndimage.find_objects(digits[i])[selectedObject - 1]
+        loc = ndimage.find_objects(digits[i])[selected_object - 1]
         cropped = digits[i][loc]
         #replace the shape number by 255
-        cropped[cropped == selectedObject] = 255
+        cropped[cropped == selected_object] = 255
 
         outputim = process_image(cropped)
         digits[i] = np.array(outputim)
-    signatureResult = prepareResults(signatures)
+    signature_result = prepare_results(signatures)
     for i, signature in enumerate(signatures):
         is_valid = process_signature(signatures, s, i, signature)
-        signatureFile = tail_part + "~sign~" + str(i) + ".jpg"
-        extracted = join(output_dir, signatureFile)
+        signature_file = tail_part + "~sign~" + str(i) + ".jpg"
+        extracted = join(output_dir, signature_file)
         cv2.imwrite(extracted, signature)
-        signatureResult[i]["filename"] = 'extracted/' + signatureFile
-        signatureResult[i]["isValid"] = is_valid
+        signature_result[i]["filename"] = 'extracted/' + signature_file
+        signature_result[i]["isValid"] = is_valid
         #return False
 
-    digitResult = prepareResults(digits)
+    digit_result = prepare_results(digits)
 
-    order, layers = imageclassifier.parse_network(join(targetpath, "network10.xml"))
-    orderx, layersx = imageclassifier.parse_network(join(targetpath, "network11.xml"))
+    order, layers = imageclassifier.parse_network(join(targetpath, "datasets/network10.xml"))
+    orderx, layersx = imageclassifier.parse_network(join(targetpath, "datasets/network11.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
     #fill with 0 as most likely by default
@@ -192,9 +192,9 @@ def extract(file, targetpath):
                 continue
             probmatrix[i] = imageclassifier.classify_number(extracted_tif, order, layers)
 
-            digitResult[i]["filename"] = 'extracted/' + digit_file
+            digit_result[i]["filename"] = 'extracted/' + digit_file
 
-    result = {"digits": digitResult, "signatures": signatureResult, "probabilities": probmatrix.tolist()}
+    result = {"digits": digit_result, "signatures": signature_result, "probabilities": probmatrix.tolist()}
     print >> None, result
 
     return json.dumps(result)

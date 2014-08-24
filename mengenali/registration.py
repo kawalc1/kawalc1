@@ -13,7 +13,7 @@ def create_response(badImageFileName, success):
 
 
 def process_file(resultWriter, count, root, file):
-    reference = cv2.imread(join(root, 'referenceform.jpg'), 0)
+    reference = cv2.imread(join(root, 'datasets/referenceform.jpg'), 0)
     print >> resultWriter, "read reference"
     orb = cv2.SIFT()
     kp2, des2 = orb.detectAndCompute(reference, None)
