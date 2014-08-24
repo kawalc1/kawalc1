@@ -51,6 +51,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.correction = null;
 		$scope.submitted = null;
 		$scope.correct = null;
+        $scope.digitArea = null;
 
 		$scope.numbersAddUp = function() {
 			if ($scope.mostProbableOutcome === null) {
@@ -74,6 +75,10 @@ imageProcessingControllers.controller('imageRegistrationController',
 		$scope.hasRegistrationFailed = function() {
 			return $scope.registrationFailed === true;
 		};
+
+        $scope.isAreaSelected = function() {
+            return $scope.digitArea !== null
+        };
 
 		$scope.hasExtractionSucceeded = function() {
 			return $scope.hasUploadFinished() && !$scope.hasRegistrationFailed() &&
@@ -124,6 +129,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 						$scope.extractedImages = result.digits;
 						$scope.signatures = result.signatures;
 						$scope.registrationFailed = false;
+                        $scope.digitArea = result.digitArea;
 						$scope.getResult(result.probabilities);
 					}).error(function() {
 						$scope.registrationFailed = true;

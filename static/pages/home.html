@@ -3,9 +3,10 @@
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
      flow-file-success="setImage($message)">
-<div class="introduction fader" ng-hide="$flow.files.length" >
-    {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank" download="1773007-005324400804.jpg"
-                                         href="img/forms/1773007-005324400804.jpg">{{
+<div class="introduction fader" ng-hide="$flow.files.length">
+    {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank"
+                                                                                download="1773007-005324400804.jpg"
+                                                                                href="img/forms/1773007-005324400804.jpg">{{
     'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
 </div>
 <div class="block column"
@@ -13,12 +14,15 @@
 
     <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
 
-    <div>
+    <div class="result">
         <img ng-src="{{uploadUrl}}" class="thumbnail"
-             ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
-        <img class="thumbnail" flow-img="$flow.files[0]"
+             ng-hide="(hasUploadFinished() && hasRegistrationFailed()) || isAreaSelected()"/>
+        <img ng-src="{{digitArea}}" class="uploadedImage"
+             ng-show="isAreaSelected()"/>
+        <img ng-class="{uploadedImage: true}" flow-img="$flow.files[0]"
              ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
-
+    </div>
+    <div>
         <div class="progress progress-striped"
              ng-class="{active: $flow.file.isUploading()}"
              ng-show="$flow.files.length && !hasUploadFinished()">
@@ -27,8 +31,6 @@
                 <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
             </div>
         </div>
-    </div>
-    <div>
             <span class="btn btn-primary" ng-hide="$flow.files.length" flow-btn
                   flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</span>
     </div>

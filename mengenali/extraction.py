@@ -88,8 +88,8 @@ def prepare_results(images):
     return results
 
 
-def cut_images_and_signatures(file_name, targetpath):
-    image = Image.open(join(targetpath, file_name))
+def cut_digits_and_signatures(directory, file_name):
+    image = Image.open(join(directory, file_name))
     image.load()
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
     image = np.array(pil_im)
@@ -107,10 +107,11 @@ def cut_images_and_signatures(file_name, targetpath):
               image[463:525, 726:754],
               image[463:525, 759:787]]
     signatures = [image[932:972, 597:745], image[977:1018, 597:745]]
-    return digits, signatures
+    digit_araea = [image[258:527, 621:799]]
+    return digits, signatures, digit_araea
 
 
-def pre_process_digits(digits, structuring_element):
+def pre_process_digits(digits, structuring_element, filter_invalids=True):
     for i, digit in enumerate(digits):
         ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
 
@@ -122,45 +123,58 @@ def pre_process_digits(digits, structuring_element):
         max_size = 0
         for j in range(1, nr_of_objects + 1):
             if sizes[j] < 11:
-                continue  #this is too small to be a number
+                if filter_invalids:
+                    continue  #this is too small to be a number
             maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
-            if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
-                continue  #this is likely a border artifact
+            if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
+                if filter_invalids:
+                    continue  #this is likely a border artifact
             border_dist = get_avg_border_distance(digits[i], j)
             #print borderdist
             if border_dist > 0.2:
-                continue  #this is likely a border artifact
+                if filter_invalids:
+                    continue  #this is likely a border artifact
 
             if sizes[j] > max_size:
                 max_size = sizes[j]
                 selected_object = j
 
-        if selected_object == -1:
+        if selected_object == -1 and filter_invalids:
             digits[i] = None
             continue
 
-        loc = ndimage.find_objects(digits[i])[selected_object - 1]
+        if selected_object == -1 and not filter_invalids:
+            loc = (slice(25L, 42L, None), slice(8L, 13L, None))
+        else:
+            loc = ndimage.find_objects(digits[i])[selected_object - 1]
+
         cropped = digits[i][loc]
+
         #replace the shape number by 255
         cropped[cropped == selected_object] = 255
 
-        outputim = process_image(cropped)
-        digits[i] = np.array(outputim)
+        output_image = process_image(cropped)
+        digits[i] = np.array(output_image)
 
 
 def extract(file_name, targetpath):
-    digits, signatures = cut_images_and_signatures(file_name, targetpath)
+    digits, signatures, digit_araea = cut_digits_and_signatures(targetpath, file_name)
 
-    # save the digits
     head, tail = os.path.split(file_name)
     base_file_name, ext = os.path.splitext(tail)
 
-    # create atructureing element for the connected component analysis
+    output_dir = join(targetpath, 'extracted')
+    # save
+    digit_area_file = base_file_name + "~digit-area.jpg"
+    digit_area_path = join(output_dir, digit_area_file)
+    cv2.imwrite(digit_area_path, digit_araea[0])
+
+    # create structureing element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
 
-    output_dir = join(targetpath, 'extracted')
+
     for i, signature in enumerate(signatures):
         is_valid = process_signature(signatures, structuring_element, i, signature)
         signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
@@ -199,7 +213,7 @@ def extract(file_name, targetpath):
 
             digit_result[i]["filename"] = 'extracted/' + digit_file
 
-    result = {"digits": digit_result, "signatures": signature_result, "probabilities": probmatrix.tolist()}
+    result = {"digits": digit_result, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result, "probabilities": probmatrix.tolist()}
     print >> None, result
 
     return json.dumps(result)
