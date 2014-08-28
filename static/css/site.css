@@ -404,21 +404,6 @@ input::-webkit-inner-spin-button {
     right: 0;
 }
 
-/*.success img.uploadedImage {*/
-    /*clip: rect(67px, 173px, 140px, 121px);*/
-    /*height: 304px;*/
-    /*left: 308px;*/
-    /*position: absolute;*/
-    /*top: 371px;*/
-    /*transform: scale(3.5);*/
-    /*zoom: 2;*/
-    /*-moz-transform: scale(3.5);*/
-    /*-o-transform: scale(3.5);*/
-    /*-webkit-transform: scale(3.5);*/
-
-    /*width: 174px;*/
-/*}*/
-
 .thumbnail.sampleForm {
     float: right;
     width: 320px;

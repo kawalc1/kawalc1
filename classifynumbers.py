@@ -56,7 +56,7 @@ def get_human_classification():
 def get_joint_result_string(human_results):
     result = ""
     for human_result in human_results:
-        result += "{0:9>3}".format(human_result)
+        result += "{0:0>3}".format(human_result)
     return result
 
 
