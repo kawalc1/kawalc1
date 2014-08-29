@@ -51,22 +51,27 @@ imageProcessingControllers.controller('FormCarouselController',
 
 imageProcessingControllers.controller('imageRegistrationController',
 	['$scope', '$http', function($scope, $http) {
-		var placeHolderUrl = 'img/placeholder.jpg';
-		$scope.uploadUrl = placeHolderUrl;
-		$scope.progress = 0;
-		$scope.numbers = null;
-		$scope.extractedImages = [];
-		$scope.signatures = [];
-		$scope.Math = window.Math;
-		$scope.registrationFailed = null;
-		$scope.extractionFinished = false;
-		$scope.mostProbableOutcome = null;
-		$scope.correction = null;
-		$scope.submitted = null;
-		$scope.correct = null;
-        $scope.digitArea = null;
+        init();
 
-		$scope.numbersAddUp = function() {
+        function init() {
+            var placeHolderUrl = 'img/placeholder.jpg';
+            $scope.uploadUrl = placeHolderUrl;
+            $scope.progress = 0;
+            $scope.numbers = null;
+            $scope.extractedImages = [];
+            $scope.signatures = [];
+            $scope.Math = window.Math;
+            $scope.registrationFailed = null;
+            $scope.extractionFinished = false;
+            $scope.mostProbableOutcome = null;
+            $scope.correction = null;
+            $scope.submitted = null;
+            $scope.correct = null;
+            $scope.digitArea = null;
+            return placeHolderUrl;
+        }
+        var placeHolderUrl = init();
+        $scope.numbersAddUp = function() {
 			if ($scope.mostProbableOutcome === null) {
 				return true;
 			}
@@ -108,7 +113,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 		};
 
 		$scope.abort = function() {
-			location.reload();
+			init();
 		};
 
 		$scope.getResult = function(probabilityMatrix) {
