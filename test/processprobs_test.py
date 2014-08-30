@@ -7,7 +7,7 @@ class ProcessProbabilitiesTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        json_file = open('test/sample.json')
+        json_file = open('test/resources/probabilities/1773007-005324400804.json')
         cls.json_data = json.load(json_file)
         json_file.close()
 

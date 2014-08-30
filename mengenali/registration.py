@@ -8,37 +8,37 @@ import json
 from os.path import join
 
 
-def create_response(badImageFileName, success):
-    return json.dumps({'transformedUrl': badImageFileName, 'success': success}, separators=(',', ':'))
+def create_response(bad_image_file_name, success):
+    return json.dumps({'transformedUrl': bad_image_file_name, 'success': success}, separators=(',', ':'))
 
 
-def process_file(resultWriter, count, root, file):
+def process_file(result_writer, count, root, file_name):
     reference = cv2.imread(join(root, 'datasets/referenceform.jpg'), 0)
-    print >> resultWriter, "read reference"
+    print >> result_writer, "read reference"
     orb = cv2.SIFT()
     kp2, des2 = orb.detectAndCompute(reference, None)
 
-    img1 = cv2.imread(join(root + '/upload', file), 0)
-    print >> resultWriter, "read upload"
-    kp1, des1 = orb.detectAndCompute(img1, None)
-    print >> resultWriter, "detected orb"
+    image = cv2.imread(join(root + '/upload', file_name), 0)
+    print >> result_writer, "read upload"
+    kp1, des1 = orb.detectAndCompute(image, None)
+    print >> result_writer, "detected orb"
     bf = cv2.BFMatcher(cv2.NORM_L2)
     raw_matches = bf.knnMatch(des1, trainDescriptors=des2, k=2)
-    print >> resultWriter, "knn matched"
+    print >> result_writer, "knn matched"
     matches = filter_matches(kp1, kp2, raw_matches)
     mkp1, mkp2 = zip(*matches)
     p1 = np.float32([kp.pt for kp in mkp1])
     p2 = np.float32([kp.pt for kp in mkp2])
-    print >> resultWriter, "starting RANSAC"
+    print >> result_writer, "starting RANSAC"
     M, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-    print >> resultWriter, "RANSAC finished"
+    print >> result_writer, "RANSAC finished"
     homography, transform = check_homography(M)
 
     good_enough_match = check_match(homography, transform)
 
     h, w = reference.shape
-    image_transformed = cv2.warpPerspective(img1, M, (w, h))
-    print >> resultWriter, "transformed image"
+    image_transformed = cv2.warpPerspective(image, M, (w, h))
+    print >> result_writer, "transformed image"
     if good_enough_match:
         # save the images
         head, tail = os.path.split(file)
@@ -46,16 +46,16 @@ def process_file(resultWriter, count, root, file):
         good_image_file_name = "~trans~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
         good_image = join(root + '/transformed', good_image_file_name)
         cv2.imwrite(good_image, image_transformed)
-        print >> resultWriter, "good image"
-        print_result(resultWriter, count, good_image, homography, transform, "good")
+        print >> result_writer, "good image"
+        print_result(result_writer, count, good_image, homography, transform, "good")
         return create_response(good_image_file_name, True)
     else:
         head, tail = os.path.split(file)
         bad_image_file_name = "~bad~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
         bad_image = join(root + '/transformed', bad_image_file_name)
         cv2.imwrite(bad_image, image_transformed)
-        print >> resultWriter, "bad image"
-        print_result(resultWriter, count, bad_image, homography, transform, "bad")
+        print >> result_writer, "bad image"
+        print_result(result_writer, count, bad_image, homography, transform, "bad")
         return create_response(bad_image_file_name, False)
 
 
@@ -96,7 +96,7 @@ def check_homography(M):
         return (homography, 0)
 
 
-def print_result(resultWriter, iteration, file, homography, transform, result):
+def print_result(result_writer, iteration, file, homography, transform, result):
     row = [str(iteration), file, str(datetime.datetime.now()), homography, transform, result]
-    print >> resultWriter, "output: " + str(row)
+    print >> result_writer, "output: " + str(row)
     print row
