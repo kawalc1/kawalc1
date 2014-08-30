@@ -8,17 +8,17 @@ import json
 from os.path import join
 
 
-def create_response(bad_image_file_name, success):
-    return json.dumps({'transformedUrl': bad_image_file_name, 'success': success}, separators=(',', ':'))
+def create_response(image_file_name, success):
+    return json.dumps({'transformedUrl': image_file_name, 'success': success}, separators=(',', ':'))
 
 
-def process_file(result_writer, count, root, file_name):
-    reference = cv2.imread(join(root, 'datasets/referenceform.jpg'), 0)
+def register_image(file_path, reference_form_path, output_path, result_writer):
+    reference = cv2.imread(reference_form_path, 0)
     print >> result_writer, "read reference"
     orb = cv2.SIFT()
     kp2, des2 = orb.detectAndCompute(reference, None)
 
-    image = cv2.imread(join(root + '/upload', file_name), 0)
+    image = cv2.imread(file_path, 0)
     print >> result_writer, "read upload"
     kp1, des1 = orb.detectAndCompute(image, None)
     print >> result_writer, "detected orb"
@@ -39,24 +39,30 @@ def process_file(result_writer, count, root, file_name):
     h, w = reference.shape
     image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
     print >> result_writer, "transformed image"
+    head, tail = os.path.split(file_path)
     if good_enough_match:
         # save the images
-        head, tail = os.path.split(file_name)
         #transformed image
         good_image_file_name = "~trans~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
-        good_image = join(root + '/transformed', good_image_file_name)
+        good_image = join(output_path, good_image_file_name)
         cv2.imwrite(good_image, image_transformed)
         print >> result_writer, "good image"
-        print_result(result_writer, count, good_image, homography, transform, "good")
+        print_result(result_writer, 0, good_image, homography, transform, "good")
         return create_response(good_image_file_name, True)
     else:
-        head, tail = os.path.split(file_name)
         bad_image_file_name = "~bad~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
-        bad_image = join(root + '/transformed', bad_image_file_name)
+        bad_image = join(output_path, bad_image_file_name)
         cv2.imwrite(bad_image, image_transformed)
         print >> result_writer, "bad image"
-        print_result(result_writer, count, bad_image, homography, transform, "bad")
+        print_result(result_writer, 0, bad_image, homography, transform, "bad")
         return create_response(bad_image_file_name, False)
+
+
+def process_file(result_writer, count, root, file_name):
+    image_path = join(root + '/upload', file_name)
+    reference_form_path = join(root, 'datasets/referenceform.jpg')
+    output_path = join(root, 'transformed')
+    return register_image(image_path, reference_form_path, output_path, result_writer)
 
 
 def check_match(homography, transform):
