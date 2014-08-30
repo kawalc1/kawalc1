@@ -30,18 +30,18 @@ def process_file(result_writer, count, root, file_name):
     p1 = np.float32([kp.pt for kp in mkp1])
     p2 = np.float32([kp.pt for kp in mkp2])
     print >> result_writer, "starting RANSAC"
-    M, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+    homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
     print >> result_writer, "RANSAC finished"
-    homography, transform = check_homography(M)
+    homography, transform = check_homography(homography_transform)
 
     good_enough_match = check_match(homography, transform)
 
     h, w = reference.shape
-    image_transformed = cv2.warpPerspective(image, M, (w, h))
+    image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
     print >> result_writer, "transformed image"
     if good_enough_match:
         # save the images
-        head, tail = os.path.split(file)
+        head, tail = os.path.split(file_name)
         #transformed image
         good_image_file_name = "~trans~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
         good_image = join(root + '/transformed', good_image_file_name)
@@ -50,7 +50,7 @@ def process_file(result_writer, count, root, file_name):
         print_result(result_writer, count, good_image, homography, transform, "good")
         return create_response(good_image_file_name, True)
     else:
-        head, tail = os.path.split(file)
+        head, tail = os.path.split(file_name)
         bad_image_file_name = "~bad~hom" + str(homography) + "~warp" + str(transform) + "~" + tail
         bad_image = join(root + '/transformed', bad_image_file_name)
         cv2.imwrite(bad_image, image_transformed)
@@ -78,25 +78,25 @@ def filter_matches(kp1, kp2, matches, ratio=0.75):
     return kp_pairs
 
 
-def check_homography(M):
-    homography = abs(M[0, 0] - M[1, 1])
+def check_homography(homography_transform):
+    homography = abs(homography_transform[0, 0] - homography_transform[1, 1])
     if homography > 0.01:
         # test=np.array([[10,20,20,10],[10,10,20,20],[1,1,1,1]])
         test = np.array([[10, 10, 1], [20, 10, 1], [20, 20, 1], [10, 20, 1]])
         #do the check
-        trans = np.dot(test, M)
+        trans = np.dot(test, homography_transform)
         #print trans
         dist1 = math.sqrt(math.pow(trans[0, 0] - trans[2, 0], 2) + math.pow(trans[0, 1] - trans[2, 1], 2))
         dist2 = math.sqrt(math.pow(trans[1, 0] - trans[3, 0], 2) + math.pow(trans[1, 1] - trans[3, 1], 2))
 
         measure = math.fabs((dist1 / dist2) - 1) - math.fabs((dist2 / dist1) - 1)
-        absmeasure = math.fabs(measure)
-        return (homography, absmeasure)
+        absolute_measure = math.fabs(measure)
+        return homography, absolute_measure
     else:
-        return (homography, 0)
+        return homography, 0
 
 
-def print_result(result_writer, iteration, file, homography, transform, result):
-    row = [str(iteration), file, str(datetime.datetime.now()), homography, transform, result]
+def print_result(result_writer, iteration, file_name, homography, transform, result):
+    row = [str(iteration), file_name, str(datetime.datetime.now()), homography, transform, result]
     print >> result_writer, "output: " + str(row)
     print row
