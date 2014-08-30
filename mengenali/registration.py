@@ -28,7 +28,7 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
     cv2.imwrite(image_path, image_transformed)
 
     result = "good" if good_enough_match else "bad"
-    logging.info("%s image: %s", result, transformed_image)
+    logging.info("%s image", result)
     # print_result(result_writer, 0, transformed_image, homography, transform, result)
     return transformed_image
 
