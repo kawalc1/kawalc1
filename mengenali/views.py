@@ -24,7 +24,8 @@ def handle_uploaded_file(f, filename):
 
 def extract(request):
     filename = request.GET.get("filename", "")
-    output = extraction.extract(filename, settings.STATIC_DIR)
+    output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+                                settings.STATIC_DIR)
     return HttpResponse(output)
 
 

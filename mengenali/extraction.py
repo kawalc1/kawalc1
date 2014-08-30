@@ -8,6 +8,7 @@ from os.path import join
 import json
 import imageclassifier
 import settings
+import logging
 
 
 def get_bounding_box(ar, index):
@@ -157,17 +158,17 @@ def pre_process_digits(digits, structuring_element, filter_invalids=True):
         digits[i] = np.array(output_image)
 
 
-def extract(file_name, targetpath):
-    digits, signatures, digit_araea = cut_digits_and_signatures(targetpath, file_name)
+def extract(file_name, source_path, target_path, dataset_path):
+    digits, signatures, digit_area = cut_digits_and_signatures(source_path, file_name)
 
     head, tail = os.path.split(file_name)
-    base_file_name, ext = os.path.splitext(tail)
+    full_file_name, ext = os.path.splitext(tail)
+    base_file_name = full_file_name.split('~')[-1]
 
-    output_dir = join(targetpath, 'extracted')
     # save
     digit_area_file = base_file_name + "~digit-area.jpg"
-    digit_area_path = join(output_dir, digit_area_file)
-    cv2.imwrite(digit_area_path, digit_araea[0])
+    digit_area_path = join(target_path, digit_area_file)
+    cv2.imwrite(digit_area_path, digit_area[0])
 
     # create structureing element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
@@ -177,7 +178,7 @@ def extract(file_name, targetpath):
     for i, signature in enumerate(signatures):
         is_valid = process_signature(signatures, structuring_element, i, signature)
         signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
-        extracted = join(output_dir, signature_file)
+        extracted = join(target_path, signature_file)
         cv2.imwrite(extracted, signature)
         signature_result[i]["filename"] = 'extracted/' + signature_file
         signature_result[i]["isValid"] = is_valid
@@ -185,8 +186,8 @@ def extract(file_name, targetpath):
 
     digit_result = prepare_results(digits)
 
-    order, layers = imageclassifier.parse_network(join(targetpath, "datasets/network10.xml"))
-    orderx, layersx = imageclassifier.parse_network(join(targetpath, "datasets/network11.xml"))
+    order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/network10.xml"))
+    orderx, layersx = imageclassifier.parse_network(join(dataset_path, "datasets/network11.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
     # fill with 0 as most likely by default
@@ -198,12 +199,12 @@ def extract(file_name, targetpath):
     for i, digit in enumerate(digits):
         if digit is not None:
             digit_file = base_file_name + "~" + str(i) + ".jpg"
-            extracted = join(output_dir, digit_file)
+            extracted = join(target_path, digit_file)
             cv2.imwrite(extracted, digit)
 
             ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
             digit_tif = base_file_name + "~" + str(i) + ".tif"
-            extracted_tif = join(output_dir, digit_tif)
+            extracted_tif = join(target_path, digit_tif)
             cv2.imwrite(extracted_tif, thresholded_tif)
 
             if imageclassifier.is_probably_x(extracted_tif, orderx, layersx):
@@ -214,6 +215,6 @@ def extract(file_name, targetpath):
 
     result = {"digits": digit_result, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result,
               "probabilities": probmatrix.tolist()}
-    print >> None, result
+    logging.info(result)
 
     return json.dumps(result)

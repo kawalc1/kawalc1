@@ -1,39 +1,39 @@
 {"digits": [
     {
         "index": 0,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~0.jpg"
+        "filename": "extracted/1773007-005324400804~0.jpg"
     },
     {
         "index": 1,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~1.jpg"
+        "filename": "extracted/1773007-005324400804~1.jpg"
     },
     {
         "index": 2,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~2.jpg"
+        "filename": "extracted/1773007-005324400804~2.jpg"
     },
     {
         "index": 3,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~3.jpg"
+        "filename": "extracted/1773007-005324400804~3.jpg"
     },
     {
         "index": 4,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~4.jpg"
+        "filename": "extracted/1773007-005324400804~4.jpg"
     },
     {
         "index": 5,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~5.jpg"
+        "filename": "extracted/1773007-005324400804~5.jpg"
     },
     {
         "index": 6,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~6.jpg"
+        "filename": "extracted/1773007-005324400804~6.jpg"
     },
     {
         "index": 7,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~7.jpg"
+        "filename": "extracted/1773007-005324400804~7.jpg"
     },
     {
         "index": 8,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~8.jpg"
+        "filename": "extracted/1773007-005324400804~8.jpg"
     },
     {
         "index": 9,
@@ -45,7 +45,7 @@
     },
     {
         "index": 11,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~11.jpg"
+        "filename": "extracted/1773007-005324400804~11.jpg"
     }
 ], "probabilities": [
     [0.00017933209892362356, 0.9815503358840942, 0.00024945850600488484, 0.0010599452070891857, 0.001296525471843779, 0.0003862755838781595, 0.0005774403689429164, 0.005882621742784977, 0.005443950649350882, 0.0033741260413080454],
@@ -64,11 +64,11 @@
     {
         "index": 0,
         "isValid": true,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~sign~0.jpg"
+        "filename": "extracted/1773007-005324400804~sign~0.jpg"
     },
     {
         "index": 1,
         "isValid": true,
-        "filename": "extracted/~trans~hom0.00199008604448~warp0~1773007-005324400804~sign~1.jpg"
+        "filename": "extracted/1773007-005324400804~sign~1.jpg"
     }
 ]}
