@@ -58,16 +58,16 @@ def process_image(cropped):
 
 def process_signature(signatures, structuring_element, i, signature):
     ret, thresholded = cv2.threshold(signature, 180, 1, type=cv2.THRESH_BINARY_INV)
-    signatures[i], nrOfObjects = ndimage.measurements.label(thresholded, structuring_element)
+    signatures[i], number_of_objects = ndimage.measurements.label(thresholded, structuring_element)
     # determine the sizes of the objects
     sizes = np.bincount(np.reshape(signatures[i], -1))
     selected_object = -1
     maxsize = 0
-    for j in range(1, nrOfObjects + 1):
+    for j in range(1, number_of_objects + 1):
         if sizes[j] < 11:
             continue  # this is too small to be a number
         maxy, miny, maxx, minx = get_bounding_box(signatures[i], j)
-        if (maxy - miny < 3 and (miny < 2 or maxy > 59) ) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
+        if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
             continue  # this is likely a border artifact
         borderdist = get_avg_border_distance(signatures[i], j)
         # print borderdist
@@ -124,16 +124,16 @@ def pre_process_digits(digits, structuring_element, filter_invalids=True):
         for j in range(1, nr_of_objects + 1):
             if sizes[j] < 11:
                 if filter_invalids:
-                    continue  #this is too small to be a number
+                    continue  # this is too small to be a number
             maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
             if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
                 if filter_invalids:
-                    continue  #this is likely a border artifact
+                    continue  # this is likely a border artifact
             border_dist = get_avg_border_distance(digits[i], j)
-            #print borderdist
+            # print borderdist
             if border_dist > 0.2:
                 if filter_invalids:
-                    continue  #this is likely a border artifact
+                    continue  # this is likely a border artifact
 
             if sizes[j] > max_size:
                 max_size = sizes[j]
@@ -150,7 +150,7 @@ def pre_process_digits(digits, structuring_element, filter_invalids=True):
 
         cropped = digits[i][loc]
 
-        #replace the shape number by 255
+        # replace the shape number by 255
         cropped[cropped == selected_object] = 255
 
         output_image = process_image(cropped)
@@ -174,7 +174,6 @@ def extract(file_name, targetpath):
     pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
 
-
     for i, signature in enumerate(signatures):
         is_valid = process_signature(signatures, structuring_element, i, signature)
         signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
@@ -182,7 +181,7 @@ def extract(file_name, targetpath):
         cv2.imwrite(extracted, signature)
         signature_result[i]["filename"] = 'extracted/' + signature_file
         signature_result[i]["isValid"] = is_valid
-        #return False
+        # return False
 
     digit_result = prepare_results(digits)
 
@@ -190,7 +189,7 @@ def extract(file_name, targetpath):
     orderx, layersx = imageclassifier.parse_network(join(targetpath, "datasets/network11.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
-    #fill with 0 as most likely by default
+    # fill with 0 as most likely by default
     probmatrix.fill(0.001)
     for (x, y), element in np.ndenumerate(probmatrix):
         if y == 0:
@@ -213,7 +212,8 @@ def extract(file_name, targetpath):
 
             digit_result[i]["filename"] = 'extracted/' + digit_file
 
-    result = {"digits": digit_result, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result, "probabilities": probmatrix.tolist()}
+    result = {"digits": digit_result, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result,
+              "probabilities": probmatrix.tolist()}
     print >> None, result
 
     return json.dumps(result)
