@@ -89,4 +89,4 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-CATEGORIES_COUNT = 10
+CATEGORIES_COUNT = 11

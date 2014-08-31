@@ -89,27 +89,27 @@ def prepare_results(images):
     return results
 
 
-def cut_digits_and_signatures(directory, file_name):
+def unsharp_image(directory, file_name):
     image = Image.open(join(directory, file_name))
     image.load()
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
-    image = np.array(pil_im)
-    # cut out the digits
-    digits = [image[261:323, 693:721],
-              image[261:323, 726:754],
-              image[261:323, 759:787],
-              image[327:389, 693:721],
-              image[327:389, 726:754],
-              image[327:389, 759:787],
-              image[395:457, 693:721],
-              image[395:457, 726:754],
-              image[395:457, 759:787],
-              image[463:525, 693:721],
-              image[463:525, 726:754],
-              image[463:525, 759:787]]
-    signatures = [image[932:972, 597:745], image[977:1018, 597:745]]
-    digit_araea = [image[258:527, 621:799]]
-    return digits, signatures, digit_araea
+    sharpened_image = np.array(pil_im)
+    return sharpened_image
+
+
+def cut_digits_and_signatures(unsharpened_image):
+    return [unsharpened_image[261:323, 693:721],
+            unsharpened_image[261:323, 726:754],
+            unsharpened_image[261:323, 759:787],
+            unsharpened_image[327:389, 693:721],
+            unsharpened_image[327:389, 726:754],
+            unsharpened_image[327:389, 759:787],
+            unsharpened_image[395:457, 693:721],
+            unsharpened_image[395:457, 726:754],
+            unsharpened_image[395:457, 759:787],
+            unsharpened_image[463:525, 693:721],
+            unsharpened_image[463:525, 726:754],
+            unsharpened_image[463:525, 759:787]]
 
 
 def pre_process_digits(digits, structuring_element, filter_invalids=True):
@@ -159,8 +159,9 @@ def pre_process_digits(digits, structuring_element, filter_invalids=True):
 
 
 def extract(file_name, source_path, target_path, dataset_path):
-    digits, signatures, digit_area = cut_digits_and_signatures(source_path, file_name)
+    digit_image = unsharp_image(source_path, file_name)
 
+    signatures = [digit_image[932:972, 597:745], digit_image[977:1018, 597:745]]
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
@@ -168,10 +169,13 @@ def extract(file_name, source_path, target_path, dataset_path):
     # save
     digit_area_file = base_file_name + "~digit-area.jpg"
     digit_area_path = join(target_path, digit_area_file)
-    cv2.imwrite(digit_area_path, digit_area[0])
+    logging.warning("writing %s", digit_area_path)
+    # logging.warning("image %s", digit_araea)
+    cv2.imwrite(digit_area_path, digit_image[258:527, 621:799])
 
     # create structureing element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    digits = cut_digits_and_signatures(digit_image)
     pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
 
@@ -186,15 +190,8 @@ def extract(file_name, source_path, target_path, dataset_path):
 
     digit_result = prepare_results(digits)
 
-    order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/network10.xml"))
-    orderx, layersx = imageclassifier.parse_network(join(dataset_path, "datasets/network11.xml"))
+    order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
     probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
-
-    # fill with 0 as most likely by default
-    probmatrix.fill(0.001)
-    for (x, y), element in np.ndenumerate(probmatrix):
-        if y == 0:
-            probmatrix[x, y] = 0.999
 
     for i, digit in enumerate(digits):
         if digit is not None:
@@ -206,9 +203,6 @@ def extract(file_name, source_path, target_path, dataset_path):
             digit_tif = base_file_name + "~" + str(i) + ".tif"
             extracted_tif = join(target_path, digit_tif)
             cv2.imwrite(extracted_tif, thresholded_tif)
-
-            if imageclassifier.is_probably_x(extracted_tif, orderx, layersx):
-                continue
             probmatrix[i] = imageclassifier.classify_number(extracted_tif, order, layers)
 
             digit_result[i]["filename"] = 'extracted/' + digit_file

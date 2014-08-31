@@ -149,6 +149,10 @@ pre {
     color: #FFFFFF;
 }
 
+img.uploadedImage {
+    width: 100%;
+}
+
 .langSwitch a:hover, .langSwitch a:focus {
     text-decoration: none;
 }
