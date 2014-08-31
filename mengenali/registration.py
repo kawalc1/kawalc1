@@ -78,7 +78,7 @@ def process_file(result_writer, count, root, file_name):
 def check_match(homography, transform):
     if homography < 0.01:
         return True
-    if homography > 0.1:
+    if homography > 0.2:
         return False
     return transform < 0.1
 
