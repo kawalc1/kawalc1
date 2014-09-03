@@ -2,13 +2,16 @@
 <html ng-app="app" ng-controller="PageController">
 <head>
     <title>Kawal C1 - Verifikasi Formulir Secara Otomatis</title>
-<!--    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-animate.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-route.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-cookies.min.js"></script> -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular-cookies.min.js"></script>
     <!-- for offline use -->
-    <script src="dist/angular-resource/angular.min.js"></script>
+<!--    <script src="dist/angular-resource/angular.min.js"></script>
+    <script src="dist/angular-resource/angular-animate.min.js"></script>
     <script src="dist/angular-resource/angular-route.min.js"></script>
-    <script src="dist/angular-resource/angular-cookies.min.js"></script>
+    <script src="dist/angular-resource/angular-cookies.min.js"></script>-->
     <!-- for offline use -->
 
     <script src="dist/angular-resource/angular-resource.js"></script>
@@ -42,11 +45,12 @@
     <link rel="stylesheet" href="dist/bootstrap/bootstrap.min.css">
     <!-- for offline use -->
     <link href="css/site.css" rel="stylesheet"/>
+    <link href="css/animate.css" rel="stylesheet"/>
 </head>
 <body class="kawalc1">
 <div class="container">
     <header>
-        <div class="logo"></div>
+        <div class="logo bounce animated"></div>
         <h1 class="title">{{ 'HEADLINE' | translate }}</h1>
         <div class="version">{{ 'VERSION' | translate }}</div>
         <div class="langSwitch">

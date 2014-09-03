@@ -19,7 +19,29 @@
             <em>speed</em>
             of the manual verification. <br/>
         </p>
-        <h5>Quality</h5>
+
+        <h3>How does this application recognize the handwritten numbers?</h3>
+<iframe class="video" width="280" height="230" src="//www.youtube.com/embed/XM7u4EVyFKg?&authoide=1" frameborder="0" allowfullscreen></iframe>
+        <p>
+            The application uses a <a href="http://wikipedia.org/wiki/Artificial_neural_network">neural network</a>
+            , which was trained on a set of <i>70.000</i> sample numbers.
+            Training is done by feeding the network with a lot of examples of different categories of digits (one through nine).
+            After having seen 6.000 different <em>4</em>'s for example, in all its variations, the network kind of knows what a
+            <em>4</em> looks like and can recognize it with an accuracy of better than 99%. <br />
+            </p>
+
+        <p>
+            About half of the numbers in the training set were manually selected by <a href="#contact">volunteers</a> from C1 forms.
+            The other half was acquired by exploiting the outcome of <em>kawal pemilu</em> crowd-sourcing initiative.
+            This made it possible to pre-classify the digits which greatly sped up the process<br/>
+        </p>
+
+        <p>
+            The video on the right displays all numbers that are part of the training set. Initially we used the
+            <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> set. The main reason we couldn't get accurate enough
+            results with this set is that it doesn't contain crosses, which the C1 forms do. Another reason is that
+            it contains American handwriting, which seems to be subtly different from Indonesian handwriting.
+        </p>
 
 
         <h3>What is the accuracy of this application?</h3>
@@ -53,20 +75,16 @@
         <p>
             Yes, in most cases. This software serves as a tool to improve human verification.
         </p>
+
         <h3>What's next for this application?</h3>
 
         <p>
             These are some of the thing we would like to do in the near future:
         </p>
         <ul>
-            <li>Train the application using numbers that are taken from the actual forms instead
-                of the from the C1 forms instead of the American
-                <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> set. This should make the
-                detection more accurate as it will be more tuned to Indonesian handwriting and
-                the crosses and dashes that are often used.
-            </li>
             <li>Add support for different kinds of forms. For example, the ones that contain
-                information about the number of people eligble to vote or forms for local elections</li>
+                information about the number of people eligble to vote or forms for local elections
+            </li>
             <li>Make the datasets that are used by this application available to the
                 machine learning community.
             </li>
@@ -74,13 +92,15 @@
         <h3>Which technologies do you use?</h3>
 
         <ul>
-            <li>The website was built using <a href="https://angularjs.org/">AngularJS</a>. </li>
+            <li>The website was built using <a href="https://angularjs.org/">AngularJS</a>.</li>
             <li>The webservices use the <a href="https://www.djangoproject.com/">Django</a> library.</li>
             <li>The image registration was written in <a href="https://www.python.org/">Python</a>,
-            using various image processing libraries like <a href="http://opencv.org/">OpenCV</a>,
-            <a href="http://scikit-image.org/">scikit-image</a> and <a href="http://www.scipy.org/">scipy</a>. </li>
+                using various image processing libraries like <a href="http://opencv.org/">OpenCV</a>,
+                <a href="http://scikit-image.org/">scikit-image</a> and <a href="http://www.scipy.org/">scipy</a>.
+            </li>
             <li>The number classification is done use using a convolutional neural network that was trained
-            on the <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> handwritten digit database.</li>
+                on a digit database semi-automatically extracted form the C1 forms.
+            </li>
         </ul>
     </div>
     <div ng-show="currentLangue == 'id'">

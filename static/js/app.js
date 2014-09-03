@@ -8,7 +8,7 @@
  */
 var app = angular.module('app',
 	['flow', 'ui.bootstrap', 'imageProcessingControllers', 'imageProcessingServices',
-		'pascalprecht.translate', 'ngRoute', 'ngCookies'
+		'pascalprecht.translate', 'ngRoute', 'ngCookies', 'ngAnimate'
 	]);
 
 app.config(function($routeProvider) {
@@ -44,7 +44,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic Verification of Election Forms',
-		VERSION: 'Version 0.9 - August 31, 2014',
+		VERSION: 'Version 1.0 - September 4, 2014',
 		INTRODUCTION: 'This application automatically counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK : 'this form',
@@ -67,7 +67,7 @@ app.config(function($translateProvider) {
 		CORRECTION_TITLE: 'Correct Data',
 		BUTTON_SEND: 'Send',
 		BUTTON_RESTART: 'Upload another form',
-		LINK_DOWNLOAD_FORMS: 'Download More Example Forms (1 MB)',
+		LINK_DOWNLOAD_FORMS: 'old ones',
 		SUBMITTED_THANKS: 'Thank you:',
 		SUBMITTED_MESSAGE: 'the form has been submitted.',
 		FORM_CANDIDATE: 'Candidate',
@@ -76,11 +76,16 @@ app.config(function($translateProvider) {
 		FORM_VOTES_VALID: 'Total valid votes',
 		WITNESS_SIGNATURES: 'Witness signatures',
 		SIGNATURE_PRESENT: 'Present',
-		SIGNATURE_ABSENT: 'Missing'
+		SIGNATURE_ABSENT: 'Missing',
+        NEW_ALERT: 'New!',
+        TRY_THESE: 'Try these',
+        TRY_NEW_FORMS: 'new forms',
+        TRY_OLD_FORMS: 'or these'
+
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi Formulir Secara Otomatis',
-		VERSION: 'Versi 0.9 - 31 Aug 2014',
+		VERSION: 'Versi 1.0 - 4 Sep 2014',
 		INTRODUCTION: 'Aplikasi ini dapat menghitung otomatis hasil formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK : 'formulir ini',
@@ -103,7 +108,7 @@ app.config(function($translateProvider) {
 		CORRECTION_TITLE: 'Koreksi Data',
 		BUTTON_SEND: 'Kirim',
 		BUTTON_RESTART: 'Unggah formulir lain',
-		LINK_DOWNLOAD_FORMS: 'Unduh Formulir Contoh Tambahan (1 MB)',
+		LINK_DOWNLOAD_FORMS: 'lama ini',
 		SUBMITTED_THANKS: 'Terima kasih:',
 		SUBMITTED_MESSAGE: 'formulir C1 telah dikirim.',
 		FORM_CANDIDATE: 'Calon',
@@ -112,6 +117,10 @@ app.config(function($translateProvider) {
 		FORM_VOTES_VALID: 'Jumlah suara sah',
 		WITNESS_SIGNATURES: 'Tanda tangan saksi',
 		SIGNATURE_PRESENT: 'Ada',
-		SIGNATURE_ABSENT: 'Tidak ada'
+		SIGNATURE_ABSENT: 'Tidak ada',
+        NEW_ALERT: 'Baru!',
+        TRY_THESE: 'Coba dengan',
+        TRY_NEW_FORMS: 'formulir ini',
+        TRY_OLD_FORMS: 'atau yang '
 	});
 });

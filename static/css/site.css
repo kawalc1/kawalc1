@@ -424,3 +424,15 @@ input::-webkit-inner-spin-button {
     font-size: 11px;
     top: -10px;
 }
+
+.video {
+    float:right;
+    padding: 10px;
+}
+
+.emphasis {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    color: red;
+}
