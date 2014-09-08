@@ -10,6 +10,7 @@ from django.views.static import serve as static_serve
 import registration
 import extraction
 import processprobs
+import urllib2
 
 
 def index(request):
@@ -20,6 +21,12 @@ def handle_uploaded_file(f, filename):
     with open(path.join(settings.STATIC_DIR, 'upload/' + filename), 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+
+
+def download_file(uri):
+    file_to_get = urllib2.urlopen(settings.KPU_SCANS_URL + uri)
+    with open(path.join(settings.STATIC_DIR, 'upload/' + path.basename(uri)), 'wb') as downloaded_file:
+        downloaded_file.write(file_to_get.read())
 
 
 def extract(request):
@@ -44,6 +51,17 @@ def get_probabilities_result(request):
         results.append(outcome)
     output = json.dumps({'probabilityMatrix': outcomes}, separators=(',', ':'))
 
+    return HttpResponse(output)
+
+
+def download(request):
+    scan_uri = request.GET.get("scanURI", "")
+    download_file(scan_uri)
+
+    try:
+        output = registration.process_file(None, 1, settings.STATIC_DIR, scan_uri)
+    except:
+        output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
     return HttpResponse(output)
 
 

@@ -63,7 +63,7 @@ def get_joint_result_string(human_results):
 for root, dirs, file_names in walk(input_dir):
     for filename in fnmatch.filter(file_names, '~trans*~hom*~warp*.jpg'):
         print "processing: " + str(join(root, filename))
-        digits, signatures = extraction.cut_digits_and_signatures(root, filename)
+        digits, signatures = extraction.cut_digits(root, filename)
         structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
         extraction.pre_process_digits(digits, structuring_element, False)
 

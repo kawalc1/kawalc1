@@ -85,6 +85,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+KPU_SCANS_URL = 'http://scanc1.kpu.go.id/viewp.php?f='
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )

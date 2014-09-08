@@ -97,7 +97,7 @@ def unsharp_image(directory, file_name):
     return sharpened_image
 
 
-def cut_digits_and_signatures(unsharpened_image):
+def cut_digits(unsharpened_image):
     return [unsharpened_image[261:323, 693:721],
             unsharpened_image[261:323, 726:754],
             unsharpened_image[261:323, 759:787],
@@ -175,7 +175,7 @@ def extract(file_name, source_path, target_path, dataset_path):
 
     # create structureing element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-    digits = cut_digits_and_signatures(digit_image)
+    digits = cut_digits(digit_image)
     pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
 
