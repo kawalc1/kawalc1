@@ -11,7 +11,7 @@ import json
 class RegistrationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.overwrite_resources = True
+        cls.overwrite_resources = False
 
     def assert_extraction_as_expected(self, c1_form):
         transformed_path = 'test/resources/forms/transformed/'
