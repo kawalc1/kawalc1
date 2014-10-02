@@ -113,7 +113,7 @@ def get_possible_outcomes(all_squares, categories_count):
 
 def read_json(data):
     rows = data["probabilities"]
-    probability_matrix = np.ndarray(shape=(12, 10), dtype='f')
+    probability_matrix = np.ndarray(shape=(12, 11), dtype='f')
 
     for i, row in enumerate(rows):
         probability_matrix[i] = row

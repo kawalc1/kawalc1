@@ -13,11 +13,11 @@ class ProcessProbabilitiesTest(unittest.TestCase):
 
     def test_json_is_read_correctly(self):
         numpy_table = pp.read_json(self.json_data)
-        self.assertEqual(numpy_table[0][0], 0.00017933209892362356)
+        self.assertAlmostEqual(numpy_table[0][0], 0.00055694778)
 
     def test_get_possible_outcomes_returns_correct_outcome(self):
         numpy_table = pp.read_json(self.json_data)
-        outcomes = pp.get_possible_outcomes(numpy_table, 10)
+        outcomes = pp.get_possible_outcomes(numpy_table, 11)
         most_likely = outcomes[0]
 
         self.assertEqual(most_likely['jokowi'], 186)
