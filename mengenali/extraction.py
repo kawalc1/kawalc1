@@ -158,13 +158,8 @@ def pre_process_digits(digits, structuring_element, filter_invalids=True):
         digits[i] = np.array(output_image)
 
 
-def extract(file_name, source_path, target_path, dataset_path):
-    digit_image = unsharp_image(source_path, file_name)
-
+def extract_additional_areas(digit_image, base_file_name, target_path, structuring_element):
     signatures = [digit_image[932:972, 597:745], digit_image[977:1018, 597:745]]
-    head, tail = os.path.split(file_name)
-    full_file_name, ext = os.path.splitext(tail)
-    base_file_name = full_file_name.split('~')[-1]
 
     # save
     digit_area_file = base_file_name + "~digit-area.jpg"
@@ -173,10 +168,6 @@ def extract(file_name, source_path, target_path, dataset_path):
     # logging.warning("image %s", digit_araea)
     cv2.imwrite(digit_area_path, digit_image[258:527, 621:799])
 
-    # create structureing element for the connected component analysis
-    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-    digits = cut_digits(digit_image)
-    pre_process_digits(digits, structuring_element)
     signature_result = prepare_results(signatures)
 
     for i, signature in enumerate(signatures):
@@ -186,7 +177,22 @@ def extract(file_name, source_path, target_path, dataset_path):
         cv2.imwrite(extracted, signature)
         signature_result[i]["filename"] = 'extracted/' + signature_file
         signature_result[i]["isValid"] = is_valid
-        # return False
+    return digit_area_file, signature_result
+
+
+def extract(file_name, source_path, target_path, dataset_path):
+    digit_image = unsharp_image(source_path, file_name)
+
+    head, tail = os.path.split(file_name)
+    full_file_name, ext = os.path.splitext(tail)
+    base_file_name = full_file_name.split('~')[-1]
+    # create structureing element for the connected component analysis
+
+    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    digit_area_file, signature_result = extract_additional_areas(digit_image, base_file_name, target_path, structuring_element)
+
+    digits = cut_digits(digit_image)
+    pre_process_digits(digits, structuring_element)
 
     digit_result = prepare_results(digits)
 
