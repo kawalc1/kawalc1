@@ -8,7 +8,6 @@ from os.path import join
 import json
 import io
 import imageclassifier
-from skimage.morphology import skeletonize
 import settings
 import logging
 
