@@ -262,6 +262,10 @@ img.uploadedImage {
     text-align: center;
 }
 
+.column.columnWide {
+    width: 450px;
+}
+
 .column.success {
     background-color: #b0f0b0;
 }

@@ -8,6 +8,7 @@ from os.path import join
 import json
 import io
 import imageclassifier
+from skimage.morphology import skeletonize
 import settings
 import logging
 
@@ -118,6 +119,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
     for number in cut_numbers:
         digits = number["digits"]
         for i, digit in enumerate(digits):
+
             ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
 
             # do connected component analysis
@@ -126,6 +128,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
             sizes = np.bincount(np.reshape(digits[i], -1))
             selected_object = -1
             max_size = 0
+
             for j in range(1, nr_of_objects + 1):
                 if sizes[j] < 11:
                     if filter_invalids:
@@ -183,7 +186,7 @@ def extract_additional_areas(digit_image, base_file_name, target_path, structuri
     return digit_area_file, signature_result
 
 
-def extract(file_name, source_path, target_path, dataset_path):
+def extract(file_name, source_path, target_path, dataset_path, config):
     unsharpened_image = unsharp_image(source_path, file_name)
 
     head, tail = os.path.split(file_name)
@@ -195,7 +198,7 @@ def extract(file_name, source_path, target_path, dataset_path):
     digit_area_file, signature_result = extract_additional_areas(unsharpened_image, base_file_name, target_path,
                                                                  structuring_element)
 
-    numbers = read_extraction_config(join(dataset_path, "datasets/digit_config.json"))["numbers"]
+    numbers = config["numbers"]
     cut_numbers = cut_digits(unsharpened_image, numbers)
     pre_process_digits(cut_numbers, structuring_element)
 
@@ -218,7 +221,8 @@ def extract(file_name, source_path, target_path, dataset_path):
                 extracted_tif = join(target_path, digit_tif)
                 cv2.imwrite(extracted_tif, thresholded_tif)
                 probability_matrix = imageclassifier.classify_number(extracted_tif, order, layers)
-                extracted_struct = {"probabilities": probability_matrix[0].tolist(), "filename": 'extracted/' + digit_file}
+                extracted_struct = {"probabilities": probability_matrix[0].tolist(),
+                                    "filename": 'extracted/' + digit_file}
 
                 numbers[number_id]["extracted"].append(extracted_struct)
             else:

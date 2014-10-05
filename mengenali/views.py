@@ -32,12 +32,12 @@ def download_file(uri):
 def extract(request):
     filename = request.GET.get("filename", "")
     output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                settings.STATIC_DIR)
+                                settings.STATIC_DIR, load_config(request.GET.get("configFile")))
     return HttpResponse(output)
 
 
-def load_config():
-    with open(path.join(settings.DATASET_DIR, 'digit_config.json')) as config_file:
+def load_config(config_file_name):
+    with open(path.join(settings.DATASET_DIR, config_file_name)) as config_file:
         config = json.load(config_file)
     return config
 
@@ -47,7 +47,7 @@ def get_probabilities_result(request):
 
     print >> None, str(json_data)
 
-    outcomes = processprobs.get_possible_outcomes_for_config(load_config(), json_data["probabilities"], settings.CATEGORIES_COUNT)
+    outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]), json_data["probabilities"], settings.CATEGORIES_COUNT)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -56,8 +56,8 @@ def get_probabilities_result(request):
     return HttpResponse(output)
 
 
-def get_reference_form():
-    config = load_config()
+def get_reference_form(config_file_name):
+    config = load_config(config_file_name)
     return path.join(settings.DATASET_DIR, config["referenceForm"])
 
 
@@ -78,7 +78,8 @@ def transform(request):
         handle_uploaded_file(request.FILES['file'], filename)
 
         try:
-            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form())
+            config_file = request.POST.get("configFile", "")
+            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file), config_file)
         except:
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)

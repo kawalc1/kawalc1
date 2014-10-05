@@ -88,22 +88,23 @@ def print_possible(after_reduction):
     return outcomes
 
 
-def get_number_config_for_index(config, index):
+def get_number_config_for_index(config, prob_index):
     for number in config["numbers"]:
-        number_index = int(number["id"])
-        if index == number_index:
+        number_index = number["id"]
+        if prob_index["id"] == number_index:
             return number
     return None
 
 
-def print_outcome(config, outcome_matrix):
+def print_outcome(config, outcome_matrix, all_probabilities):
     outcomes = []
+    print(outcome_matrix)
     for outcome in outcome_matrix:
         numbers = outcome[0]
         confidence = outcome[1]
         outcome = {}
         for i, number in enumerate(numbers):
-            outcome_config = get_number_config_for_index(config, i)
+            outcome_config = get_number_config_for_index(config, all_probabilities[i])
             short_name = outcome_config["shortName"]
             outcome[short_name] = number
         outcome["confidence"] = confidence
@@ -114,58 +115,76 @@ def print_outcome(config, outcome_matrix):
 
 
 def get_checksum_indexes(checksum_config, numbers):
-    for checksum_config in checksum_config:
-        sigma = checksum_config["sigma"]
-        sigma_indexes = []
-        total = -1
-        for i, number in enumerate(numbers):
-            if number["id"] in sigma:
-                sigma_indexes.append(i)
-            if number["id"] is checksum_config["total"]:
-                total = i
-        return sigma_indexes, total
+    sigma = checksum_config["sigma"]
+    sigma_indexes = []
+    total = -1
+    for i, number in enumerate(numbers):
+        if number["id"] in sigma:
+            sigma_indexes.append(i)
+        if number["id"] == checksum_config["total"]:
+            total = i
+    return sigma_indexes, total
+
+
+def calculate_single_set(categories_count, config, all_probabilities, checksum):
+    checksum_indexes = get_checksum_indexes(checksum, all_probabilities)
+    outcome_matrix = get_numbers(checksum_indexes, all_probabilities, categories_count)
+    return print_outcome(config, outcome_matrix, all_probabilities)
+
+
+def get_numbers_in_checksum_set(numbers, checksum):
+    numbers_in_checksum = []
+    for j, extract in enumerate(numbers):
+        if extract["id"] in checksum["sigma"] or extract["id"] == checksum["total"]:
+            numbers_in_checksum.append(extract)
+    return numbers_in_checksum
 
 
 def get_possible_outcomes_for_config(config, numbers, categories_count):
-    checksum_indexes = get_checksum_indexes(config["checkSums"], numbers)
-    outcome_matrix = get_numbers(checksum_indexes, numbers, categories_count)
-    return print_outcome(config, outcome_matrix)
+    all_sets = []
+    for checksum in config["checkSums"]:
+        numbers_in_set = get_numbers_in_checksum_set(numbers, checksum)
+        all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum))
+    return all_sets
 
 
-def get_numbers(check_sums, probabilities, categories_count):
+def get_numbers(check_sums, all_probabilities, categories_count):
     all_numbers = []
-    for j, extract in enumerate(probabilities):
+    for j, extract in enumerate(all_probabilities):
         for i, probabilities in enumerate(extract["probabilitiesForNumber"]):
             if len(probabilities) is 0:
                 all_numbers = all_numbers + ([0] * categories_count)
             else:
                 all_numbers = all_numbers + probabilities
-    return get_outcome_matrix(check_sums, np.asarray(all_numbers), categories_count)
+    return get_outcome_matrix(check_sums, np.asarray(all_numbers), categories_count, len(all_probabilities))
 
 
 def numbers_add_up(probabilities, (sigma, total)):
-    running_total = 0.0
+    running_total = 0
+    expected_total = probabilities[total]
     for index in sigma:
         running_total += probabilities[index]
-    return running_total == total
+    return running_total == expected_total
 
 
-def get_outcome_matrix(check_sums, all_squares, categories_count):
-    all_numbers_matrix = all_squares.reshape(NUMBER_COUNT, DIGITS_PER_NUMBER, categories_count)
+def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
+    all_numbers_matrix = all_squares.reshape(number_count, DIGITS_PER_NUMBER, categories_count)
 
     def matrix_to_number(number_matrix):
         possible_values = get_possible_values(number_matrix)
         return map(lambda x: make_number(x[0], x[1]), possible_values)
 
-    all_numbers = map(matrix_to_number, all_numbers_matrix[0:NUMBER_COUNT])
+    all_numbers = map(matrix_to_number, all_numbers_matrix[0:number_count])
     possibilities = get_possible_end_results(all_numbers)
 
     def reduce_probability_if_checksum_is_wrong(p):
         probabilities = p[0]
         confidence = p[1]
         if numbers_add_up(probabilities, check_sums):
+            print "numbers add up :-)"
             return p
         else:
+            print "numbers don't add up :-("
             return probabilities, confidence * .005
 
     results = map(reduce_probability_if_checksum_is_wrong,

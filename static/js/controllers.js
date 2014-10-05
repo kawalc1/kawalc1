@@ -90,6 +90,7 @@ imageProcessingControllers.controller('imageRegistrationController',
             $scope.submitted = null;
             $scope.correct = null;
             $scope.digitArea = null;
+            $scope.configFile = null;
             return placeHolderUrl;
         }
 
@@ -142,8 +143,9 @@ imageProcessingControllers.controller('imageRegistrationController',
         $scope.getResult = function (numbers) {
             var probabilities = getProbabilities(numbers);
             $http.post('../processprobs.wsgi', {
-                probabilities: probabilities }).success(function (result) {
-                $scope.mostProbableOutcome = result.probabilityMatrix[0]
+                probabilities: probabilities, configFile: $scope.configFile }).success(function (result) {
+                $scope.mostProbableOutcome = result.probabilityMatrix[0][0]
+                $scope.probabilityMatrix = result.probabilityMatrix
             });
         };
 
@@ -167,8 +169,9 @@ imageProcessingControllers.controller('imageRegistrationController',
             }
             if (transformed.success === true) {
                 $scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
+                $scope.configFile = transformed.configFile;
                 $http.get('../extract.wsgi',
-                    { params: { filename: $scope.uploadUrl }}).success(function (result) {
+                    { params: { filename: $scope.uploadUrl, configFile: $scope.configFile }}).success(function (result) {
                         var images = getFileNames(result.numbers);
                         $scope.extractedImages = images;
                         $scope.signatures = result.signatures;

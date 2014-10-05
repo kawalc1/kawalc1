@@ -1,0 +1,116 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "ADPT",
+            "displayName": "A Daftar Pemilih Tetap",
+            "digitCoordinates": [
+                [382, 415, 1035, 1081],
+                [382, 415, 1086, 1131],
+                [383, 415, 1136, 1180]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "ADPTb",
+            "displayName": "Daftar Pemilih Tambahan",
+            "digitCoordinates": [
+                [419, 455, 1034, 1081],
+                [419, 455, 1084, 1131],
+                [418, 454, 1135, 1180]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "ADPK",
+            "displayName": "Daftar Pemilih Khusus",
+            "digitCoordinates": [
+                [459, 494, 1034, 1081],
+                [459, 494, 1084, 1131],
+                [459, 494, 1135, 1180]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "ADPKTb",
+            "displayName": "Pemilih Khusus Tambahan / pengguna KTP atau identitas lain atau paspor",
+            "digitCoordinates": [
+                [497, 533, 1034, 1081],
+                [497, 533, 1084, 1131],
+                [497, 533, 1135, 1180]
+            ]
+        },
+        {
+            "id": "4",
+            "shortName": "AJumlah",
+            "displayName": "Jumlah Pemilih (1+2+3+4)",
+            "digitCoordinates": [
+                [536, 571, 1034, 1081],
+                [536, 571, 1084, 1131],
+                [536, 571, 1135, 1180]
+            ]
+        },
+        {
+            "id": "5",
+            "shortName": "BDPT",
+            "displayName": "Pengguna Hak Pilih dalam daftar Pemilih Tetap",
+            "digitCoordinates": [
+                [613, 648, 1034, 1081],
+                [613, 648, 1084, 1131],
+                [613, 648, 1135, 1180]
+            ]
+        },
+        {
+            "id": "6",
+            "shortName": "BDPTb",
+            "displayName": "Pengguna Hak Pilih dalam daftar Pemilih Tambahan",
+            "digitCoordinates": [
+                [652, 687, 1034, 1081],
+                [652, 687, 1084, 1131],
+                [652, 687, 1135, 1180]
+            ]
+        },
+        {
+            "id": "7",
+            "shortName": "BDPK",
+            "displayName": "Pengguna Hak Pilih dalam Daftar Pemilih Khusus",
+            "digitCoordinates": [
+                [692, 726, 1034, 1081],
+                [692, 726, 1084, 1131],
+                [692, 726, 1135, 1180]
+            ]
+        },
+        {
+            "id": "8",
+            "shortName": "BDPKTb",
+            "displayName": "Pengguna Hak Pilih dalam Daftar Pemilih Khusus Tambahan",
+            "digitCoordinates": [
+                [729, 763, 1034, 1081],
+                [729, 763, 1084, 1131],
+                [729, 763, 1135, 1180]
+            ]
+        },
+        {
+            "id": "9",
+            "shortName": "BJumlah",
+            "displayName": "Jumlah seluruh Pengguna Hak Pilih",
+            "digitCoordinates": [
+                [768, 802, 1034, 1081],
+                [768, 802, 1084, 1131],
+                [770, 802, 1135, 1180]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1", "2", "3"],
+            "total": "4"
+        },
+        {
+            "sigma": ["5", "6", "7", "8"],
+            "total": "9"
+        }
+    ],
+    "referenceForm": "halaman4-referenceform.jpg"
+}

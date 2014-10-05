@@ -1,0 +1,171 @@
+<div flow-init="{singleFile:true, query: {configFile : 'hal_3_digit_config.json'}}"
+     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+     flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
+     flow-file-added="setImage(null)"
+     flow-file-success="setImage($message)">
+<div class="introduction fader" ng-hide="$flow.files.length">
+    {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank"
+                                                                                download="1773007-005324400804.jpg"
+                                                                                href="img/forms/1773007-005324400804.jpg">{{
+    'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
+</div>
+<div class="block column"
+     ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
+
+    <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
+
+    <div class="result">
+        <img ng-src="{{uploadUrl}}" class="thumbnail"
+             ng-hide="(hasUploadFinished() && hasRegistrationFailed())"/>
+        <img ng-class="{uploadedImage: true}" flow-img="$flow.files[0]"
+             ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
+    </div>
+    <div>
+        <div class="progress progress-striped"
+             ng-class="{active: $flow.file.isUploading()}"
+             ng-show="$flow.files.length && !hasUploadFinished()">
+            <div class="progress-bar" role="progressbar"
+                 ng-style="{width: (progress * 100) + '%'}">
+                <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
+            </div>
+        </div>
+            <span class="btn btn-primary" ng-hide="$flow.files.length" flow-btn
+                  flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</span>
+    </div>
+</div>
+<div class="block column"
+     ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
+    <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
+
+    <div class="result numbers"
+         ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
+        <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
+             ng-show="$flow.files.length">
+            <img src="{{extractedImage.filename}}"/>
+        </div>
+    </div>
+    <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+        <p>
+            {{ 'UPLOAD_ERROR_EXCUSE' | translate }} <br/>
+            {{ 'UPLOAD_ERROR_DIAGNOSIS' | translate }} <br/>
+            {{ 'UPLOAD_ERROR_SUGGESTION' | translate }}
+        </p>
+
+    </div>
+    <div>
+        <a href="#" class="btn btn-danger"
+           ng-show="(hasUploadFinished() && hasRegistrationFailed())" ng-click="abort()">
+            {{ 'UPLOAD_CANCEL' | translate }}
+        </a>
+    </div>
+</div>
+<div class="block column columnWide">
+    <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
+
+    <div ng-show="mostProbableOutcome" class="result">
+        <table class="hasil">
+            <tr>
+                <th>
+                    A. DATA PEMILIH
+                </th>
+                <th>
+                    {{'FORM_TOTAL'| translate }}
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Daftar Pemilih Tetap
+                </td>
+                <td>
+                    {{ probabilityMatrix[0][0].ADPT }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Daftar Pemilih Tambahan
+                </td>
+                <td>
+                    {{ probabilityMatrix[0][0].ADPTb }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Daftar Pemilih Khusus
+                </td>
+                <td >
+                    {{ probabilityMatrix[0][0].ADPK }}
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    Pemilih Khusus Tambahan / pengguna KTP atau identitas lain atau paspor
+                </td>
+                <td>
+                    {{ probabilityMatrix[0][0].ADPKTb }}
+                </td>
+            </tr>
+            <tr>
+                <td class="jumlah" >
+                    Jumlah Pemilih (1+2+3+4)
+                </td>
+                <td  class="jumlah" >
+                    {{ probabilityMatrix[0][0].AJumlah }}
+                </td>
+            </tr>
+        </table>
+       <table class="hasil">
+            <tr>
+                <th>
+                    B. PENGGUNA HAK PILIH
+                </th>
+                <th>
+                    {{'FORM_TOTAL'| translate }}
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    Pengguna Hak Pilih dalam daftar Pemilih Tetap
+                </td>
+                <td>
+                    {{ probabilityMatrix[1][0].BDPT }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pengguna Hak Pilih dalam daftar Pemilih Tambahan
+                </td>
+                <td>
+                    {{ probabilityMatrix[1][0].BDPTb }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pengguna Hak Pilih dalam Daftar Pemilih Khusus
+                </td>
+                <td >
+                    {{ probabilityMatrix[1][0].BDPK }}
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    Pengguna Hak Pilih dalam Daftar Pemilih Khusus Tambahan
+                </td>
+                <td>
+                    {{ probabilityMatrix[1][0].BDPKTb }}
+                </td>
+            </tr>
+            <tr>
+                <td class="jumlah" >
+                    Jumlah seluruh Pengguna Hak Pilih (1+2+3+4)
+                </td>
+                <td  class="jumlah" >
+                    {{ probabilityMatrix[1][0].BJumlah }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="bottomright" >
+<b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-baru-nunbaun-delha.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>, {{'TRY_OLD_FORMS' | translate}} <a href="contoh-formulir.zip">{{ 'LINK_DOWNLOAD_FORMS' | translate }}</a>.
+    </div>
+</div>

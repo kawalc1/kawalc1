@@ -21,7 +21,10 @@ app.config(function($routeProvider) {
 		templateUrl: 'pages/about.html'
 	}).when('/contact', {
 		templateUrl: 'pages/contact.html'
-	});
+	}).when('/page3', {
+        templateUrl: 'pages/page3.html',
+        controller: 'imageRegistrationController'
+    });
 
 });
 

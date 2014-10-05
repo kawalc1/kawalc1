@@ -1,0 +1,18 @@
+{
+    "probabilityMatrix": [
+        {
+            "confidence": 0.75357121229171753,
+            "invalid": 0,
+            "jokowi": 209,
+            "prabowo": 126,
+            "total": 335
+        },
+        {
+            "confidence": 0.15084861218929291,
+            "invalid": 2,
+            "jokowi": 209,
+            "prabowo": 126,
+            "total": 335
+        }
+    ]
+}

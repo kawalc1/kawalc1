@@ -16,8 +16,8 @@ def print_result(result_writer, iteration, homography, transform, result):
     print row
 
 
-def create_response(image_path, success):
-    return json.dumps({'transformedUrl': image_path, 'success': success}, separators=(',', ':'))
+def create_response(image_path, success, config_file):
+    return json.dumps({'transformedUrl': image_path, 'success': success, 'configFile': config_file}, separators=(',', ':'))
 
 
 def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name, output_path,
@@ -33,7 +33,7 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
     return transformed_image
 
 
-def register_image(file_path, reference_form_path, output_path, result_writer):
+def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
     reference = cv2.imread(reference_form_path, 0)
     logging.info("read reference %s", reference_form_path)
     orb = cv2.SIFT()
@@ -65,13 +65,13 @@ def register_image(file_path, reference_form_path, output_path, result_writer):
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name,
                                                 output_path, result_writer)
     logging.info("transformed %s", transformed_image)
-    return create_response(transformed_image, good_enough_match)
+    return create_response(transformed_image, good_enough_match, config_file)
 
 
-def process_file(result_writer, count, root, file_name, reference_form_path):
+def process_file(result_writer, count, root, file_name, reference_form_path, config_file):
     image_path = join(root + '/upload', file_name)
     output_path = join(root, 'transformed')
-    return register_image(image_path, reference_form_path, output_path, result_writer)
+    return register_image(image_path, reference_form_path, output_path, result_writer, config_file)
 
 
 def check_match(homography, transform):
