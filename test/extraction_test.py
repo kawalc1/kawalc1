@@ -20,16 +20,18 @@ class RegistrationTest(unittest.TestCase):
         self.assertEqual(1, len(found_files), msg="only one file should match pattern")
         output_path = tempfile.gettempdir()
         probability_map = extraction.extract(found_files[0], transformed_path, output_path, settings.STATIC_DIR)
-        expected_json_file = 'test/resources/probabilities/' + c1_form + '.json'
-        with io.open(expected_json_file, 'r') as expected_json_file:
+        expected_json_file_path = 'test/resources/probabilities/' + c1_form + '.json'
+        with io.open(expected_json_file_path, 'r') as expected_json_file:
             expected = expected_json_file.read()
             self.maxDiff = None
             expected_json = json.loads(expected)
             actual_json = json.loads(probability_map)
         if (expected_json != actual_json) and self.overwrite_resources:
             json_string = json.dumps(actual_json, encoding='utf-8')
-            with io.open(output_path + 'bla.json', 'w', encoding='utf-8') as expected_json_file:
-                expected_json_file.write(json_string)
+            with io.open(expected_json_file_path, 'w', encoding='utf-8') as expected_json_file:
+                expected_json_file.write(unicode(json.dumps(actual_json, ensure_ascii=False, indent=4, separators=(',', ': '), sort_keys=True)))
+                expected_json_file.flush()
+                expected_json_file.close()
         self.assertEqual(expected_json, actual_json)
 
     def test_overwrite_resources_should_be_false(self):

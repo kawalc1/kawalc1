@@ -6,6 +6,7 @@ from PIL import Image
 from scipy import ndimage
 from os.path import join
 import json
+import io
 import imageclassifier
 import settings
 import logging
@@ -97,65 +98,68 @@ def unsharp_image(directory, file_name):
     return sharpened_image
 
 
-def cut_digits(unsharpened_image):
-    return [unsharpened_image[261:323, 693:721],
-            unsharpened_image[261:323, 726:754],
-            unsharpened_image[261:323, 759:787],
-            unsharpened_image[327:389, 693:721],
-            unsharpened_image[327:389, 726:754],
-            unsharpened_image[327:389, 759:787],
-            unsharpened_image[395:457, 693:721],
-            unsharpened_image[395:457, 726:754],
-            unsharpened_image[395:457, 759:787],
-            unsharpened_image[463:525, 693:721],
-            unsharpened_image[463:525, 726:754],
-            unsharpened_image[463:525, 759:787]]
+def read_extraction_config(digit_config_file_path):
+    with io.open(digit_config_file_path, 'r') as config_file:
+        return json.loads(config_file.read())
 
 
-def pre_process_digits(digits, structuring_element, filter_invalids=True):
-    for i, digit in enumerate(digits):
-        ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
+def cut_digits(unsharpened_image, numbers):
+    digit_bitmap_struct = []
+    for number in numbers:
+        digit_bitmaps = []
+        for digit in number["digitCoordinates"]:
+            digit_bitmaps.append(unsharpened_image[digit[0]:digit[1], digit[2]:digit[3]])
+        entry = {"id": number["id"], "digits": digit_bitmaps}
+        digit_bitmap_struct.append(entry)
+    return digit_bitmap_struct
 
-        # do connected component analysis
-        digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
-        # determine the sizes of the objects
-        sizes = np.bincount(np.reshape(digits[i], -1))
-        selected_object = -1
-        max_size = 0
-        for j in range(1, nr_of_objects + 1):
-            if sizes[j] < 11:
-                if filter_invalids:
-                    continue  # this is too small to be a number
-            maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
-            if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
-                if filter_invalids:
-                    continue  # this is likely a border artifact
-            border_dist = get_avg_border_distance(digits[i], j)
-            # print borderdist
-            if border_dist > 0.2:
-                if filter_invalids:
-                    continue  # this is likely a border artifact
 
-            if sizes[j] > max_size:
-                max_size = sizes[j]
-                selected_object = j
+def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
+    for number in cut_numbers:
+        digits = number["digits"]
+        for i, digit in enumerate(digits):
+            ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
 
-        if selected_object == -1 and filter_invalids:
-            digits[i] = None
-            continue
+            # do connected component analysis
+            digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
+            # determine the sizes of the objects
+            sizes = np.bincount(np.reshape(digits[i], -1))
+            selected_object = -1
+            max_size = 0
+            for j in range(1, nr_of_objects + 1):
+                if sizes[j] < 11:
+                    if filter_invalids:
+                        continue  # this is too small to be a number
+                maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
+                if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
+                    if filter_invalids:
+                        continue  # this is likely a border artifact
+                border_dist = get_avg_border_distance(digits[i], j)
+                # print borderdist
+                if border_dist > 0.2:
+                    if filter_invalids:
+                        continue  # this is likely a border artifact
 
-        if selected_object == -1 and not filter_invalids:
-            loc = (slice(25L, 42L, None), slice(8L, 13L, None))
-        else:
-            loc = ndimage.find_objects(digits[i])[selected_object - 1]
+                if sizes[j] > max_size:
+                    max_size = sizes[j]
+                    selected_object = j
 
-        cropped = digits[i][loc]
+            if selected_object == -1 and filter_invalids:
+                digits[i] = None
+                continue
 
-        # replace the shape number by 255
-        cropped[cropped == selected_object] = 255
+            if selected_object == -1 and not filter_invalids:
+                loc = (slice(25L, 42L, None), slice(8L, 13L, None))
+            else:
+                loc = ndimage.find_objects(digits[i])[selected_object - 1]
 
-        output_image = process_image(cropped)
-        digits[i] = np.array(output_image)
+            cropped = digits[i][loc]
+
+            # replace the shape number by 255
+            cropped[cropped == selected_object] = 255
+
+            output_image = process_image(cropped)
+            digits[i] = np.array(output_image)
 
 
 def extract_additional_areas(digit_image, base_file_name, target_path, structuring_element):
@@ -181,40 +185,48 @@ def extract_additional_areas(digit_image, base_file_name, target_path, structuri
 
 
 def extract(file_name, source_path, target_path, dataset_path):
-    digit_image = unsharp_image(source_path, file_name)
+    unsharpened_image = unsharp_image(source_path, file_name)
 
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
-    # create structureing element for the connected component analysis
+    # create structuring element for the connected component analysis
 
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-    digit_area_file, signature_result = extract_additional_areas(digit_image, base_file_name, target_path, structuring_element)
+    digit_area_file, signature_result = extract_additional_areas(unsharpened_image, base_file_name, target_path,
+                                                                 structuring_element)
 
-    digits = cut_digits(digit_image)
-    pre_process_digits(digits, structuring_element)
-
-    digit_result = prepare_results(digits)
+    numbers = read_extraction_config(join(dataset_path, "datasets/digit_config.json"))["numbers"]
+    cut_numbers = cut_digits(unsharpened_image, numbers)
+    pre_process_digits(cut_numbers, structuring_element)
 
     order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
-    probmatrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
+    # probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
-    for i, digit in enumerate(digits):
-        if digit is not None:
-            digit_file = base_file_name + "~" + str(i) + ".jpg"
-            extracted = join(target_path, digit_file)
-            cv2.imwrite(extracted, digit)
+    for number in cut_numbers:
+        digits = number["digits"]
+        number_id = int(number["id"])
+        numbers[number_id]["extracted"] = []
+        for i, digit in enumerate(digits):
+            if digit is not None:
+                extracted_file_name = base_file_name + "~" + str(number_id) + "~" + str(i)
+                digit_file = extracted_file_name + ".jpg"
+                extracted = join(target_path, digit_file)
+                cv2.imwrite(extracted, digit)
 
-            ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
-            digit_tif = base_file_name + "~" + str(i) + ".tif"
-            extracted_tif = join(target_path, digit_tif)
-            cv2.imwrite(extracted_tif, thresholded_tif)
-            probmatrix[i] = imageclassifier.classify_number(extracted_tif, order, layers)
+                ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
+                digit_tif = extracted_file_name + ".tif"
+                extracted_tif = join(target_path, digit_tif)
+                cv2.imwrite(extracted_tif, thresholded_tif)
+                probability_matrix = imageclassifier.classify_number(extracted_tif, order, layers)
+                extracted_struct = {"probabilities": probability_matrix[0].tolist(), "filename": 'extracted/' + digit_file}
 
-            digit_result[i]["filename"] = 'extracted/' + digit_file
+                numbers[number_id]["extracted"].append(extracted_struct)
+            else:
+                empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
+                numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"digits": digit_result, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result,
-              "probabilities": probmatrix.tolist()}
+    result = {"numbers": numbers, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result}
     logging.info(result)
 
     return json.dumps(result)

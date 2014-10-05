@@ -1,0 +1,45 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "prabowo",
+            "displayName": "H. Prabowo Subianto",
+            "digitCoordinates": [
+                [261, 323, 693, 721],
+                [261, 323, 726, 754],
+                [261, 323, 759, 787]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "jokowi",
+            "displayName": "Ir. H. Jokowidodo",
+            "digitCoordinates": [
+                [327, 389, 693, 721],
+                [327, 389, 726, 754],
+                [327, 389, 759, 787]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [395, 457, 693, 721],
+                [395, 457, 726, 754],
+                [395, 457, 759, 787]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [463, 525, 693, 721],
+                [463, 525, 726, 754],
+                [463, 525, 759, 787]
+            ]
+        }
+
+    ]
+}

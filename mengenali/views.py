@@ -37,15 +37,14 @@ def extract(request):
 
 
 def get_probabilities_result(request):
-    rows = request.GET.getlist("probabilities")
-    matrix = []
-    probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
-    for i, row in enumerate(rows):
-        probability_matrix[i] = json.loads(row)
+    json_data = json.loads(request.body)
 
-    print >> None, str(matrix)
+    print >> None, str(json_data)
 
-    outcomes = processprobs.get_possible_outcomes(probability_matrix, settings.CATEGORIES_COUNT)
+    with open(path.join(settings.DATASET_DIR, 'digit_config.json')) as config_file:
+        config = json.load(config_file)
+    path.join(settings.DATASET_DIR, 'digit_config.json')
+    outcomes = processprobs.get_possible_outcomes_for_config(config, json_data["probabilities"], settings.CATEGORIES_COUNT)
     results = []
     for outcome in outcomes:
         results.append(outcome)

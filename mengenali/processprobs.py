@@ -3,6 +3,7 @@ import string
 import numpy as np
 
 NUMBER_COUNT = 4
+DIGITS_PER_NUMBER = 3
 X_INDEX = 10
 
 
@@ -87,15 +88,55 @@ def print_possible(after_reduction):
     return outcomes
 
 
-def get_possible_outcomes(all_squares, categories_count):
-    all_numbers_matrix = all_squares.reshape(4, 3, categories_count)
+def get_number_config_for_index(config, index):
+    for number in config["numbers"]:
+        number_index = int(number["id"])
+        if index == number_index:
+            return number
+    return None
+
+
+def print_outcome(config, outcome_matrix):
+    outcomes = []
+    for outcome in outcome_matrix:
+        numbers = outcome[0]
+        confidence = outcome[1]
+        outcome = {}
+        for i, number in enumerate(numbers):
+            outcome_config = get_number_config_for_index(config, i)
+            short_name = outcome_config["shortName"]
+            outcome[short_name] = number
+        outcome["confidence"] = confidence
+
+        print(outcome)
+        outcomes.append(outcome)
+    return outcomes
+
+
+def get_possible_outcomes_for_config(config, numbers, categories_count):
+    outcome_matrix = get_numbers(numbers, categories_count)
+    return print_outcome(config, outcome_matrix)
+
+
+def get_numbers(probabilities, categories_count):
+    all_numbers = []
+    for j, extract in enumerate(probabilities):
+        for i, probabilities in enumerate(extract["probabilitiesForNumber"]):
+            if len(probabilities) is 0:
+                all_numbers = all_numbers + ([0] * categories_count)
+            else:
+                all_numbers = all_numbers + probabilities
+    return get_outcome_matrix(np.asarray(all_numbers), categories_count)
+
+
+def get_outcome_matrix(all_squares, categories_count):
+    all_numbers_matrix = all_squares.reshape(NUMBER_COUNT, DIGITS_PER_NUMBER, categories_count)
 
     def matrix_to_number(number_matrix):
         possible_values = get_possible_values(number_matrix)
         return map(lambda x: make_number(x[0], x[1]), possible_values)
 
     all_numbers = map(matrix_to_number, all_numbers_matrix[0:NUMBER_COUNT])
-
     possibilities = get_possible_end_results(all_numbers)
 
     def reduce_probability_if_checksum_is_wrong(p):
@@ -106,8 +147,12 @@ def get_possible_outcomes(all_squares, categories_count):
 
     results = map(reduce_probability_if_checksum_is_wrong,
                   filter(lambda x: x[1] > 0, possibilities))
-
     results.sort(key=lambda x: -x[1])
+    return results
+
+
+def get_possible_outcomes(all_squares, categories_count):
+    results = get_outcome_matrix(all_squares, categories_count)
     return print_possible(results[0:NUMBER_COUNT])
 
 

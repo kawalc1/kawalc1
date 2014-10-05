@@ -96,7 +96,7 @@
                     {{'FORM_VOTES_VALID'| translate }}
                 </td>
                 <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                    {{ mostProbableOutcome.total }}
+                    {{ mostProbableOutcome.jumlah }}
                 </td>
             </tr>
             <tr>
@@ -104,7 +104,7 @@
                     {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
                 <td>
-                    {{ mostProbableOutcome.invalid }}
+                    {{ mostProbableOutcome.tidakSah }}
                 </td>
             </tr>
         </table>
@@ -193,7 +193,7 @@
                     </td>
                     <td class="jumlah">
                         <span ng-show="correction">{{ correction.prabowo +  correction.jokowi}}</span>
-                        <span ng-show="correct">{{ mostProbableOutcome.total }}</span>
+                        <span ng-show="correct">{{ mostProbableOutcome.jumlah }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -201,11 +201,11 @@
                         {{'FORM_VOTES_INVALID'|translate}}
                     </td>
                     <td>
-                        <input ng-model="correction.invalid" type="number" max="999"
+                        <input ng-model="correction.tidakSah" type="number" max="999"
                                ng-maxlength="3"
                                ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correction.invalid}}</span>
-                        <span ng-show="correct">{{mostProbableOutcome.invalid}}</span>
+                        <span ng-show="correction && submitted">{{correction.tidakSah}}</span>
+                        <span ng-show="correct">{{mostProbableOutcome.tidakSah}}</span>
                     </td>
                 </tr>
             </table>
