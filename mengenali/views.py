@@ -36,15 +36,18 @@ def extract(request):
     return HttpResponse(output)
 
 
+def load_config():
+    with open(path.join(settings.DATASET_DIR, 'digit_config.json')) as config_file:
+        config = json.load(config_file)
+    return config
+
+
 def get_probabilities_result(request):
     json_data = json.loads(request.body)
 
     print >> None, str(json_data)
 
-    with open(path.join(settings.DATASET_DIR, 'digit_config.json')) as config_file:
-        config = json.load(config_file)
-    path.join(settings.DATASET_DIR, 'digit_config.json')
-    outcomes = processprobs.get_possible_outcomes_for_config(config, json_data["probabilities"], settings.CATEGORIES_COUNT)
+    outcomes = processprobs.get_possible_outcomes_for_config(load_config(), json_data["probabilities"], settings.CATEGORIES_COUNT)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -53,12 +56,17 @@ def get_probabilities_result(request):
     return HttpResponse(output)
 
 
+def get_reference_form():
+    config = load_config()
+    return path.join(settings.DATASET_DIR, config["referenceForm"])
+
+
 def download(request):
     scan_uri = request.GET.get("scanURI", "")
     download_file(scan_uri)
 
     try:
-        output = registration.process_file(None, 1, settings.STATIC_DIR, scan_uri)
+        output = registration.process_file(None, 1, settings.STATIC_DIR, scan_uri, get_reference_form())
     except:
         output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
     return HttpResponse(output)
@@ -70,7 +78,7 @@ def transform(request):
         handle_uploaded_file(request.FILES['file'], filename)
 
         try:
-            output = registration.process_file(None, 1, settings.STATIC_DIR, filename)
+            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form())
         except:
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)

@@ -68,9 +68,8 @@ def register_image(file_path, reference_form_path, output_path, result_writer):
     return create_response(transformed_image, good_enough_match)
 
 
-def process_file(result_writer, count, root, file_name):
+def process_file(result_writer, count, root, file_name, reference_form_path):
     image_path = join(root + '/upload', file_name)
-    reference_form_path = join(root, 'datasets/referenceform.jpg')
     output_path = join(root, 'transformed')
     return register_image(image_path, reference_form_path, output_path, result_writer)
 

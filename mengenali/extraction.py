@@ -169,7 +169,6 @@ def extract_additional_areas(digit_image, base_file_name, target_path, structuri
     digit_area_file = base_file_name + "~digit-area.jpg"
     digit_area_path = join(target_path, digit_area_file)
     logging.warning("writing %s", digit_area_path)
-    # logging.warning("image %s", digit_araea)
     cv2.imwrite(digit_area_path, digit_image[258:527, 621:799])
 
     signature_result = prepare_results(signatures)
