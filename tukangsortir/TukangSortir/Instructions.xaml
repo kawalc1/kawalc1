@@ -1,0 +1,144 @@
+﻿<Window x:Class="TukangSortir.Instructions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Instructions" Height="768" Width="1024">
+    <Grid>
+        <FlowDocumentScrollViewer >
+            <FlowDocument FontFamily="Verdana" FontSize="12" ColumnWidth="400">
+                <Paragraph FontWeight="Bold" FontSize="20">
+                    <Run Text="Instructions"/>
+                </Paragraph>
+                <Paragraph FontSize="16">
+                    General Remarks
+                </Paragraph>
+                    <List MarkerStyle="Disc">
+                        <ListItem>
+                            <Paragraph>
+                            Some numbers may not be cut out properly or look funny. When in doubt, always take what you see
+                            <Bold>in the form</Bold> as leading.
+                            </Paragraph>
+                        </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            The quality of the number classification is essential for the accuracy of the recognition software. Rubbish in, rubbish out.
+                            So please favour <Bold>quality</Bold> over quanitiy.
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            If you have accidentaly pressed the wrong number, look in the
+                            <Italic>numbers</Italic> folder (in windows explorer) for the folder of the number you pressed. Then find the wrongly categorized number, it should be the newest file in there,
+                            and move it to the right folder.
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            Sometimes numbers look very similar, for example fours and nines. When in doubt, verify with the third number (checksum), because they should add up.
+                        </Paragraph>
+                    </ListItem>                        
+                </List>
+                <Paragraph FontSize="16">
+                    Classification instructions
+                </Paragraph>                
+                <List MarkerStyle="Decimal">
+                    <ListItem>
+                        <Paragraph>
+                            <Run Text="Categorize the digit by pressing the number on your keybord for any number between: "/>
+                            <Bold>0</Bold> and
+                            <Bold>9</Bold>.
+
+                            <LineBreak/>
+                            <Run Text="Example: "/>
+                            <InlineUIContainer>
+                                <Image Source="images/0.jpg" Width="15" />
+                            </InlineUIContainer>
+                            <Run Text=" and "/>
+                            <InlineUIContainer>
+                                <Image Source="images/0-cut.tif" Width="15" />
+                            </InlineUIContainer>
+                            or 
+                            <InlineUIContainer>
+                                <Image Source="images/9.jpg" Width="15" />
+                            </InlineUIContainer>
+                            <Run Text=" and "/>
+                            <InlineUIContainer>
+                                <Image Source="images/9-cut.tif" Width="15" />
+                            </InlineUIContainer>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Run Text="Catagorize crossess by pressing "/>
+                            <Bold>
+                                <Run Text="'x'"/>
+                            </Bold>
+                            <LineBreak/>
+                            <Run Text="Example: "/>
+                            <InlineUIContainer>
+                                <Image Source="images/x.jpg" Width="15" />
+                            </InlineUIContainer>
+                            <Run Text=" and "/>
+                            <InlineUIContainer>
+                                <Image Source="images/x-cut.tif" Width="15" />
+                            </InlineUIContainer>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Run Text="Skip dashes by pressing "/>
+                            <Bold>
+                                <Run Text="'s'"/>
+                            </Bold>
+                            <LineBreak/>
+                            <Run Text="Example: "/>
+                            <InlineUIContainer>
+                                <Image Source="images/dash.jpg" Width="15" />
+                            </InlineUIContainer>
+                            <Run Text=" "/>
+                            <InlineUIContainer>
+                                <Image Source="images/dash-cut.tif" Width="15" />
+                            </InlineUIContainer>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Run Text="For other 'weird' cases like"/>
+                        </Paragraph>
+                        <List MarkerStyle="LowerLatin">
+                            <ListItem>
+                                <Paragraph>
+                                    Crossed out numbers with corrections: <Image Source="images/CrossedOut.jpg" Width="45" />
+                                </Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Run Text="Total numbers in one box:" /><Image Source="images/InOneBox.jpg" Width="60" />
+                                </Paragraph>
+                            </ListItem>
+                            <ListItem>
+                                <Paragraph>
+                                    <Run Text="Left aligned number 2:" BaselineAlignment="Bottom" />
+                                    <Image Source="images/LeftAligned.jpg" Width="60" />
+                                </Paragraph>
+                            </ListItem>
+                        </List>
+                        <Paragraph>
+                            Save the image form as a special case by pressing the <Button >Save special case</Button> button. Then for each number that contains something strange (i.e. not
+                            a number, cross or dash) press the <Bold>'w'</Bold> button.
+                        </Paragraph>
+                    </ListItem>
+                </List>
+                <Paragraph>
+                    
+                        <Run Text="If you come across that are completely or partially unreadable like this one:" BaselineAlignment="Bottom" />
+                        <Image Source="images/Crumpled.jpg" Width="120" />
+                    <LineBreak />
+                    First, press the <Button >Save special case</Button> button. Then for each number press the
+                    <Bold>'s'</Bold> (skip) button.
+
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
+
+    </Grid>
+</Window>
