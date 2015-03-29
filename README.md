@@ -18,3 +18,7 @@ Use Case Description:
  1. If the user agrees with what the computer has detected the process is finished. 
  1. If the user doesn't agree with the computer, he/she has the opportunity to submit the correct numbers.
  1. All this data is stored in a database and can serve to improve the accuracy of the algorithms.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SamTheisens/verifikatorc1/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
