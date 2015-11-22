@@ -50,26 +50,26 @@ imageProcessingControllers.controller('FormCarouselController',
     }]);
 
 function getFileNames(numbers) {
-    var fileNames = []
+    var fileNames = [];
     angular.forEach(numbers, function (number) {
         angular.forEach(number.extracted, function (extract) {
             fileNames.push(extract);
         });
     });
     return fileNames;
-};
+}
 
 function getProbabilities(numbers) {
-    var probalityList = []
+    var probalityList = [];
     angular.forEach(numbers, function (number) {
-        var probabilities = []
+        var probabilities = [];
         angular.forEach(number.extracted, function (extract) {
             probabilities.push(extract.probabilities);
         });
         probalityList.push({id: number.id, probabilitiesForNumber: probabilities});
     });
     return probalityList;
-};
+}
 
 imageProcessingControllers.controller('imageRegistrationController',
     ['$scope', '$http', function ($scope, $http) {
@@ -99,8 +99,8 @@ imageProcessingControllers.controller('imageRegistrationController',
             if ($scope.mostProbableOutcome === null) {
                 return true;
             }
-            return ($scope.mostProbableOutcome.prabowo + $scope.mostProbableOutcome.jokowi) ===
-                $scope.mostProbableOutcome.jumlah;
+            return ($scope.mostProbableOutcome[0].value + $scope.mostProbableOutcome[1].value) ===
+              $scope.mostProbableOutcome[2].value;
         };
 
         $scope.getToolTip = function (image) {
@@ -140,12 +140,38 @@ imageProcessingControllers.controller('imageRegistrationController',
             init();
         };
 
+        function findDescription(shortName, value, numbers) {
+            var enriched = null;
+            angular.forEach(numbers, function(number) {
+                if (number.shortName === shortName) {
+                    enriched = {
+                        shortName: shortName,
+                        displayName: number.displayName,
+                        value: value
+                    };
+
+                }
+            });
+            return enriched;
+        }
+
+        function enrichMostProbableOutcome(matrix, numbers) {
+            var rows = [];
+            angular.forEach(matrix, function(value, key) {
+                var description = findDescription(key, value, numbers);
+                if (description !== null) {
+                    rows.push(description);
+                }
+            });
+            return rows;
+        }
+
         $scope.getResult = function (numbers) {
             var probabilities = getProbabilities(numbers);
             $http.post('../processprobs.wsgi', {
                 probabilities: probabilities, configFile: $scope.configFile }).success(function (result) {
-                $scope.mostProbableOutcome = result.probabilityMatrix[0][0]
-                $scope.probabilityMatrix = result.probabilityMatrix
+                $scope.mostProbableOutcome = enrichMostProbableOutcome(result.probabilityMatrix[0][0], numbers);
+                $scope.probabilityMatrix = result.probabilityMatrix;
             });
         };
 
@@ -172,8 +198,7 @@ imageProcessingControllers.controller('imageRegistrationController',
                 $scope.configFile = transformed.configFile;
                 $http.get('../extract.wsgi',
                     { params: { filename: $scope.uploadUrl, configFile: $scope.configFile }}).success(function (result) {
-                        var images = getFileNames(result.numbers);
-                        $scope.extractedImages = images;
+                        $scope.extractedImages = getFileNames(result.numbers);
                         $scope.signatures = result.signatures;
                         $scope.registrationFailed = false;
                         $scope.digitArea = result.digitArea;

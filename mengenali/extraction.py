@@ -8,6 +8,7 @@ from os.path import join
 import json
 import io
 import imageclassifier
+import sys
 import settings
 import logging
 
@@ -36,7 +37,7 @@ def get_avg_border_distance(ar, index):
 def process_image(cropped):
     h, w = cropped.shape
     if h > w:
-        pil_im = Image.fromarray(cropped)
+        pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = int((22.0 / h) * w), 22
         test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
@@ -46,7 +47,7 @@ def process_image(cropped):
         output_image.paste(test_im, box)
         return output_image
     else:
-        pil_im = Image.fromarray(cropped)
+        pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = 22, int((22.0 / w) * h)
         test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
@@ -62,7 +63,7 @@ def process_signature(signatures, structuring_element, i, signature):
     ret, thresholded = cv2.threshold(signature, 180, 1, type=cv2.THRESH_BINARY_INV)
     signatures[i], number_of_objects = ndimage.measurements.label(thresholded, structuring_element)
     # determine the sizes of the objects
-    sizes = np.bincount(np.reshape(signatures[i], -1))
+    sizes = np.bincount(np.reshape(signatures[i], -1).astype(np.int64))
     selected_object = -1
     maxsize = 0
     for j in range(1, number_of_objects + 1):
@@ -124,7 +125,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
             # do connected component analysis
             digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
             # determine the sizes of the objects
-            sizes = np.bincount(np.reshape(digits[i], -1))
+            sizes = np.bincount(np.reshape(digits[i], -1).astype(np.int64))
             selected_object = -1
             max_size = 0
 
@@ -164,14 +165,30 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
             digits[i] = np.array(output_image)
 
 
-def extract_additional_areas(digit_image, base_file_name, target_path, structuring_element):
+def find_numbers_roi(numbers_roi, digit_image):
+    start_row = sys.maxsize
+    end_row = 0
+    start_col = sys.maxsize
+    end_col = 0
+    for number in numbers_roi:
+        for coords in number['digitCoordinates']:
+            start_row = min(coords[0], start_row)
+            end_row = max(coords[1], end_row)
+            start_col = min(coords[2], start_col)
+            end_col = max(coords[3], end_col)
+    logging.warning("[{0}:{1}, {2}:{3}]".format(str(start_row), str(end_row), str(start_col), str(end_col)))
+    return digit_image[start_row:end_row, start_col:end_col]
+
+
+def extract_additional_areas(numbers, digit_image, base_file_name, target_path, structuring_element):
     signatures = [digit_image[932:972, 597:745], digit_image[977:1018, 597:745]]
 
     # save
     digit_area_file = base_file_name + "~digit-area.jpg"
     digit_area_path = join(target_path, digit_area_file)
     logging.warning("writing %s", digit_area_path)
-    cv2.imwrite(digit_area_path, digit_image[258:527, 621:799])
+
+    cv2.imwrite(digit_area_path, find_numbers_roi(numbers, digit_image))
 
     signature_result = prepare_results(signatures)
 
@@ -194,10 +211,11 @@ def extract(file_name, source_path, target_path, dataset_path, config):
     # create structuring element for the connected component analysis
 
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-    digit_area_file, signature_result = extract_additional_areas(unsharpened_image, base_file_name, target_path,
+    numbers = config["numbers"]
+    digit_area_file, signature_result = extract_additional_areas(numbers, unsharpened_image, base_file_name,
+                                                                 target_path,
                                                                  structuring_element)
 
-    numbers = config["numbers"]
     cut_numbers = cut_digits(unsharpened_image, numbers)
     pre_process_digits(cut_numbers, structuring_element)
 

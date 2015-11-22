@@ -75,28 +75,27 @@
                     {{'FORM_TOTAL'| translate }}
                 </th>
             </tr>
-            <tr>
                 <td>
-                    H. Prabowo Subianto
+                    {{ mostProbableOutcome[0].displayName }}
                 </td>
                 <td>
-                    {{ mostProbableOutcome.prabowo }}
+                    {{ mostProbableOutcome[0].value }}
                 </td>
             </tr>
             <tr>
-                <td>
-                    Ir. H. Joko Widodo
-                </td>
-                <td>
-                    {{ mostProbableOutcome.jokowi }}
-                </td>
+              <td>
+                {{ mostProbableOutcome[1].displayName }}
+              </td>
+              <td>
+                {{ mostProbableOutcome[1].value }}
+              </td>
             </tr>
             <tr>
                 <td>
                     {{'FORM_VOTES_VALID'| translate }}
                 </td>
                 <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                    {{ mostProbableOutcome.jumlah }}
+                  {{ mostProbableOutcome[2].value }}
                 </td>
             </tr>
             <tr>
@@ -104,7 +103,7 @@
                     {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
                 <td>
-                    {{ mostProbableOutcome.tidakSah }}
+                  {{ mostProbableOutcome[3].value }}
                 </td>
             </tr>
         </table>

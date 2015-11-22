@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "dimas",
+            "displayName": "Dimas Oky Nugroho",
+            "digitCoordinates": [
+                [219,264, 754,801],
+                [219,264, 804,851],
+                [219,264, 854,901]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "idris",
+            "displayName": "Mohammad Idris",
+            "digitCoordinates": [
+                [268,313, 754,800],
+                [268,313, 804,851],
+                [267,314, 854,901]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [317,362, 753,800],
+                [317,362, 804,851],
+                [317,363, 853,901]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [380,424, 754,799],
+                [380,425, 804,850],
+                [380,425, 855,900]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "pilkada_reference.jpg"
+}
