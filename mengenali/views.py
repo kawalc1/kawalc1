@@ -2,10 +2,11 @@
 from os import path
 import json
 
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
 from django.conf import settings
 import numpy as np
 from django.views.static import serve as static_serve
+import logging
 
 import registration
 import extraction
@@ -23,9 +24,9 @@ def handle_uploaded_file(f, filename):
             destination.write(chunk)
 
 
-def download_file(uri):
-    file_to_get = urllib2.urlopen(settings.KPU_SCANS_URL + uri)
-    with open(path.join(settings.STATIC_DIR, 'upload/' + path.basename(uri)), 'wb') as downloaded_file:
+def download_file(uri, target_path):
+    file_to_get = urllib2.urlopen(uri)
+    with open(path.join(settings.STATIC_DIR, target_path + '/' + path.basename(uri)), 'wb') as downloaded_file:
         downloaded_file.write(file_to_get.read())
 
 
@@ -63,7 +64,7 @@ def get_reference_form(config_file_name):
 
 def download(request):
     scan_uri = request.GET.get("scanURI", "")
-    download_file(scan_uri)
+    download_file(settings.KPU_SCANS_URL + scan_uri, "upload")
 
     try:
         output = registration.process_file(None, 1, settings.STATIC_DIR, scan_uri, get_reference_form())
@@ -84,4 +85,45 @@ def transform(request):
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)
     else:
-        return HttpResponseNotFound('<h1>Page not found</h1>')
+        return HttpResponseNotFound('Method not supported')
+
+
+def lazy_load_reference_form(form_uri):
+    if path.isfile(path.join(settings.DATASET_DIR, form_uri)):
+        return path.join(settings.DATASET_DIR, form_uri)
+    file_name = path.basename(form_uri)
+    uploaded_location = path.join(settings.STATIC_DIR, 'datasets/' + file_name)
+    if path.isfile(uploaded_location):
+        return uploaded_location
+    download_file(form_uri, "datasets")
+    return uploaded_location
+
+
+def custom(request):
+    if request.method == 'POST':
+        req = json.loads(request.body)
+
+        if "scanURL" not in req:
+            return HttpResponseBadRequest("scanURL parameter required")
+        if "config" not in req:
+            return HttpResponseBadRequest("config parameter required")
+        if "configName" not in req:
+            return HttpResponseBadRequest("configName parameter required")
+
+        scan_url = req["scanURL"]
+        posted_config = req["config"]
+        config_name = req["configName"]
+
+        download_file(scan_url, "upload")
+
+        with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
+            json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
+
+        try:
+            output = registration.process_file(None, 1, settings.STATIC_DIR, path.basename(scan_url), lazy_load_reference_form(posted_config["referenceForm"]), config_name)
+        except:
+            output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
+
+        return HttpResponse(output)
+    else:
+        return HttpResponseNotAllowed('Method not supported')

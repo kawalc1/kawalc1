@@ -15,6 +15,23 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
 CONFIG_FILE = os.path.join(DATASET_DIR, 'hal_3_digit_config.json')
 
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers':['console'],
+            'propagate': True,
+            'level':'DEBUG',
+        }
+    },
+}
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
