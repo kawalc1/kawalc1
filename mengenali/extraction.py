@@ -166,6 +166,10 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
 
 
 def find_numbers_roi(numbers_roi, digit_image):
+    margin = 20
+    max_width = 190.0
+    max_height = 268.0
+    expected_ratio = max_width / max_height
     start_row = sys.maxsize
     end_row = 0
     start_col = sys.maxsize
@@ -176,8 +180,25 @@ def find_numbers_roi(numbers_roi, digit_image):
             end_row = max(coords[1], end_row)
             start_col = min(coords[2], start_col)
             end_col = max(coords[3], end_col)
-    logging.warning("[{0}:{1}, {2}:{3}]".format(str(start_row), str(end_row), str(start_col), str(end_col)))
-    return digit_image[start_row:end_row, start_col:end_col]
+    actual_width = end_row - start_row
+    actual_height = end_col - start_col
+    actual_ratio = float(actual_width) / float(actual_height)
+
+    if expected_ratio > actual_ratio:
+        required_shift = ((actual_height * expected_ratio) - actual_width) / 2.0
+        start_row -= required_shift
+        end_row += required_shift
+        start_col -= margin
+        end_col += margin
+    else:
+        required_shift = ((actual_width * expected_ratio) - actual_height) / 2.0
+        start_col -= required_shift
+        end_col += required_shift
+        start_row -= margin
+        end_row += margin
+
+    logging.info("[{0}:{1}, {2}:{3}] {4} {5}".format(int(start_row), int(end_row), start_col, end_col, expected_ratio, actual_ratio))
+    return digit_image[int(start_row):int(end_row), int(start_col):int(end_col)]
 
 
 def extract_additional_areas(numbers, digit_image, base_file_name, target_path, structuring_element):
@@ -186,9 +207,11 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
     # save
     digit_area_file = base_file_name + "~digit-area.jpg"
     digit_area_path = join(target_path, digit_area_file)
-    logging.warning("writing %s", digit_area_path)
+    logging.info("writing %s", digit_area_path)
 
-    cv2.imwrite(digit_area_path, find_numbers_roi(numbers, digit_image))
+    digit_roi = find_numbers_roi(numbers, digit_image)
+    logging.info("dimensions %s", digit_roi.shape)
+    cv2.imwrite(digit_area_path, digit_roi)
 
     signature_result = prepare_results(signatures)
 

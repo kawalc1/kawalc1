@@ -2,7 +2,6 @@ import time
 
 start_time = time.time()
 import numpy as np
-import cv2
 import argparse
 import os.path
 import pickle
