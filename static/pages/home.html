@@ -76,18 +76,18 @@
                 </th>
             </tr>
                 <td>
-                    {{ mostProbableOutcome[0].displayName }}
+                    {{ mostProbableOutcome[1].displayName }}
                 </td>
                 <td>
-                    {{ mostProbableOutcome[0].value }}
+                    {{ mostProbableOutcome[1].value }}
                 </td>
             </tr>
             <tr>
               <td>
-                {{ mostProbableOutcome[1].displayName }}
+                {{ mostProbableOutcome[0].displayName }}
               </td>
               <td>
-                {{ mostProbableOutcome[1].value }}
+                {{ mostProbableOutcome[0].value }}
               </td>
             </tr>
             <tr>
@@ -166,25 +166,25 @@
                 </tr>
                 <tr>
                     <td>
-                      {{ correction[0].displayName }}
+                      {{ mostProbableOutcome[1].displayName }}
                     </td>
 
                     <td>
                         <input ng-model="correction[0].value" type="number" max="999"
                                ng-maxlength="3" ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{ correction[0].value }}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[0].value}}</span>
+                        <span ng-show="correction && submitted">{{ correction[1].value }}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[1].value}}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                      {{ correction[1].displayName }}
+                      {{ mostProbableOutcome[0].displayName }}
                     </td>
                     <td>
                         <input ng-model="correction[1].value" type="number" max="999" ng-maxlength="3"
                                ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correction[1].value}}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[1].value}}</span>
+                        <span ng-show="correction && submitted">{{correction[0].value}}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[0].value}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -193,7 +193,7 @@
                     </td>
                     <td class="jumlah">
                         <span ng-show="correction">{{ correction[0].value +  correction[1].value}}</span>
-                        <span ng-show="correct">{{ correction[2].value }}</span>
+                        <span ng-show="correct">{{ mostProbableOutcome[2].value }}</span>
                     </td>
                 </tr>
                 <tr>
