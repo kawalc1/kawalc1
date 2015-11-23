@@ -47,7 +47,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic Verification of Election Forms',
-		VERSION: 'Version 1.0 - September 4, 2014',
+		VERSION: 'Version 1.1 - November 24, 2015',
 		INTRODUCTION: 'This application automatically counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK : 'this form',
