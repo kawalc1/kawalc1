@@ -74,28 +74,29 @@
                 <th>
                     {{'FORM_TOTAL'| translate }}
                 </th>
-            </tr>
-                <td>
-                    {{ mostProbableOutcome[1].displayName }}
-                </td>
-                <td>
-                    {{ mostProbableOutcome[1].value }}
-                </td>
-            </tr>
+
             <tr>
               <td>
                 {{ mostProbableOutcome[0].displayName }}
               </td>
               <td>
-                {{ mostProbableOutcome[0].value }}
+                {{ mostProbableOutcome[0].number }}
               </td>
             </tr>
+          </tr>
+          <td>
+            {{ mostProbableOutcome[1].displayName }}
+          </td>
+          <td>
+            {{ mostProbableOutcome[1].number }}
+          </td>
+          </tr>
             <tr>
                 <td>
                     {{'FORM_VOTES_VALID'| translate }}
                 </td>
                 <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                  {{ mostProbableOutcome[2].value }}
+                  {{ mostProbableOutcome[2].number }}
                 </td>
             </tr>
             <tr>
@@ -103,7 +104,7 @@
                     {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
                 <td>
-                  {{ mostProbableOutcome[3].value }}
+                  {{ mostProbableOutcome[3].number }}
                 </td>
             </tr>
         </table>
@@ -164,36 +165,37 @@
                         {{'FORM_TOTAL'| translate}}
                     </th>
                 </tr>
+              <tr>
+                <td>
+                  {{ mostProbableOutcome[0].displayName }}
+                </td>
+                <td>
+                  <input ng-model="correction[1].number" type="number" max="999" ng-maxlength="3"
+                         ng-show="correction && !submitted"/>
+                  <span ng-show="correction && submitted">{{correction[0].number}}</span>
+                  <span ng-show="correct">{{mostProbableOutcome[0].number}}</span>
+                </td>
+              </tr>
                 <tr>
                     <td>
                       {{ mostProbableOutcome[1].displayName }}
                     </td>
 
                     <td>
-                        <input ng-model="correction[0].value" type="number" max="999"
+                        <input ng-model="correction[0].number" type="number" max="999"
                                ng-maxlength="3" ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{ correction[1].value }}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[1].value}}</span>
+                        <span ng-show="correction && submitted">{{ correction[1].number }}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[1].number}}</span>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                      {{ mostProbableOutcome[0].displayName }}
-                    </td>
-                    <td>
-                        <input ng-model="correction[1].value" type="number" max="999" ng-maxlength="3"
-                               ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correction[0].value}}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[0].value}}</span>
-                    </td>
-                </tr>
+
                 <tr>
                     <td>
                         {{'FORM_VOTES_VALID'| translate}}
                     </td>
                     <td class="jumlah">
-                        <span ng-show="correction">{{ correction[0].value +  correction[1].value}}</span>
-                        <span ng-show="correct">{{ mostProbableOutcome[2].value }}</span>
+                        <span ng-show="correction">{{ correction[0].number +  correction[1].number}}</span>
+                        <span ng-show="correct">{{ mostProbableOutcome[2].number }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -201,11 +203,11 @@
                         {{'FORM_VOTES_INVALID'|translate}}
                     </td>
                     <td>
-                        <input ng-model="correction[3].value" type="number" max="999"
+                        <input ng-model="correction[3].number" type="number" max="999"
                                ng-maxlength="3"
                                ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correction[3].value}}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[3].value}}</span>
+                        <span ng-show="correction && submitted">{{correction[3].number}}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[3].number}}</span>
                     </td>
                 </tr>
             </table>

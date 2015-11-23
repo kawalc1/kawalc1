@@ -99,8 +99,8 @@ imageProcessingControllers.controller('imageRegistrationController',
             if ($scope.mostProbableOutcome === null) {
                 return true;
             }
-            return ($scope.mostProbableOutcome[0].value + $scope.mostProbableOutcome[1].value) ===
-              $scope.mostProbableOutcome[2].value;
+            return ($scope.mostProbableOutcome[0].number + $scope.mostProbableOutcome[1].number) ===
+              $scope.mostProbableOutcome[2].number;
         };
 
         $scope.getToolTip = function (image) {
@@ -158,10 +158,10 @@ imageProcessingControllers.controller('imageRegistrationController',
         function enrichMostProbableOutcome(matrix, numbers) {
             var rows = [];
             angular.forEach(matrix, function(value, key) {
-                var description = findDescription(key, value, numbers);
-                if (description !== null) {
-                    rows.push(description);
-                }
+                //var description = findDescription(key, value, numbers);
+                //if (description !== null) {
+                    rows.push(value);
+                //}
             });
             return rows;
         }

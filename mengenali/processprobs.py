@@ -105,8 +105,13 @@ def print_outcome(config, outcome_matrix, all_probabilities):
         outcome = {}
         for i, number in enumerate(numbers):
             outcome_config = get_number_config_for_index(config, all_probabilities[i])
-            short_name = outcome_config["shortName"]
-            outcome[short_name] = number
+            id = outcome_config["id"]
+            res = {
+                "number": number,
+                "shortName": outcome_config["shortName"],
+                "displayName": outcome_config["displayName"]
+            }
+            outcome[id] = res
         outcome["confidence"] = confidence
 
         print(outcome)
