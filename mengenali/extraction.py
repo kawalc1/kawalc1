@@ -166,7 +166,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
 
 
 def find_numbers_roi(numbers_roi, digit_image):
-    margin = 20
+    margin = 10.0
     max_width = 190.0
     max_height = 268.0
     expected_ratio = max_width / max_height
@@ -186,16 +186,16 @@ def find_numbers_roi(numbers_roi, digit_image):
 
     if expected_ratio > actual_ratio:
         required_shift = ((actual_height * expected_ratio) - actual_width) / 2.0
-        start_row -= required_shift
-        end_row += required_shift
-        start_col -= margin
-        end_col += margin
+        start_row -= (required_shift + (margin * expected_ratio))
+        end_row += (required_shift+ (margin * expected_ratio))
+        start_col -= (margin / expected_ratio)
+        end_col += (margin / expected_ratio)
     else:
         required_shift = ((actual_width * expected_ratio) - actual_height) / 2.0
-        start_col -= required_shift
-        end_col += required_shift
-        start_row -= margin
-        end_row += margin
+        start_col -= (required_shift + (margin * expected_ratio))
+        end_col += (required_shift + (margin * expected_ratio))
+        start_row -= (margin / expected_ratio)
+        end_row += (margin / expected_ratio)
 
     logging.info("[{0}:{1}, {2}:{3}] {4} {5}".format(int(start_row), int(end_row), start_col, end_col, expected_ratio, actual_ratio))
     return digit_image[int(start_row):int(end_row), int(start_col):int(end_col)]
