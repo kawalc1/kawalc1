@@ -104,7 +104,7 @@
                     {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
                 <td>
-                  {{ mostProbableOutcome[3].number }}
+                  {{ tidakSah[0].number}}
                 </td>
             </tr>
         </table>
@@ -203,11 +203,11 @@
                         {{'FORM_VOTES_INVALID'|translate}}
                     </td>
                     <td>
-                        <input ng-model="correction[3].number" type="number" max="999"
+                        <input ng-model="tidakSahCorrection[0].number" type="number" max="999"
                                ng-maxlength="3"
                                ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correction[3].number}}</span>
-                        <span ng-show="correct">{{mostProbableOutcome[3].number}}</span>
+                        <span ng-show="correction && submitted">{{tidakSahCorrection[0].number}}</span>
+                        <span ng-show="correct">{{tidakSah[0].number}}</span>
                     </td>
                 </tr>
             </table>

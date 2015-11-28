@@ -145,11 +145,32 @@ def get_numbers_in_checksum_set(numbers, checksum):
     return numbers_in_checksum
 
 
+def get_individual_numbers(numbers, checksums):
+    numbers_in_checksums = {}
+    for i, checksum in enumerate(checksums):
+        for j, number_in_checksum in enumerate(get_numbers_in_checksum_set(numbers, checksum)):
+            numbers_in_checksums[number_in_checksum["id"]] = number_in_checksum
+
+    numbers_not_in_checksums = []
+    for i, number in enumerate(numbers):
+        in_checksums = filter(lambda x: x == number["id"], numbers_in_checksums)
+        if not in_checksums:
+            numbers_not_in_checksums.append(number)
+
+    return numbers_not_in_checksums
+
+
 def get_possible_outcomes_for_config(config, numbers, categories_count):
     all_sets = []
     for checksum in config["checkSums"]:
         numbers_in_set = get_numbers_in_checksum_set(numbers, checksum)
         all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum))
+
+    individual_numbers = get_individual_numbers(numbers, config["checkSums"])
+    for individual_number in individual_numbers:
+        single_set = calculate_single_set(categories_count, config, individual_numbers,
+                                          {"total": individual_number["id"], "sigma": individual_number["id"]})
+        all_sets.append(single_set)
     return all_sets
 
 

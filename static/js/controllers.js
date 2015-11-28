@@ -86,7 +86,9 @@ imageProcessingControllers.controller('imageRegistrationController',
             $scope.registrationFailed = null;
             $scope.extractionFinished = false;
             $scope.mostProbableOutcome = null;
+            $scope.tidakSah = null;
             $scope.correction = null;
+            $scope.tidakSahCorrection = null;
             $scope.submitted = null;
             $scope.correct = null;
             $scope.digitArea = null;
@@ -171,12 +173,14 @@ imageProcessingControllers.controller('imageRegistrationController',
             $http.post('../processprobs.wsgi', {
                 probabilities: probabilities, configFile: $scope.configFile }).success(function (result) {
                 $scope.mostProbableOutcome = enrichMostProbableOutcome(result.probabilityMatrix[0][0], numbers);
+                $scope.tidakSah = enrichMostProbableOutcome(result.probabilityMatrix[1][0], numbers);
                 $scope.probabilityMatrix = result.probabilityMatrix;
             });
         };
 
         $scope.disagree = function () {
             $scope.correction = angular.copy($scope.mostProbableOutcome);
+            $scope.tidakSahCorrection = angular.copy($scope.tidakSah);
         };
 
         $scope.agree = function () {
