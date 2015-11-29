@@ -10,7 +10,7 @@
     'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
 </div>
 <div class="block column"
-     ng-class="{success : hasUploadFinished(), done: hasExtractionFinished()}">
+     ng-class="{success : hasUploadFinished(), done: isAreaSelected()}">
 
     <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
 
@@ -36,14 +36,14 @@
     </div>
 </div>
 <div class="block column"
-     ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: mostProbableOutcome}">
+     ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: hasExtractionFinished()}">
     <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
 
     <div class="result numbers"
-         ng-show="(hasUploadFinished() && !hasRegistrationFailed())">
+         ng-show="(hasUploadFinished() && hasExtractionSucceeded() && !hasRegistrationFailed())">
         <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
              ng-show="$flow.files.length">
-            <img src="{{extractedImage.filename}}"/>
+            <img src="{{extractedImage.filename}}" tooltip-html-unsafe="{{getConfidenceTooltip(extractedImage)}}"/>
         </div>
     </div>
     <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
@@ -62,10 +62,10 @@
     </div>
 </div>
 <div class="block column"
-     ng-class="{success : mostProbableOutcome, failure : ((correction && !submitted) || (!numbersAddUp() && !submitted)), done: (correction || correct)}">
+     ng-class="{success : (mostProbableOutcome && (!useKeyboardNavigation ||stage > 3)) , failure : ((correction && !submitted) || (!numbersAddUp() && !submitted) && (!useKeyboardNavigation || stage > 3)), done: ((correction || correct) && (!useKeyboardNavigation || stage > 3))}">
     <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
 
-    <div ng-show="mostProbableOutcome" class="result">
+    <div ng-show="(mostProbableOutcome && (!useKeyboardNavigation || stage > 3))" class="result">
         <table class="hasil">
             <tr>
                 <th>
@@ -140,12 +140,12 @@
     </div>
     <div>
             <span class="btn btn-success"
-                  ng-show="mostProbableOutcome && !correction && !correct && numbersAddUp()"
+                  ng-show="mostProbableOutcome && !correction && !correct && numbersAddUp() &&  (!useKeyboardNavigation || stage > 3)"
                   ng-click="agree()">
                 {{ 'BUTTON_CORRECT' | translate }}
             </span>
             <span class="btn btn-danger"
-                  ng-show="mostProbableOutcome && !correction && !correct"
+                  ng-show="(mostProbableOutcome && (!useKeyboardNavigation || stage > 3)) && !correction && !correct"
                   ng-click="disagree()">
                 {{ 'BUTTON_NOT_CORRECT' | translate }}
             </span>

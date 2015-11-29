@@ -1,0 +1,23 @@
+{
+  "name": "verifikatorc1",
+  "version": "0.0.0",
+  "homepage": "https://github.com/SamTheisens/verifikatorc1",
+  "authors": [
+    "SamTheisens <sam@vandebron.nl>"
+  ],
+  "description": "kawalc1 sourcecode",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-tooltips": "~0.1.25"
+  }
+}

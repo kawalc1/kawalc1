@@ -8,6 +8,7 @@ from os.path import join
 import json
 import io
 import imageclassifier
+from skimage.morphology import skeletonize
 import sys
 import settings
 import logging
@@ -115,6 +116,20 @@ def cut_digits(unsharpened_image, numbers):
     return digit_bitmap_struct
 
 
+def isMinus(image):
+    ret, thresholded = cv2.threshold(image.astype(np.uint8), 50, 1, type=cv2.THRESH_BINARY)
+    skeletonized = skeletonize(thresholded)
+    indices = np.where(skeletonized == 1)
+    # go over the indices and check the number of neighbors for each
+    xs = indices[0]
+    ys = indices[1]
+    nrOfEndpoints = 0
+    endpoints = []
+    for idx0, idx1 in zip(xs, ys):
+        if idx0 < 10 or idx0 > 18:
+            return False
+    return True
+
 def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
     for number in cut_numbers:
         digits = number["digits"]
@@ -162,7 +177,12 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
             cropped[cropped == selected_object] = 255
 
             output_image = process_image(cropped)
-            digits[i] = np.array(output_image)
+
+            image_array = np.array(output_image)
+            if isMinus(image_array):
+                digits[i] = None
+                continue
+            digits[i] = image_array
 
 
 def find_numbers_roi(numbers_roi, digit_image):
@@ -187,7 +207,7 @@ def find_numbers_roi(numbers_roi, digit_image):
     if expected_ratio > actual_ratio:
         required_shift = ((actual_height * expected_ratio) - actual_width) / 2.0
         start_row -= (required_shift + (margin * expected_ratio))
-        end_row += (required_shift+ (margin * expected_ratio))
+        end_row += (required_shift + (margin * expected_ratio))
         start_col -= (margin / expected_ratio)
         end_col += (margin / expected_ratio)
     else:
@@ -197,7 +217,8 @@ def find_numbers_roi(numbers_roi, digit_image):
         start_row -= (margin / expected_ratio)
         end_row += (margin / expected_ratio)
 
-    logging.info("[{0}:{1}, {2}:{3}] {4} {5}".format(int(start_row), int(end_row), start_col, end_col, expected_ratio, actual_ratio))
+    logging.info("[{0}:{1}, {2}:{3}] {4} {5}".format(int(start_row), int(end_row), start_col, end_col, expected_ratio,
+                                                     actual_ratio))
     return digit_image[int(start_row):int(end_row), int(start_col):int(end_col)]
 
 
@@ -256,7 +277,7 @@ def extract(file_name, source_path, target_path, dataset_path, config):
                 extracted = join(target_path, digit_file)
                 cv2.imwrite(extracted, digit)
 
-                ret, thresholded_tif = cv2.threshold(digit, 128, 255, type=cv2.THRESH_BINARY)
+                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), 128, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
                 cv2.imwrite(extracted_tif, thresholded_tif)

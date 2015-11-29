@@ -72,7 +72,14 @@ function getProbabilities(numbers) {
 }
 
 imageProcessingControllers.controller('imageRegistrationController',
-    ['$scope', '$http', function ($scope, $http) {
+    ['$scope', '$http', '$document', function ($scope, $http, $document) {
+        $document.bind("keypress", function(event) {
+          if (event.charCode == 110) {
+            $scope.stage +=1;
+            console.debug($scope.stage);
+            $scope.$apply();
+          }
+        });
         init();
 
         function init() {
@@ -93,6 +100,8 @@ imageProcessingControllers.controller('imageRegistrationController',
             $scope.correct = null;
             $scope.digitArea = null;
             $scope.configFile = null;
+            $scope.useKeyboardNavigation = false;
+            $scope.stage = 0;
             return placeHolderUrl;
         }
 
@@ -112,6 +121,21 @@ imageProcessingControllers.controller('imageRegistrationController',
             return "<img class='tooltipImage' src='" + image.filename + "' />";
         };
 
+        function mostProbable(probabilities) {
+            var mostProbable = '';
+            angular.forEach(probabilities, function(probability, key) {
+                if (probability > 0.02) {
+                    var index = key == 10 ? 'X' : key;
+                    mostProbable += ('<h4>' + index + ' - ' + Math.round(probability * 100) + '%</h4>');
+                }
+            });
+            return mostProbable;
+        }
+
+        $scope.getConfidenceTooltip = function (image) {
+            return "<div>" + mostProbable(image.probabilities) + "</div>";
+        };
+
         $scope.hasUploadFinished = function () {
             return $scope.uploadUrl !== placeHolderUrl;
         };
@@ -121,49 +145,31 @@ imageProcessingControllers.controller('imageRegistrationController',
         };
 
         $scope.isAreaSelected = function () {
-            return $scope.digitArea !== null
+            return $scope.digitArea !== null && (!$scope.useKeyboardNavigation || $scope.stage > 0);
         };
 
         $scope.hasExtractionSucceeded = function () {
             return $scope.hasUploadFinished() && !$scope.hasRegistrationFailed() &&
-                $scope.extractedImages.length > 0;
+                $scope.extractedImages.length > 0 && (!$scope.useKeyboardNavigation || $scope.stage > 1);
         };
 
         $scope.hasExtractionFailed = function () {
             return $scope.hasUploadFinished() && $scope.hasRegistrationFailed() &&
-                $scope.extractedImages.length === 0;
+                $scope.extractedImages.length === 0 && (!$scope.useKeyboardNavigation || $scope.stage > 1);
         };
 
         $scope.hasExtractionFinished = function () {
-            return $scope.extractionFinished === true;
+            return $scope.extractionFinished === true && (!$scope.useKeyboardNavigation || $scope.stage > 2);
         };
 
         $scope.abort = function () {
             init();
         };
 
-        function findDescription(shortName, value, numbers) {
-            var enriched = null;
-            angular.forEach(numbers, function(number) {
-                if (number.shortName === shortName) {
-                    enriched = {
-                        shortName: shortName,
-                        displayName: number.displayName,
-                        value: value
-                    };
-
-                }
-            });
-            return enriched;
-        }
-
-        function enrichMostProbableOutcome(matrix, numbers) {
+        function enrichMostProbableOutcome(matrix) {
             var rows = [];
-            angular.forEach(matrix, function(value, key) {
-                //var description = findDescription(key, value, numbers);
-                //if (description !== null) {
-                    rows.push(value);
-                //}
+            angular.forEach(matrix, function(value) {
+                rows.push(value);
             });
             return rows;
         }
@@ -172,8 +178,8 @@ imageProcessingControllers.controller('imageRegistrationController',
             var probabilities = getProbabilities(numbers);
             $http.post('../processprobs.wsgi', {
                 probabilities: probabilities, configFile: $scope.configFile }).success(function (result) {
-                $scope.mostProbableOutcome = enrichMostProbableOutcome(result.probabilityMatrix[0][0], numbers);
-                $scope.tidakSah = enrichMostProbableOutcome(result.probabilityMatrix[1][0], numbers);
+                $scope.mostProbableOutcome = enrichMostProbableOutcome(result.probabilityMatrix[0][0]);
+                $scope.tidakSah = enrichMostProbableOutcome(result.probabilityMatrix[1][0]);
                 $scope.probabilityMatrix = result.probabilityMatrix;
             });
         };

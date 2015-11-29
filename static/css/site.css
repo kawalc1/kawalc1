@@ -333,6 +333,7 @@ input {
 
 .tooltip-inner {
     padding: 5px;
+    color: black;
     background-color: #E0E0E0;
 }
 
