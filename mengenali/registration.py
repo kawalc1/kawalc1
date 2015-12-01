@@ -17,7 +17,8 @@ def print_result(result_writer, iteration, homography, transform, result):
 
 
 def create_response(image_path, success, config_file):
-    return json.dumps({'transformedUrl': image_path, 'success': success, 'configFile': config_file}, separators=(',', ':'))
+    return json.dumps({'transformedUrl': image_path, 'success': success, 'configFile': config_file},
+                      separators=(',', ':'))
 
 
 def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name, output_path,

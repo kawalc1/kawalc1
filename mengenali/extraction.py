@@ -130,12 +130,13 @@ def isMinus(image):
             return False
     return True
 
+
 def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
     for number in cut_numbers:
         digits = number["digits"]
         for i, digit in enumerate(digits):
 
-            ret, thresholded = cv2.threshold(digit, 180, 1, type=cv2.THRESH_BINARY_INV)
+            ret, thresholded = cv2.threshold(digit, 128, 1, type=cv2.THRESH_BINARY_INV)
 
             # do connected component analysis
             digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)

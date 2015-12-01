@@ -48,7 +48,8 @@ def get_probabilities_result(request):
 
     print >> None, str(json_data)
 
-    outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]), json_data["probabilities"], settings.CATEGORIES_COUNT)
+    outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
+                                                             json_data["probabilities"], settings.CATEGORIES_COUNT)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -80,7 +81,8 @@ def transform(request):
 
         try:
             config_file = request.POST.get("configFile", "")
-            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file), config_file)
+            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
+                                               config_file)
         except:
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)
@@ -120,8 +122,36 @@ def custom(request):
             json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
 
         try:
-            output = registration.process_file(None, 1, settings.STATIC_DIR, path.basename(scan_url), lazy_load_reference_form(posted_config["referenceForm"]), config_name)
-        except:
+            transform_output = json.loads(
+                registration.process_file(None, 1, settings.STATIC_DIR, path.basename(scan_url),
+                                          lazy_load_reference_form(posted_config["referenceForm"]), config_name))
+            transformed_url = transform_output["transformedUrl"]
+            extracted = json.loads(extraction.extract("transformed/" + transformed_url, settings.STATIC_DIR,
+                                                      path.join(settings.STATIC_DIR, 'extracted'),
+                                                      settings.STATIC_DIR, posted_config))
+            digit_area = extracted["digitArea"]
+            numbers = extracted["numbers"]
+
+            probabilities = []
+            for number in numbers:
+                probability_set = {"id": number["id"]}
+                number_probabilities = []
+
+                for digit_probability in number["extracted"]:
+                    number_probabilities.append(digit_probability["probabilities"])
+                probability_set["probabilitiesForNumber"] = number_probabilities
+                probabilities.insert(0, probability_set)
+
+            logging.info("numba!" + str(json.dumps(probabilities)))
+            outcomes = processprobs.get_possible_outcomes_for_config(posted_config,
+                                                                     probabilities, settings.CATEGORIES_COUNT)
+            results = []
+            for outcome in outcomes:
+                results.append(outcome)
+            output = json.dumps({'probabilityMatrix': outcomes, 'digitArea': digit_area}, separators=(',', ':'))
+
+        except Exception, err:
+            print Exception, err
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
 
         return HttpResponse(output)
