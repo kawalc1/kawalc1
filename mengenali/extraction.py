@@ -13,6 +13,8 @@ import sys
 import settings
 import logging
 
+image_threshold = 128
+
 
 def get_bounding_box(ar, index):
     indices = np.where(ar == index)
@@ -96,6 +98,7 @@ def unsharp_image(directory, file_name):
     image = Image.open(join(directory, file_name))
     image.load()
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
+    # pil_im = image.filter(ImageFilter.UnsharpMask(radius=7, percent=150, threshold=2))
     sharpened_image = np.array(pil_im)
     return sharpened_image
 
@@ -136,7 +139,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
         digits = number["digits"]
         for i, digit in enumerate(digits):
 
-            ret, thresholded = cv2.threshold(digit, 128, 1, type=cv2.THRESH_BINARY_INV)
+            ret, thresholded = cv2.threshold(digit, image_threshold, 1, type=cv2.THRESH_BINARY_INV)
 
             # do connected component analysis
             digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
@@ -278,7 +281,7 @@ def extract(file_name, source_path, target_path, dataset_path, config):
                 extracted = join(target_path, digit_file)
                 cv2.imwrite(extracted, digit)
 
-                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), 128, 255, type=cv2.THRESH_BINARY)
+                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
                 cv2.imwrite(extracted_tif, thresholded_tif)

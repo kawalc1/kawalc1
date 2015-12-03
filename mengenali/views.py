@@ -116,15 +116,32 @@ def custom(request):
         posted_config = req["config"]
         config_name = req["configName"]
 
-        download_file(scan_url, "upload")
-
         with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
             json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
 
         try:
-            transform_output = json.loads(
-                registration.process_file(None, 1, settings.STATIC_DIR, path.basename(scan_url),
-                                          lazy_load_reference_form(posted_config["referenceForm"]), config_name))
+            before_dot = scan_url.find('.jpg') - 1
+            url_as_list = list(scan_url)
+            start_page = int(url_as_list[before_dot])
+            pages_in_order = range(1, 6)
+            pages_in_order.remove(start_page)
+            pages_in_order.insert(0, start_page)
+
+            for page in pages_in_order:
+                url_as_list[before_dot] = str(page)
+                url_to_download = ''.join(url_as_list)
+                download_file(url_to_download, "upload")
+                try:
+                    registered_file = registration.process_file(None, 1, settings.STATIC_DIR, path.basename(url_to_download),
+                                                            lazy_load_reference_form(posted_config["referenceForm"]),
+                                                            config_name)
+                except Exception, err:
+                    print Exception, err
+                    continue
+                transform_output = json.loads(registered_file)
+                if transform_output["success"]:
+                    break
+
             transformed_url = transform_output["transformedUrl"]
             extracted = json.loads(extraction.extract("transformed/" + transformed_url, settings.STATIC_DIR,
                                                       path.join(settings.STATIC_DIR, 'extracted'),
@@ -142,7 +159,6 @@ def custom(request):
                 probability_set["probabilitiesForNumber"] = number_probabilities
                 probabilities.insert(0, probability_set)
 
-            logging.info("numba!" + str(json.dumps(probabilities)))
             outcomes = processprobs.get_possible_outcomes_for_config(posted_config,
                                                                      probabilities, settings.CATEGORIES_COUNT)
             results = []
