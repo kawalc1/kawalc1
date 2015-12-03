@@ -241,7 +241,11 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
     signature_result = prepare_results(signatures)
 
     for i, signature in enumerate(signatures):
-        is_valid = process_signature(signatures, structuring_element, i, signature)
+        try:
+            is_valid = process_signature(signatures, structuring_element, i, signature)
+        except Exception:
+            is_valid = False
+
         signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
         extracted = join(target_path, signature_file)
         cv2.imwrite(extracted, signature)
