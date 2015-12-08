@@ -93,12 +93,13 @@ def transform(request):
 def lazy_load_reference_form(form_uri):
     if path.isfile(path.join(settings.DATASET_DIR, form_uri)):
         return path.join(settings.DATASET_DIR, form_uri)
-    file_name = path.basename(form_uri)
-    uploaded_location = path.join(settings.STATIC_DIR, 'datasets/' + file_name)
-    if path.isfile(uploaded_location):
-        return uploaded_location
-    download_file(form_uri, "datasets")
-    return uploaded_location
+    # file_name = path.basename(form_uri)
+    # uploaded_location = path.join(settings.STATIC_DIR, 'datasets/' + file_name)
+    # if path.isfile(uploaded_location):
+    #     return uploaded_location
+    # download_file(form_uri, "datasets")
+    # return uploaded_location
+    raise Exception("supplied reference form " + str(form_uri) + " not found.")
 
 
 def custom(request):
@@ -115,11 +116,12 @@ def custom(request):
         scan_url = req["scanURL"]
         posted_config = req["config"]
         config_name = req["configName"]
-
-        with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
-            json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
-
         try:
+            ref_form = lazy_load_reference_form(posted_config["referenceForm"])
+
+            with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
+                json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
+
             before_dot = scan_url.find('.jpg') - 1
             url_as_list = list(scan_url)
             start_page = int(url_as_list[before_dot])
@@ -132,9 +134,10 @@ def custom(request):
                 url_to_download = ''.join(url_as_list)
                 download_file(url_to_download, "upload")
                 try:
-                    registered_file = registration.process_file(None, 1, settings.STATIC_DIR, path.basename(url_to_download),
-                                                            lazy_load_reference_form(posted_config["referenceForm"]),
-                                                            config_name)
+                    registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
+                                                                path.basename(url_to_download),
+                                                                ref_form,
+                                                                config_name)
                 except Exception, err:
                     print Exception, err
                     continue
@@ -168,7 +171,7 @@ def custom(request):
 
         except Exception, err:
             print Exception, err
-            output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
+            output = json.dumps({'transformedUrl': None, 'success': False, 'error': str(err)}, separators=(',', ':'))
 
         return HttpResponse(output)
     else:
