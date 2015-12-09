@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "jusuf",
+            "displayName": "dr. H. Jusuf Serang Kasim dan Dr. Drs. Marthin Billa, MM",
+            "digitCoordinates": [
+                [281,326, 568,615],
+                [281,326, 618,665],
+                [281,326, 668,714]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "irianto",
+            "displayName": "Dr. Ir. H. Irianto Lambrie, MM dan H. Udin Hianggio",
+            "digitCoordinates": [
+                [329,374, 568,615],
+                [329,374, 618,665],
+                [329,374, 668,714]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [377,422, 568,615],
+                [378,422, 619,665],
+                [378,422, 668,714]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [439,483, 568,615],
+                [439,483, 619,665],
+                [439,483, 668,714]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "kalimantan_utara_contoh.jpg"
+}
