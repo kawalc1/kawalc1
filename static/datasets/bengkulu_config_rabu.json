@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "ridwan",
+            "displayName": "Ridwan Mukti",
+            "digitCoordinates": [
+                [244,307, 620,665],
+                [244,308, 668,714],
+                [244,307, 717,764]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "idris",
+            "displayName": "Sultan Najamudin",
+            "digitCoordinates": [
+                [311,375, 620,665],
+                [311,375, 669,714],
+                [311,375, 717,763]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [378,422, 620,665],
+                [378,422, 669,714],
+                [378,422, 717,763]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [438,482, 620,665],
+                [438,482, 669,714],
+                [438,482, 718,764]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "bengkulu_contoh.jpeg"
+}
