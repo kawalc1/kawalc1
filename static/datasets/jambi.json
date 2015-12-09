@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "hasan",
+            "displayName": "H. Hasan Basri Agus dan Edi Purwanto, S.Hi., M.Si",
+            "digitCoordinates": [
+                [279,318, 560,600],
+                [279,318, 602,642],
+                [279,318, 645,684]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "zumi",
+            "displayName": "H. Zumi Zola Zulkifli, S.TP., MA dan Dr. Drs. H. Fachrori Umar, M.Hum",
+            "digitCoordinates": [
+                [320,359, 560,600],
+                [321,359, 603,642],
+                [320,359, 645,684]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [362,401, 560,600],
+                [362,401, 603,642],
+                [362,400, 645,684]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [415,453, 561,600],
+                [414,453, 603,642],
+                [414,453, 645,685]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "jambi-reference.jpg"
+}

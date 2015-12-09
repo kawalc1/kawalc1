@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "muslim",
+            "displayName": "Drs. H. Muslim Kasim, Ak, MM dan Dr. Fauzi Bahar, M.Si ",
+            "digitCoordinates": [
+                [290,348, 554,616],
+                [290,347, 619,682],
+                [290,347, 685,747]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "irwan",
+            "displayName": "Prof. Dr. H. Irwan Prayitno, Psi, M.Sc dan Drs. H. Nasrul Abit ",
+            "digitCoordinates": [
+                [350,407, 554,616],
+                [350,407, 619,681],
+                [350,406, 685,746]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [410,446, 554,616],
+                [410,446, 620,682],
+                [410,446, 685,747]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [479,516, 554,616],
+                [479,516, 619,681],
+                [479,516, 685,747]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "sumatera-barat-reference.jpg"
+}
