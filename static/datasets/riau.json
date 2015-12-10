@@ -1,0 +1,52 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "sani",
+            "displayName": "Drs. H. Muhammad Sani dan Dr. Nurdin Basirun S.Sos,M.Si ",
+            "digitCoordinates": [
+                [214,258, 612,656],
+                [214,258, 659,703],
+                [215,258, 706,749]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "soerya",
+            "displayName": "Dr. H. M. Soerya Respationo, SH. MH dan H. Ansar Ahmad, SE. MM ",
+            "digitCoordinates": [
+                [260,304, 612,656],
+                [260,304, 659,703],
+                [260,304, 706,750]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [306,349, 612,656],
+                [306,350, 659,704],
+                [306,350, 706,751]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [364,407, 612,656],
+                [364,407, 659,703],
+                [364,407, 706,749]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "riau-reference.jpg"
+}

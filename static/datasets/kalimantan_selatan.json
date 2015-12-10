@@ -2,32 +2,32 @@
     "numbers": [
         {
             "id": "0",
-            "shortName": "zairullah",
-            "displayName": "dr. H. Zairullah Azhar dan Dr.H.M.Sapi'i, M.Si",
+            "shortName": "olly",
+            "displayName": "Olly Dondokambey, SE dan Drs. Steven O.E Kandouw",
             "digitCoordinates": [
-                [258,294, 603,648],
-                [258,295, 651,695],
-                [258,295, 698,742]
+                [224,265, 602,645],
+                [224,265, 647,690],
+                [224,265, 692,735]
             ]
         },
         {
             "id": "1",
-            "shortName": "sahbirin",
-            "displayName": "H. Sahbirin Noor, S.Sos, MH dan Drs.H.Rudy Resnawan",
+            "shortName": "maya",
+            "displayName": "Maya Rumantir dan Glenny Kairupan",
             "digitCoordinates": [
-                [297,334, 603,648],
-                [297,333, 651,695],
-                [297,333, 698,742]
+                [267,309, 602,645],
+                [267,308, 647,690],
+                [267,308, 692,735]
             ]
         },
         {
             "id": "2",
-            "shortName": "muhidin",
-            "displayName": "H. Muhidin dan H. Gusti Farid Hasan Aman",
+            "shortName": "benny",
+            "displayName": "Dr. Benny Jozua Mamoto, SH.,M.Si dan David Bobihoe Akib",
             "digitCoordinates": [
-                [336,372, 603,648],
-                [336,372, 651,694],
-                [336,372, 698,742]
+                [311,352, 601,645],
+                [311,352, 647,690],
+                [311,352, 692,735]
             ]
         },
         {
@@ -35,9 +35,9 @@
             "shortName": "jumlah",
             "displayName": "Jumlah Suara Sah",
             "digitCoordinates": [
-                [375,411, 603,648],
-                [375,412, 651,695],
-                [375,411, 698,742]
+                [354,395, 602,645],
+                [354,395, 647,690],
+                [354,395, 692,735]
             ]
         },
         {
@@ -45,9 +45,9 @@
             "shortName": "tidakSah",
             "displayName": "Jumlah Suara Tidak Sah",
             "digitCoordinates": [
-                [427,463, 604,648],
-                [427,464, 651,695],
-                [427,463, 698,742]
+                [409,450, 601,645],
+                [409,450, 647,690],
+                [409,450, 693,735]
             ]
         }
 
@@ -58,5 +58,5 @@
             "total": "3"
         }
     ],
-    "referenceForm": "kalimantan-selatan-reference.jpg"
+    "referenceForm": "sulawesi-selatan-reference.jpg"
 }
