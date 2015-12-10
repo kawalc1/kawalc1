@@ -1,0 +1,62 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "zairullah",
+            "displayName": "dr. H. Zairullah Azhar dan Dr.H.M.Sapi'i, M.Si",
+            "digitCoordinates": [
+                [258,294, 603,648],
+                [258,295, 651,695],
+                [258,295, 698,742]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "sahbirin",
+            "displayName": "H. Sahbirin Noor, S.Sos, MH dan Drs.H.Rudy Resnawan",
+            "digitCoordinates": [
+                [297,334, 603,648],
+                [297,333, 651,695],
+                [297,333, 698,742]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "muhidin",
+            "displayName": "H. Muhidin dan H. Gusti Farid Hasan Aman",
+            "digitCoordinates": [
+                [336,372, 603,648],
+                [336,372, 651,694],
+                [336,372, 698,742]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+                [375,411, 603,648],
+                [375,412, 651,695],
+                [375,411, 698,742]
+            ]
+        },
+        {
+            "id": "4",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+                [427,463, 604,648],
+                [427,464, 651,695],
+                [427,463, 698,742]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1", "2"],
+            "total": "3"
+        }
+    ],
+    "referenceForm": "kalimantan-selatan-reference.jpg"
+}
