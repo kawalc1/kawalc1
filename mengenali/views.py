@@ -3,7 +3,8 @@ from os import path
 import json
 
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
-from django.conf import settings
+# from django.conf import settings
+import settings
 import numpy as np
 from django.views.static import serve as static_serve
 import logging
@@ -117,70 +118,7 @@ def custom(request):
         posted_config = req["config"]
         config_name = req["configName"]
         try:
-            ref_form = lazy_load_reference_form(posted_config["referenceForm"])
-
-            with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
-                json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
-
-            before_dot = scan_url.find('.jpg') - 1
-            url_as_list = list(scan_url)
-            try:
-                start_page = int(url_as_list[before_dot])
-                pages_in_order = range(1, 6)
-                pages_in_order.remove(start_page)
-                pages_in_order.insert(0, start_page)
-            except ValueError:
-                pages_in_order = []
-            transform_output = None
-
-            for page in pages_in_order:
-                url_as_list[before_dot] = str(page)
-                url_to_download = ''.join(url_as_list)
-                download_file(url_to_download, "upload")
-                try:
-                    registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
-                                                                path.basename(url_to_download),
-                                                                ref_form,
-                                                                config_name)
-                except Exception, err:
-                    print Exception, err
-                    continue
-                transform_output = json.loads(registered_file)
-                if transform_output["success"]:
-                    break
-
-            if transform_output is None:
-                download_file(scan_url, "upload")
-                registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
-                                                            path.basename(scan_url),
-                                                            ref_form,
-                                                            config_name)
-                transform_output = json.loads(registered_file)
-
-
-            transformed_url = transform_output["transformedUrl"]
-            extracted = json.loads(extraction.extract("transformed/" + transformed_url, settings.STATIC_DIR,
-                                                      path.join(settings.STATIC_DIR, 'extracted'),
-                                                      settings.STATIC_DIR, posted_config))
-            digit_area = extracted["digitArea"]
-            numbers = extracted["numbers"]
-
-            probabilities = []
-            for number in numbers:
-                probability_set = {"id": number["id"]}
-                number_probabilities = []
-
-                for digit_probability in number["extracted"]:
-                    number_probabilities.append(digit_probability["probabilities"])
-                probability_set["probabilitiesForNumber"] = number_probabilities
-                probabilities.insert(0, probability_set)
-
-            outcomes = processprobs.get_possible_outcomes_for_config(posted_config,
-                                                                     probabilities, settings.CATEGORIES_COUNT)
-            results = []
-            for outcome in outcomes:
-                results.append(outcome)
-            output = json.dumps({'probabilityMatrix': outcomes, 'digitArea': digit_area}, separators=(',', ':'))
+            output = process_form(config_name, posted_config, scan_url)
 
         except Exception, err:
             print Exception, err
@@ -189,3 +127,63 @@ def custom(request):
         return HttpResponse(output)
     else:
         return HttpResponseNotAllowed('Method not supported')
+
+
+def process_form(config_name, posted_config, scan_url):
+    ref_form = lazy_load_reference_form(posted_config["referenceForm"])
+    with open(path.join(settings.STATIC_DIR, 'datasets/' + config_name), "w") as outfile:
+        json.dump(posted_config, outfile, separators=(',', ':'), indent=4)
+    before_dot = scan_url.find('.jpg') - 1
+    url_as_list = list(scan_url)
+    try:
+        start_page = int(url_as_list[before_dot])
+        pages_in_order = range(1, 6)
+        pages_in_order.remove(start_page)
+        pages_in_order.insert(0, start_page)
+    except ValueError:
+        pages_in_order = []
+    transform_output = None
+    for page in pages_in_order:
+        url_as_list[before_dot] = str(page)
+        url_to_download = ''.join(url_as_list)
+        download_file(url_to_download, "upload")
+        try:
+            registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
+                                                        path.basename(url_to_download),
+                                                        ref_form,
+                                                        config_name)
+        except Exception, err:
+            print Exception, err
+            continue
+        transform_output = json.loads(registered_file)
+        if transform_output["success"]:
+            break
+    if transform_output is None:
+        download_file(scan_url, "upload")
+        registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
+                                                    path.basename(scan_url),
+                                                    ref_form,
+                                                    config_name)
+        transform_output = json.loads(registered_file)
+    transformed_url = transform_output["transformedUrl"]
+    extracted = json.loads(extraction.extract("transformed/" + transformed_url, settings.STATIC_DIR,
+                                              path.join(settings.STATIC_DIR, 'extracted'),
+                                              settings.STATIC_DIR, posted_config))
+    digit_area = extracted["digitArea"]
+    numbers = extracted["numbers"]
+    probabilities = []
+    for number in numbers:
+        probability_set = {"id": number["id"]}
+        number_probabilities = []
+
+        for digit_probability in number["extracted"]:
+            number_probabilities.append(digit_probability["probabilities"])
+        probability_set["probabilitiesForNumber"] = number_probabilities
+        probabilities.insert(0, probability_set)
+    outcomes = processprobs.get_possible_outcomes_for_config(posted_config,
+                                                             probabilities, settings.CATEGORIES_COUNT)
+    results = []
+    for outcome in outcomes:
+        results.append(outcome)
+    output = json.dumps({'probabilityMatrix': outcomes, 'digitArea': digit_area}, separators=(',', ':'))
+    return output

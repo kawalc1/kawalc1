@@ -137,11 +137,25 @@ def calculate_single_set(categories_count, config, all_probabilities, checksum):
     return print_outcome(config, outcome_matrix, all_probabilities)
 
 
-def get_numbers_in_checksum_set(numbers, checksum):
+def get_total_of_checksum(numbers, checksum):
     numbers_in_checksum = []
     for j, extract in enumerate(numbers):
-        if extract["id"] in checksum["sigma"] or extract["id"] == checksum["total"]:
+        if extract["id"] == checksum["total"]:
             numbers_in_checksum.append(extract)
+    return numbers_in_checksum
+
+
+def get_numbers_in_checksum_sigma_part(numbers, checksum):
+    numbers_in_checksum = []
+    for j, extract in enumerate(numbers):
+        if extract["id"] in checksum["sigma"]:
+            numbers_in_checksum.append(extract)
+    return numbers_in_checksum
+
+
+def get_numbers_in_checksum_set(numbers, checksum):
+    numbers_in_checksum = get_numbers_in_checksum_sigma_part(numbers, checksum)
+    numbers_in_checksum.extend(get_total_of_checksum(numbers, checksum))
     return numbers_in_checksum
 
 

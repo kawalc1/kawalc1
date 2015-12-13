@@ -148,18 +148,24 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
             selected_object = -1
             max_size = 0
 
+            log = ""
             for j in range(1, nr_of_objects + 1):
                 if sizes[j] < 11:
                     if filter_invalids:
+                        log += str(i) + ": too small"
                         continue  # this is too small to be a number
                 maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
+                # commented out because 1's were detected as vertical borders
                 if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
+                # if maxy - miny < 3 and (miny < 2 or maxy > 59):
                     if filter_invalids:
+                        log += str(i) + ": on border"
                         continue  # this is likely a border artifact
                 border_dist = get_avg_border_distance(digits[i], j)
                 # print borderdist
                 if border_dist > 0.2:
                     if filter_invalids:
+                        log += str(i) + ": too close to border"
                         continue  # this is likely a border artifact
 
                 if sizes[j] > max_size:
@@ -168,6 +174,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
 
             if selected_object == -1 and filter_invalids:
                 digits[i] = None
+                print log
                 continue
 
             if selected_object == -1 and not filter_invalids:

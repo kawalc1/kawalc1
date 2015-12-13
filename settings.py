@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(__file__)
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
 CONFIG_FILE = os.path.join(DATASET_DIR, 'hal_3_digit_config.json')
 
