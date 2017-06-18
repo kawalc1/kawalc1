@@ -40,11 +40,11 @@ LOGGING = {
 SECRET_KEY = 'xfRvYGLRpcqk1AKN9AAsV1UpMZuP62jIamHKeRCMRTjxBmyiEN'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kawalc1.org']
 
 
 # Application definition
