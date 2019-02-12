@@ -17,7 +17,8 @@ def applyReluNeuron(results):
     return np.maximum(results, np.zeros(results.shape))
 
 
-def convolveImageStack(inputim, (channels, filters, filterSize, padding, dropout, neuron, bias, weights)):
+def convolveImageStack(inputim, params):
+    channels, filters, filterSize, padding, dropout, neuron, bias, weights = params
     results = np.zeros((inputim.shape[0], inputim.shape[1], weights.shape[1]))
     for i, kernels in enumerate(weights.T):  # for each colum in weights
         filters = kernels.reshape((filterSize, filterSize, channels))
@@ -33,7 +34,8 @@ def convolveImageStack(inputim, (channels, filters, filterSize, padding, dropout
         return results
 
 
-def poolImageStack(images, (outputDim, filterSize, stride, operation, neuron)):
+def poolImageStack(images, params):
+    outputDim, filterSize, stride, operation, neuron = params
     results = np.zeros((outputDim, outputDim, images.shape[2]))
     for l in range(images.shape[2]):
         tempres = ndimage.filters.maximum_filter(images[:, :, l], size=(filterSize, filterSize))
@@ -47,7 +49,8 @@ def poolImageStack(images, (outputDim, filterSize, stride, operation, neuron)):
         return results
 
 
-def applyFullyConnected(images, (dropout, neuron, bias, weights)):
+def applyFullyConnected(images, params):
+    dropout, neuron, bias, weights = params
     results = np.dot(images, weights) + bias
 
     if neuron == 'relu':
@@ -158,7 +161,7 @@ for child in xml_net.getroot():
         tp = child.find('type')
         if tp is None:
             continue
-        print tp.text
+        print(tp.text)
         nm = child.attrib['name']
         if tp.text == 'conv':
             order.append((nm, tp.text))
@@ -206,7 +209,7 @@ for file in os.listdir(input_dir):
     sum = np.sum(input_image)
     out = input_image / sum
 
-    print file
-    print out
+    print(file)
+    print(out)
 
-print "The classification script took ", time.time() - start_time, " to run"
+print("The classification script took ", time.time() - start_time, " to run")

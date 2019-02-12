@@ -49,7 +49,7 @@ def get_human_classification():
     string_to_execute = cursor.mogrify(
         "SELECT prabowo, jokowi, sah, tidaksah, entered, errorreportedby from human where kelurahan = %s and tpsno = %s",
         (kelurahan, tps_number))
-    print string_to_execute
+    print(string_to_execute)
     cursor.execute(string_to_execute)
     return cursor.fetchone()
 
@@ -62,7 +62,7 @@ def get_joint_result_string(human_results):
 
 for root, dirs, file_names in walk(input_dir):
     for filename in fnmatch.filter(file_names, '~trans*~hom*~warp*.jpg'):
-        print "processing: " + str(join(root, filename))
+        print("processing: " + str(join(root, filename)))
         digits, signatures = extraction.cut_digits(root, filename)
         structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
         extraction.pre_process_digits(digits, structuring_element, False)
@@ -71,7 +71,7 @@ for root, dirs, file_names in walk(input_dir):
         if prabowo is None or errorreportedby is 1:
             continue
         string = get_joint_result_string((prabowo, jokowi, sah))
-        print string
+        print(string)
         for i, digit in enumerate(string):
             if int(digit) not in [0]:
                 continue

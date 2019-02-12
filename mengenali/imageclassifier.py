@@ -9,7 +9,7 @@ import time
 def is_probably_x(extractedTif, orderx, layersx):
     matrix = classify_number(extractedTif, orderx, layersx)
     if matrix[0][10] > 0.9:
-        print "x marks the spot: " + extractedTif + " " + str(matrix[0][10])
+        print("x marks the spot: " + extractedTif + " " + str(matrix[0][10]))
         return True
     return False
 
@@ -59,7 +59,7 @@ def parse_network(network):
         if child.tag == "layer":
             tp = child.find('type')
             if tp is not None:
-                print tp.text
+                print(tp.text)
                 nm = child.attrib['name']
                 if tp.text == 'conv':
                     order.append((nm, tp.text))
@@ -84,7 +84,8 @@ def apply_relu_neuron(results):
     return np.maximum(results, np.zeros(results.shape))
 
 
-def convolve_image_stack(inputim, (channels, filters, filterSize, padding, dropout, neuron, bias, weights)):
+def convolve_image_stack(inputim, params):
+    channels, filters, filterSize, padding, dropout, neuron, bias, weights = params
     results = np.zeros((inputim.shape[0], inputim.shape[1], weights.shape[1]))
     for i, kernels in enumerate(weights.T):  # for each colum in weights
         filters = kernels.reshape((filterSize, filterSize, channels))
@@ -100,7 +101,8 @@ def convolve_image_stack(inputim, (channels, filters, filterSize, padding, dropo
         return results
 
 
-def pool_image_stack(images, (outputDim, filterSize, stride, operation, neuron)):
+def pool_image_stack(images, params):
+    outputDim, filterSize, stride, operation, neuron = params
     results = np.zeros((outputDim, outputDim, images.shape[2]))
     for l in range(images.shape[2]):
         tempres = ndimage.filters.maximum_filter(images[:, :, l], size=(filterSize, filterSize))
@@ -114,7 +116,8 @@ def pool_image_stack(images, (outputDim, filterSize, stride, operation, neuron))
         return results
 
 
-def apply_fully_connected(images, (dropout, neuron, bias, weights)):
+def apply_fully_connected(images, params):
+    dropout, neuron, bias, weights = params
     results = np.dot(images, weights) + bias
 
     if neuron == 'relu':

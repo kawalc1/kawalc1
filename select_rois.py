@@ -87,8 +87,8 @@ while True:
     cv2.imshow("zoom", zoomed_image)
 
     if key == ord("s") and len(refPt) == 2:
-        print str(
-            "[" + str(refPt[0][1]) + "," + str(refPt[1][1]) + ", " + str(refPt[0][0]) + "," + str(refPt[1][0]) + "]")
+        print(str(
+            "[" + str(refPt[0][1]) + "," + str(refPt[1][1]) + ", " + str(refPt[0][0]) + "," + str(refPt[1][0]) + "]"))
         roi = clone[refPt[0][1]:refPt[1][1], refPt[0][0]:refPt[1][0]]
         cv2.imshow("ROI", roi)
         cv2.moveWindow("ROI", image.shape[1], int(zoom_size * zoom_factor) + 40)

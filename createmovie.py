@@ -39,8 +39,8 @@ for i in digits:
             if it > (training_set_size - 1):
                 break
     digit_files.append(digit_file_names)
-print len(digit_files)
-print len(digit_files[0])
+print(len(digit_files))
+print(len(digit_files[0]))
 count = 0
 
 
@@ -66,6 +66,6 @@ for i in range(0, training_set_size):
     blank_image.paste(logo_kawal_c1, (get_x_pos(11), get_y_pos(11)))
     count += 1
     output_file_name = "{0:0>5}".format(count) + ".png"
-    print output_file_name
+    print(output_file_name)
     blank_image.save(os.path.join(output_file, output_file_name), "PNG")
 
