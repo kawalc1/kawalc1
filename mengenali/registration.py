@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 def print_result(result_writer, iteration, homography, transform, result):
     row = [str(iteration), str(datetime.datetime.now()), homography, transform, result]
     logging.info("output: " + str(row))
-    print row
+    print(row)
 
 
 def create_response(image_path, success, config_file):
@@ -37,7 +37,7 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
 def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
     reference = cv2.imread(reference_form_path, 0)
     logging.info("read reference %s", reference_form_path)
-    orb = cv2.SIFT()
+    orb = cv2.xfeatures2d.SIFT_create()
     kp2, des2 = orb.detectAndCompute(reference, None)
 
     image = cv2.imread(file_path, 0)
@@ -63,6 +63,7 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     logging.info("transformed image")
     head, file_name = os.path.split(file_path)
 
+    print("the path", os.path.abspath(output_path))
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name,
                                                 output_path, result_writer)
     logging.info("transformed %s", transformed_image)

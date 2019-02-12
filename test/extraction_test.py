@@ -1,5 +1,8 @@
 import unittest
-import extraction
+
+from numpy import unicode
+
+from mengenali import extraction
 from os import walk
 import fnmatch
 import io

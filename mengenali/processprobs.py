@@ -19,9 +19,6 @@ def get_possible_values(list_of_probs, threshold=.10):
     for probs in list_of_probs:
         high_probs = filter(lambda x: x[1] > threshold, enumerate(probs))
 
-        print "high probs:"
-        print high_probs
-
         if not total_probs:
             total_probs = map(lambda x: ([x[0]], x[1]), high_probs)
         else:
@@ -69,8 +66,7 @@ def make_number(digit_list, current_confidence):
     elif X_INDEX in significant_part:
         return 0, 0
     else:
-        return int(
-            string.join(map(str, significant_part), "")), current_confidence
+        return int("".join(str(x) for x in significant_part)), current_confidence
 
 
 def print_possible(after_reduction):
@@ -199,7 +195,8 @@ def get_numbers(check_sums, all_probabilities, categories_count):
     return get_outcome_matrix(check_sums, np.asarray(all_numbers), categories_count, len(all_probabilities))
 
 
-def numbers_add_up(probabilities, (sigma, total)):
+def numbers_add_up(probabilities, sigma_total):
+    sigma, total = sigma_total
     running_total = 0
     expected_total = probabilities[total]
     for index in sigma:
@@ -221,17 +218,17 @@ def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
         probabilities = p[0]
         confidence = p[1]
         if numbers_add_up(probabilities, check_sums):
-            print "numbers add up :-)"
+            print("numbers add up :-)")
             return p
         else:
-            print "numbers don't add up :-("
+            print("numbers don't add up :-(")
             return probabilities, confidence * .005
 
-    results = map(reduce_probability_if_checksum_is_wrong,
-                  filter(lambda x: x[1] > 0, possibilities))
+    bigger_than_zero = filter(lambda x: x[1] > 0, possibilities)
+    results = [reduce_probability_if_checksum_is_wrong(x) for x in bigger_than_zero]
+
     results.sort(key=lambda x: -x[1])
     return results
-
 
 def get_possible_outcomes(all_squares, categories_count):
     results = get_outcome_matrix(all_squares, categories_count)

@@ -174,11 +174,11 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
 
             if selected_object == -1 and filter_invalids:
                 digits[i] = None
-                print log
+                print(log)
                 continue
 
             if selected_object == -1 and not filter_invalids:
-                loc = (slice(25L, 42L, None), slice(8L, 13L, None))
+                loc = (slice(25, 42, None), slice(8, 13, None))
             else:
                 loc = ndimage.find_objects(digits[i])[selected_object - 1]
 

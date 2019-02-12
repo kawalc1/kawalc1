@@ -1,9 +1,9 @@
 import unittest
-import registration
+from mengenali import registration
 import tempfile
 import json
 import io
-from os.path import join, exists
+from os.path import join, exists, abspath
 
 
 class RegistrationTest(unittest.TestCase):
@@ -12,12 +12,13 @@ class RegistrationTest(unittest.TestCase):
         cls.overwrite_resources = False
 
     def assert_registration_as_expected(self, c1_form, expected_result):
-        originals_path = 'test/resources/forms/original/'
+        originals_path = './resources/forms/original/'
         image = join(originals_path, c1_form)
-        reference_form = 'static/datasets/referenceform.jpg'
-        expected_output_path = 'test/resources/forms/transformed'
+        self.assertTrue(exists(image))
+        reference_form = '../static/datasets/referenceform.jpg'
+        expected_output_path = './resources/forms/transformed'
         output_path = tempfile.gettempdir()
-        registration_output = registration.register_image(image, reference_form, output_path, None)
+        registration_output = registration.register_image(image, reference_form, output_path, None, None)
         registration_json = json.loads(registration_output)
         success = registration_json["success"]
 
@@ -26,7 +27,11 @@ class RegistrationTest(unittest.TestCase):
         image_url = registration_json["transformedUrl"]
         temp_image_path = join(output_path, image_url)
         expected_image_path = join(expected_output_path, image_url)
+        print("url", abspath(expected_image_path))
+        self.assertTrue(exists(expected_image_path))
+
         self.assertTrue(exists(temp_image_path))
+
         with io.FileIO(temp_image_path, mode='rb') as actual_image, io.FileIO(expected_image_path,
                                                                               mode='rb') as expected_image:
             actual_bytes = actual_image.readall()

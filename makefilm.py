@@ -12,7 +12,7 @@ writer = cv2.VideoWriter("video.avi", cv2.cv.CV_FOURCC('X', 'V', 'I', 'D'), fps,
 nFrames = 7000;  # number of frames
 for i in range(nFrames):
     digit_image = "C:/temp/pilpres-recog/movie/" + "{0:0>5}".format(i) + ".png"
-    print digit_image
+    print(digit_image)
     img = cv2.imread(digit_image)  # specify filename and the extension
     # add the frame to the video
     writer.write(img)
