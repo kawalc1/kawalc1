@@ -1,7 +1,6 @@
 __author__ = 'samtheisens'
 import os
 import shutil
-import itertools
 
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 # import django
@@ -9,12 +8,12 @@ import itertools
 #
 # settings.configure(DEBUG=True)
 # django.setup()
-import settings
+from kawalc1 import settings
 import urllib2
 import json
 import psycopg2
-from mengenali.views import process_form, load_config
-from mengenali.processprobs import get_total_of_checksum, get_numbers_in_checksum_sigma_part
+from mengenali import process_form, load_config
+from mengenali import get_total_of_checksum, get_numbers_in_checksum_sigma_part
 
 conn = psycopg2.connect("host='localhost'")
 cursor = conn.cursor()

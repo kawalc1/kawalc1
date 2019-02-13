@@ -1,5 +1,5 @@
 # Verifikasi Otomatis Formulir Pemilu C1
-![Logo](http://95.85.24.18/static/img/logo-kotak.png)
+![Logo](http://kawalc1.org/static/img/logo-kotak.png)
 
 Deskripsi Use Case:
  1. Pengguna mengunggah formulir C1

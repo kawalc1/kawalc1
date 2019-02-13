@@ -1,0 +1,53 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "joko",
+            "displayName": "Jokowidodo",
+            "digitCoordinates": [
+                [525,611, 1656,1741],
+                [526,610, 1747,1832],
+                [526,610, 1838,1923]
+
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "prabs",
+            "displayName": "Prabowo",
+            "digitCoordinates": [
+                [796,882, 1656,1742],
+                [798,882, 1748,1832],
+                [800,880, 1838,1920]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+               [1068,1092, 1680,1720],
+              [1068,1092, 1772,1808],
+              [1068,1092, 1862,1900]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+               [1068,1092, 1680,1720],
+              [1068,1092, 1772,1808],
+              [1068,1092, 1862,1900]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "referenceForm": "2019-reference2.jpg"
+}

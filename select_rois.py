@@ -69,7 +69,7 @@ while True:
 
     xpos = mouse_pos[0]
     ypos = mouse_pos[1]
-    center = zoom_size / 2
+    center = zoom_size // 2
 
     start_row = ypos - center
     end_row = ypos + zoom_size - center
