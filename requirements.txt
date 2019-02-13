@@ -7,3 +7,4 @@ dask[array]
 lxml
 psycopg2
 scikit-image==0.13.1
+django

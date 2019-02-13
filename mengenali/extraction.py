@@ -7,10 +7,9 @@ from scipy import ndimage
 from os.path import join
 import json
 import io
-import imageclassifier
+from mengenali import imageclassifier
 from skimage.morphology import skeletonize
 import sys
-import settings
 import logging
 
 image_threshold = 128
@@ -45,7 +44,7 @@ def process_image(cropped):
         test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
-        left = int((28 - mnist_size[0])) / 2
+        left = int((28 - mnist_size[0])) // 2
         box = left, 3
         output_image.paste(test_im, box)
         return output_image
@@ -55,7 +54,7 @@ def process_image(cropped):
         test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
-        top = int((28 - mnist_size[1])) / 2
+        top = int((28 - mnist_size[1])) // 2
         box = 3, top
         # digits[i]=np.array(outputim)
         output_image.paste(test_im, box)

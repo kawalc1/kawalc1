@@ -4,15 +4,15 @@ import json
 
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
 # from django.conf import settings
-import settings
-import numpy as np
+from kawalc1 import settings
 from django.views.static import serve as static_serve
-import logging
 
-import registration
-import extraction
-import processprobs
-import urllib2
+from mengenali import registration, processprobs
+from mengenali import extraction
+from urllib import request
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 
 def index(request):
@@ -21,16 +21,17 @@ def index(request):
 
 def handle_uploaded_file(f, filename):
     with open(path.join(settings.STATIC_DIR, 'upload/' + filename), 'wb+') as destination:
+        print("writing da shit")
         for chunk in f.chunks():
             destination.write(chunk)
 
 
 def download_file(uri, target_path):
-    file_to_get = urllib2.urlopen(uri)
+    file_to_get = request.urlopen(uri)
     with open(path.join(settings.STATIC_DIR, target_path + '/' + path.basename(uri)), 'wb') as downloaded_file:
         downloaded_file.write(file_to_get.read())
 
-
+@csrf_exempt
 def extract(request):
     filename = request.GET.get("filename", "")
     output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
@@ -43,11 +44,11 @@ def load_config(config_file_name):
         config = json.load(config_file)
     return config
 
-
+@csrf_exempt
 def get_probabilities_result(request):
-    json_data = json.loads(request.body)
+    json_data = json.loads(request.body.decode('utf-8'))
 
-    print >> None, str(json_data)
+    print(str(json_data))
 
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
                                                              json_data["probabilities"], settings.CATEGORIES_COUNT)
@@ -74,7 +75,7 @@ def download(request):
         output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
     return HttpResponse(output)
 
-
+@csrf_exempt
 def transform(request):
     if request.method == 'POST':
         filename = request.POST.get("flowFilename", "")
@@ -120,8 +121,8 @@ def custom(request):
         try:
             output = process_form(config_name, posted_config, scan_url)
 
-        except Exception, err:
-            print Exception, err
+        except Exception as err:
+            print(Exception, err)
             output = json.dumps({'transformedUrl': None, 'success': False, 'error': str(err)}, separators=(',', ':'))
 
         return HttpResponse(output)
@@ -152,8 +153,8 @@ def process_form(config_name, posted_config, scan_url):
                                                         path.basename(url_to_download),
                                                         ref_form,
                                                         config_name)
-        except Exception, err:
-            print Exception, err
+        except Exception as err:
+            print(Exception, err)
             continue
         transform_output = json.loads(registered_file)
         if transform_output["success"]:

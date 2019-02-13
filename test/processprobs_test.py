@@ -5,16 +5,17 @@ from mengenali import processprobs as pp
 
 class ProcessProbabilitiesTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
+    # @classmethod
+    # def setUpClass(cls):
+
         # json_file = open('test/resources/probabilities/1773007-005324400804.json')
         # cls.json_data = json.load(json_file)
-        json_file = open('./resources/probabilities/processprobs.wsgi.json')
-        cls.json_data = json.load(json_file)
-
-        config_file = open('../static/datasets/digit_config.json')
-        cls.config = json.load(config_file)
-        json_file.close()
+        # json_file = open('./resources/probabilities/processprobs.wsgi.json')
+        # cls.json_data = json.load(json_file)
+        #
+        # config_file = open('../static/datasets/digit_config.json')
+        # cls.config = json.load(config_file)
+        # json_file.close()
 
     # def test_json_is_read_correctly(self):
     #     numpy_table = pp.read_json(self.json_data)
@@ -25,6 +26,35 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         most_likely = outcomes[0][0]
         print("most likely", str(most_likely))
         self.assertAlmostEqual(most_likely['confidence'],  0.7020011959926853)
+        self.assertEqual(most_likely['jokowi'], 186)
+        self.assertEqual(most_likely['prabowo'], 117)
+        self.assertEqual(most_likely['jumlah'], 303)
+
+    def test_get_numbers2(self):
+        json_file = open('./resources/probabilities/IMG_4221.json')
+        json_data = json.load(json_file)
+
+        config_file = open('../static/datasets/pilpres_2019_plano.json')
+        config = json.load(config_file)
+        json_file.close()
+
+        numbers = json_data["numbers"]
+        probabilities = []
+        for number in numbers:
+            probability_set = {"id": number["id"]}
+            number_probabilities = []
+
+            for digit_probability in number["extracted"]:
+                number_probabilities.append(digit_probability["probabilities"])
+            probability_set["probabilitiesForNumber"] = number_probabilities
+            probabilities.insert(0, probability_set)
+        print("probz", probabilities)
+
+        outcomes = pp.get_possible_outcomes_for_config(config, probabilities, 11)
+        print("kak", outcomes)
+        most_likely = outcomes[0][0]
+        print("most likely", str(most_likely))
+        self.assertAlmostEqual(most_likely['confidence'], 0.7020011959926853)
         self.assertEqual(most_likely['jokowi'], 186)
         self.assertEqual(most_likely['prabowo'], 117)
         self.assertEqual(most_likely['jumlah'], 303)
