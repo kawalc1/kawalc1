@@ -47,7 +47,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic Verification of Election Forms',
-		VERSION: 'Version 1.1 - November 24, 2015',
+		VERSION: 'Version 1.2 - February 16, 2019',
 		INTRODUCTION: 'This application automatically counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK : 'this form',
@@ -80,15 +80,15 @@ app.config(function($translateProvider) {
 		WITNESS_SIGNATURES: 'Witness signatures',
 		SIGNATURE_PRESENT: 'Present',
 		SIGNATURE_ABSENT: 'Missing',
-        NEW_ALERT: 'New!',
-        TRY_THESE: 'Try these',
-        TRY_NEW_FORMS: 'new forms',
+        NEW_ALERT: 'New! 2019',
+        TRY_THESE: 'Try it with',
+        TRY_NEW_FORMS: 'new C1 plano forms',
         TRY_OLD_FORMS: 'or these'
 
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi Formulir Secara Otomatis',
-		VERSION: 'Versi 1.1 - 24 Nop, 2015',
+		VERSION: 'Versi 1.2 - 16 Feb, 2019',
 		INTRODUCTION: 'Aplikasi ini dapat menghitung otomatis hasil formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK : 'formulir ini',
@@ -121,9 +121,9 @@ app.config(function($translateProvider) {
 		WITNESS_SIGNATURES: 'Tanda tangan saksi',
 		SIGNATURE_PRESENT: 'Ada',
 		SIGNATURE_ABSENT: 'Tidak ada',
-        NEW_ALERT: 'Baru!',
-        TRY_THESE: 'Coba dengan',
-        TRY_NEW_FORMS: 'formulir ini',
+        NEW_ALERT: 'Baru! 2019',
+        TRY_THESE: 'Cobalah dengan',
+        TRY_NEW_FORMS: 'formulir plano C1',
         TRY_OLD_FORMS: 'atau yang '
 	});
 });
