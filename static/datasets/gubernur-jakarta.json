@@ -1,0 +1,62 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "agus",
+            "displayName": "Agus",
+            "digitCoordinates": [
+              [245,279, 776,801],
+              [243,280, 803,828],
+              [244,277, 833,857]
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "btp",
+            "displayName": "BTP",
+            "digitCoordinates": [
+              [390,424, 774,802],
+              [390,425, 805,828],
+              [389,422, 833,857]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "anies",
+            "displayName": "Anies",
+            "digitCoordinates": [
+              [534,567, 773,800],
+              [534,568, 804,827],
+              [534,566, 832,857]
+            ]
+        },
+        {
+            "id": "3",
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah",
+            "digitCoordinates": [
+              [677,697, 773,798],
+              [677,696, 801,828],
+              [677,695, 831,857]
+            ]
+        },
+        {
+            "id": "4",
+            "shortName": "tidakSah",
+            "displayName": "Jumlah Suara Tidak Sah",
+            "digitCoordinates": [
+              [735,784, 774,798],
+              [735,783, 802,827],
+              [736,783, 831,857]
+            ]
+        }
+
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1", "2"],
+            "total": "3"
+        }
+    ],
+    "referenceForm": "C1-plano-reference-half.jpg"
+}

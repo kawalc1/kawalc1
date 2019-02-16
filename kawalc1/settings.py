@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
-CONFIG_FILE = os.path.join(DATASET_DIR, 'hal_3_digit_config.json')
+CONFIG_FILE = os.path.join(DATASET_DIR, 'gubernur-jakarta.json')
 CATEGORIES_COUNT = 11
 
 # Quick-start development settings - unsuitable for production
@@ -29,7 +29,10 @@ SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '159.203.92.77',
+    '0.0.0.0'
+]
 
 
 # Application definition

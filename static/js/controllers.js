@@ -110,8 +110,9 @@ imageProcessingControllers.controller('imageRegistrationController',
             if ($scope.mostProbableOutcome === null) {
                 return true;
             }
-            return ($scope.mostProbableOutcome[0].number + $scope.mostProbableOutcome[1].number) ===
-              $scope.mostProbableOutcome[2].number;
+            return ($scope.mostProbableOutcome[0].number +
+            $scope.mostProbableOutcome[1].number +
+            $scope.mostProbableOutcome[2].number) === $scope.mostProbableOutcome[3].number;
         };
 
         $scope.getToolTip = function (image) {

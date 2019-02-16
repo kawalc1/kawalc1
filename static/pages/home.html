@@ -1,4 +1,4 @@
-<div flow-init="{singleFile:true, query: {configFile : 'digit_config.json'}}"
+<div flow-init="{singleFile:true, query: {configFile : 'gubernur-jakarta.json'}}"
      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
@@ -83,7 +83,7 @@
                 {{ mostProbableOutcome[0].number }}
               </td>
             </tr>
-          </tr>
+          <tr>
           <td>
             {{ mostProbableOutcome[1].displayName }}
           </td>
@@ -91,52 +91,60 @@
             {{ mostProbableOutcome[1].number }}
           </td>
           </tr>
+                      <tr>
+          <td>
+            {{ mostProbableOutcome[2].displayName }}
+          </td>
+          <td>
+            {{ mostProbableOutcome[2].number }}
+          </td>
+          </tr>
             <tr>
                 <td>
                     {{'FORM_VOTES_VALID'| translate }}
                 </td>
                 <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                  {{ mostProbableOutcome[2].number }}
+                  {{ mostProbableOutcome[3].number }}
                 </td>
             </tr>
-            <tr>
-                <td>
-                    {{ 'FORM_VOTES_INVALID' | translate}}
-                </td>
-                <td>
-                  {{ tidakSah[0].number}}
-                </td>
-            </tr>
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--{{ 'FORM_VOTES_INVALID' | translate}}-->
+                <!--</td>-->
+                <!--<td>-->
+                  <!--{{ tidakSah[0].number}}-->
+                <!--</td>-->
+            <!--</tr>-->
         </table>
-        <table class="hasil tandaTangan">
-            <tr>
-                <th colspan="2">
-                    {{ 'WITNESS_SIGNATURES' | translate }}
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    H. Prabowo Subianto
-                </td>
-                <td>
-                    <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"
-                          ng-show="signatures[0].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>
-                    <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"
-                          ng-show="!signatures[0].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Ir. H. Joko Widodo
-                </td>
-                <td>
-                    <span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"
-                          ng-show="signatures[1].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>
-                    <span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"
-                          ng-show="!signatures[1].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>
-                </td>
-            </tr>
-        </table>
+        <!--<table class="hasil tandaTangan">-->
+            <!--<tr>-->
+                <!--<th colspan="2">-->
+                    <!--{{ 'WITNESS_SIGNATURES' | translate }}-->
+                <!--</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--H. Prabowo Subianto-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"-->
+                          <!--ng-show="signatures[0].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>-->
+                    <!--<span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"-->
+                          <!--ng-show="!signatures[0].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <!--Ir. H. Joko Widodo-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"-->
+                          <!--ng-show="signatures[1].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>-->
+                    <!--<span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"-->
+                          <!--ng-show="!signatures[1].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
     </div>
     <div>
             <span class="btn btn-success"
@@ -189,27 +197,40 @@
                     </td>
                 </tr>
 
+                                <tr>
+                    <td>
+                      {{ mostProbableOutcome[2].displayName }}
+                    </td>
+
+                    <td>
+                        <input ng-model="correction[1].number" type="number" max="999"
+                               ng-maxlength="3" ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{ correction[2].number }}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[2].number}}</span>
+                    </td>
+                </tr>
+
                 <tr>
                     <td>
                         {{'FORM_VOTES_VALID'| translate}}
                     </td>
                     <td class="jumlah">
-                        <span ng-show="correction">{{ correction[0].number +  correction[1].number}}</span>
+                        <span ng-show="correction">{{ correction[0].number +  correction[1].number +  correction[2].number}}</span>
                         <span ng-show="correct">{{ mostProbableOutcome[2].number }}</span>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        {{'FORM_VOTES_INVALID'|translate}}
-                    </td>
-                    <td>
-                        <input ng-model="tidakSahCorrection[0].number" type="number" max="999"
-                               ng-maxlength="3"
-                               ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{tidakSahCorrection[0].number}}</span>
-                        <span ng-show="correct">{{tidakSah[0].number}}</span>
-                    </td>
-                </tr>
+                <!--<tr>-->
+                    <!--<td>-->
+                        <!--{{'FORM_VOTES_INVALID'|translate}}-->
+                    <!--</td>-->
+                    <!--<td>-->
+                        <!--<input ng-model="tidakSahCorrection[0].number" type="number" max="999"-->
+                               <!--ng-maxlength="3"-->
+                               <!--ng-show="correction && !submitted"/>-->
+                        <!--<span ng-show="correction && submitted">{{tidakSahCorrection[0].number}}</span>-->
+                        <!--<span ng-show="correct">{{tidakSah[0].number}}</span>-->
+                    <!--</td>-->
+                <!--</tr>-->
             </table>
             <div ng-show="submitted" class="beritaBerhasil">
                 <b>{{ 'SUBMITTED_THANKS' | translate }}</b> {{ 'SUBMITTED_MESSAGE' | translate }}

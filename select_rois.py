@@ -40,7 +40,7 @@ def click_and_crop(event, x, y, flags, param):
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/pilkada_reference.jpg")
+ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/C1-plano-reference.jpg")
 args = vars(ap.parse_args())
 
 # load the image, clone it, and setup the mouse callback function
