@@ -230,10 +230,6 @@ def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
     results.sort(key=lambda x: -x[1])
     return results
 
-def get_possible_outcomes(all_squares, categories_count):
-    results = get_outcome_matrix(all_squares, categories_count)
-    return print_possible(results[0:NUMBER_COUNT])
-
 
 def read_json(data):
     rows = data["probabilities"]

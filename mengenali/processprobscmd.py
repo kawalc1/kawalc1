@@ -134,9 +134,7 @@ with open(inputcsv, 'rb') as f:
     row = reader.next()
 
 #     while True:
-    print ""
-    print row[12]
-    print ""
+    print("", row[12], "")
 
     probmatrix = numpy.zeros(shape=(12, 11), dtype='f')
     for square in range(0, 12):
@@ -147,6 +145,6 @@ with open(inputcsv, 'rb') as f:
             probmatrix[square] = numpy.zeros(11)
             probmatrix[square][X_INDEX] = 1.
 
-    print json.dumps({'probabilityMatrix': probmatrix.tolist()}, separators=(',', ':'))
-#     print "mat" + str(probmatrix)
+    print(json.dumps({'probabilityMatrix': probmatrix.tolist()}, separators=(',', ':')))
+    #     print "mat" + str(probmatrix)
     print_list_of_numbers(probmatrix)

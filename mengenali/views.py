@@ -21,7 +21,6 @@ def index(request):
 
 def handle_uploaded_file(f, filename):
     with open(path.join(settings.STATIC_DIR, 'upload/' + filename), 'wb+') as destination:
-        print("writing da shit")
         for chunk in f.chunks():
             destination.write(chunk)
 
