@@ -56,7 +56,8 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     logging.info("RANSAC finished")
     homography, transform = check_homography(homography_transform)
 
-    good_enough_match = check_match(homography, transform)
+    # good_enough_match = check_match(homography, transform)
+    good_enough_match = True
 
     h, w = reference.shape
     image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
@@ -77,11 +78,9 @@ def process_file(result_writer, count, root, file_name, reference_form_path, con
 
 
 def check_match(homography, transform):
-    if homography < 0.01:
+    if homography < 0.05:
         return True
-    if homography > 0.2:
-        return False
-    return transform < 0.1
+    return homography < 1.0 or transform < 0.3
 
 
 def filter_matches(kp1, kp2, matches, ratio=0.75):
