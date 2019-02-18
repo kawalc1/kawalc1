@@ -111,8 +111,7 @@ imageProcessingControllers.controller('imageRegistrationController',
                 return true;
             }
             return ($scope.mostProbableOutcome[0].number +
-            $scope.mostProbableOutcome[1].number +
-            $scope.mostProbableOutcome[2].number) === $scope.mostProbableOutcome[3].number;
+            $scope.mostProbableOutcome[1].number) === $scope.mostProbableOutcome[2].number;
         };
 
         $scope.getToolTip = function (image) {
@@ -180,6 +179,7 @@ imageProcessingControllers.controller('imageRegistrationController',
             $http.post('../processprobs.wsgi', {
                 probabilities: probabilities, configFile: $scope.configFile }).success(function (result) {
                 $scope.mostProbableOutcome = enrichMostProbableOutcome(result.probabilityMatrix[0][0]);
+                $scope.totals = enrichMostProbableOutcome(result.probabilityMatrix[1][0]);
                 $scope.tidakSah = enrichMostProbableOutcome(result.probabilityMatrix[1][0]);
                 $scope.probabilityMatrix = result.probabilityMatrix;
             });
@@ -187,6 +187,7 @@ imageProcessingControllers.controller('imageRegistrationController',
 
         $scope.disagree = function () {
             $scope.correction = angular.copy($scope.mostProbableOutcome);
+            $scope.correctionTotals = angular.copy($scope.totals);
             $scope.tidakSahCorrection = angular.copy($scope.tidakSah);
         };
 
