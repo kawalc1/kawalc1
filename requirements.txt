@@ -1,10 +1,9 @@
 numpy==1.15.4
 scipy>=0.15.1
-opencv-python==3.4.2.16
-opencv-contrib-python==3.4.2.16
+opencv-python==3.4.5.20
 Pillow>=2.1.0
 dask[array]
 lxml
 psycopg2
-scikit-image==0.13.1
+scikit-image==0.14.2
 django
