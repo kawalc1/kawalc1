@@ -37,7 +37,7 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
 def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
     reference = cv2.imread(reference_form_path, 0)
     logging.info("read reference %s", reference_form_path)
-    orb = cv2.xfeatures2d.SIFT_create()
+    orb = cv2.BRISK_create()
     kp2, des2 = orb.detectAndCompute(reference, None)
 
     image = cv2.imread(file_path, 0)
