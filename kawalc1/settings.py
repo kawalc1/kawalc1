@@ -33,7 +33,8 @@ ALLOWED_HOSTS = [
     '159.203.92.77',
     '0.0.0.0',
     '127.0.0.1',
-    'localhost'
+    'localhost',
+    'kawalc1.appspot.com'
 ]
 
 
