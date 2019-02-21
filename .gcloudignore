@@ -1,0 +1,8 @@
+venv/
+tukangsortir/
+test/
+duurzaamzuilen/
+ENV_DIR/
+static/extracted
+static/transformed
+static/upload
