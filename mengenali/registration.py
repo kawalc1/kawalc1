@@ -6,6 +6,7 @@ import math
 import json
 import logging
 from os.path import join
+from mengenali.io import write_image, read_image
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -24,25 +25,25 @@ def create_response(image_path, success, config_file):
 def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name, output_path,
                             result_writer):
     file_prefix = "~trans" if good_enough_match else "~bad"
-    transformed_image = file_prefix + "~hom" + str(homography) + "~warp" + str(transform) + "~" + file_name
+    # transformed_image = file_prefix + "~hom" + str(homography) + "~warp" + str(transform) + "~" + file_name
+    transformed_image = "trans" + file_name
     image_path = join(output_path, transformed_image)
-    cv2.imwrite(image_path, image_transformed)
+
+    write_image(image_path, image_transformed)
 
     result = "good" if good_enough_match else "bad"
     logging.info("%s image", result)
-    # print_result(result_writer, 0, transformed_image, homography, transform, result)
     return transformed_image
 
 
 def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
     reference = cv2.imread(reference_form_path, 0)
     logging.info("read reference %s", reference_form_path)
-    orb = cv2.BRISK_create()
-    kp2, des2 = orb.detectAndCompute(reference, None)
+    brisk = cv2.BRISK_create()
+    kp2, des2 = brisk.detectAndCompute(reference, None)
 
-    image = cv2.imread(file_path, 0)
-    logging.info("read uploaded image %s", file_path)
-    kp1, des1 = orb.detectAndCompute(image, None)
+    image = read_image(file_path)
+    kp1, des1 = brisk.detectAndCompute(image, None)
     logging.info("detected orb")
     bf = cv2.BFMatcher(cv2.NORM_L2)
     raw_matches = bf.knnMatch(des1, trainDescriptors=des2, k=2)

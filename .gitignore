@@ -33,3 +33,9 @@
 .idea/
 venv/
 ENV_DIR/
+kawalc1-dfed15111889.json
+kawalc1.iml
+kawalc1.ipr
+kawalc1.iws
+db.sqlite3
+mydatabase
