@@ -173,7 +173,7 @@ def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
 
             if selected_object == -1 and filter_invalids:
                 digits[i] = None
-                print(log)
+                logging.info(log)
                 continue
 
             if selected_object == -1 and not filter_invalids:
