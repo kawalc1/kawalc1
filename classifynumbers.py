@@ -7,6 +7,7 @@ import psycopg2
 import csv
 import cv2
 
+from mengenali.io import write_image
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-inputdir", help="location of directory to traverse",
@@ -81,7 +82,7 @@ for root, dirs, file_names in walk(input_dir):
                 makedirs(digit_dir)
             extracted_tif = join(digit_dir, digit_tif)
 
-            cv2.imwrite(extracted_tif, digits[i])
+            write_image(extracted_tif, digit[i])
         # print os.path.abspath(os.path.join(, os.pardir))
 
 

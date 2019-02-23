@@ -7,6 +7,8 @@ from scipy import ndimage
 from lxml import etree
 import time
 
+from mengenali.io import read_image
+
 
 def is_probably_x(extractedTif, orderx, layersx):
     matrix = classify_number(extractedTif, orderx, layersx)
@@ -17,7 +19,8 @@ def is_probably_x(extractedTif, orderx, layersx):
 
 
 def classify_number(input_file, order, layers):
-    input_image = Image.open(input_file)
+    cv_image = read_image(input_file)
+    input_image = Image.fromarray(cv_image)
     input_image = np.array(input_image.getdata()).reshape(input_image.size[0], input_image.size[1])
     input_image = input_image.astype(np.float32)
     input_image /= input_image.max()

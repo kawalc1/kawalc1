@@ -12,6 +12,8 @@ from skimage.morphology import skeletonize
 import sys
 import logging
 
+from mengenali.io import read_image, write_image
+
 image_threshold = 128
 
 
@@ -94,8 +96,8 @@ def prepare_results(images):
 
 
 def unsharp_image(directory, file_name):
-    image = Image.open(join(directory, file_name))
-    image.load()
+    cv_image = read_image(join(directory, file_name))
+    image = Image.fromarray(cv_image)
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
     # pil_im = image.filter(ImageFilter.UnsharpMask(radius=7, percent=150, threshold=2))
     sharpened_image = np.array(pil_im)
@@ -242,7 +244,7 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
 
     digit_roi = find_numbers_roi(numbers, digit_image)
     logging.info("dimensions %s", digit_roi.shape)
-    cv2.imwrite(digit_area_path, digit_roi)
+    write_image(digit_area_path, digit_roi)
 
     signature_result = prepare_results(signatures)
 
@@ -254,7 +256,7 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
 
         signature_file = base_file_name + "~sign~" + str(i) + ".jpg"
         extracted = join(target_path, signature_file)
-        cv2.imwrite(extracted, signature)
+        write_image(extracted, signature)
         signature_result[i]["filename"] = 'extracted/' + signature_file
         signature_result[i]["isValid"] = is_valid
     return digit_area_file, signature_result
@@ -289,12 +291,12 @@ def extract(file_name, source_path, target_path, dataset_path, config):
                 extracted_file_name = base_file_name + "~" + str(number_id) + "~" + str(i)
                 digit_file = extracted_file_name + ".jpg"
                 extracted = join(target_path, digit_file)
-                cv2.imwrite(extracted, digit)
+                write_image(extracted, digit)
 
                 ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
-                cv2.imwrite(extracted_tif, thresholded_tif)
+                write_image(extracted_tif, thresholded_tif)
                 probability_matrix = imageclassifier.classify_number(extracted_tif, order, layers)
                 extracted_struct = {"probabilities": probability_matrix[0].tolist(),
                                     "filename": 'extracted/' + digit_file}
