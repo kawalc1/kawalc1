@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import os.path
 from PIL import Image
@@ -40,7 +42,6 @@ def classify_number(input_file, order, layers):
     input_image = np.exp(input_image)
     sum = np.sum(input_image)
     out = input_image / sum
-    #print file
     return out
 
 
@@ -59,7 +60,7 @@ def parse_network(network):
         if child.tag == "layer":
             tp = child.find('type')
             if tp is not None:
-                print(tp.text)
+                logging.info(tp.text)
                 nm = child.attrib['name']
                 if tp.text == 'conv':
                     order.append((nm, tp.text))

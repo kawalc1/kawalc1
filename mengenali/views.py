@@ -1,10 +1,10 @@
 # Create your views here.
+import logging
 from os import path
 import json
 
 from django.core.files.storage import default_storage
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
-# from django.conf import settings
 from kawalc1 import settings
 from django.views.static import serve as static_serve
 
@@ -12,7 +12,6 @@ from mengenali import registration, processprobs
 from mengenali import extraction
 from urllib import request
 from django.views.decorators.csrf import csrf_exempt
-
 
 
 def index(request):
@@ -46,7 +45,7 @@ def load_config(config_file_name):
 def get_probabilities_result(request):
     json_data = json.loads(request.body.decode('utf-8'))
 
-    print(str(json_data))
+    logging.info(str(json_data))
 
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
                                                              json_data["probabilities"], settings.CATEGORIES_COUNT)
@@ -83,7 +82,8 @@ def transform(request):
             config_file = request.POST.get("configFile", "")
             output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
                                                config_file)
-        except:
+        except Exception as e:
+            logging.exception("this is not good!")
             output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
         return HttpResponse(output)
     else:
@@ -120,7 +120,7 @@ def custom(request):
             output = process_form(config_name, posted_config, scan_url)
 
         except Exception as err:
-            print(Exception, err)
+            logging.exception(err)
             output = json.dumps({'transformedUrl': None, 'success': False, 'error': str(err)}, separators=(',', ':'))
 
         return HttpResponse(output)
@@ -152,7 +152,7 @@ def process_form(config_name, posted_config, scan_url):
                                                         ref_form,
                                                         config_name)
         except Exception as err:
-            print(Exception, err)
+            logging.warning(Exception, err)
             continue
         transform_output = json.loads(registered_file)
         if transform_output["success"]:
