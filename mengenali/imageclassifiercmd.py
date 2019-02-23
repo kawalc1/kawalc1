@@ -8,6 +8,7 @@ import pickle
 from PIL import Image
 from scipy import ndimage
 from lxml import etree
+import logging
 
 np.set_printoptions(precision=6)
 np.set_printoptions(suppress=True)
@@ -161,7 +162,7 @@ for child in xml_net.getroot():
         tp = child.find('type')
         if tp is None:
             continue
-        print(tp.text)
+        logging.info(tp.text)
         nm = child.attrib['name']
         if tp.text == 'conv':
             order.append((nm, tp.text))
