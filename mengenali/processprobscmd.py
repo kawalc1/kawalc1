@@ -47,7 +47,7 @@ def get_possible_values(list_of_probs, threshold=.10):
     for probs in list_of_probs:
         high_probs = filter(lambda x: x[1] > threshold, enumerate(probs))
 
-        print high_probs
+        print(high_probs)
 
         if not total_probs:
             total_probs = map(lambda x: ([x[0]], x[1]), high_probs)

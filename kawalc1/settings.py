@@ -12,13 +12,19 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+LOCAL = True
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if LOCAL else "."
+
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
 CONFIG_FILE = os.path.join(DATASET_DIR, 'gubernur-jakarta.json')
 CATEGORIES_COUNT = 11
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'kawalc1'
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
