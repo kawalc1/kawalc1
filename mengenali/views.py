@@ -2,6 +2,7 @@
 from os import path
 import json
 
+from django.core.files.storage import default_storage
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
 # from django.conf import settings
 from kawalc1 import settings
@@ -14,15 +15,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
-
 def index(request):
     return static_serve(request, 'index.html', '/home/sjappelodorus/verifikatorc1/static')
 
 
 def handle_uploaded_file(f, filename):
-    with open(path.join(settings.STATIC_DIR, 'upload/' + filename), 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+    target_location = path.join(settings.STATIC_DIR, 'upload/' + filename)
+    default_storage.save(target_location, f)
 
 
 def download_file(uri, target_path):
