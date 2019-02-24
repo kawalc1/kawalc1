@@ -62,15 +62,18 @@ def get_reference_form(config_file_name):
     return path.join(settings.DATASET_DIR, config["referenceForm"])
 
 
-def download(request):
-    scan_uri = request.GET.get("scanURI", "")
-    download_file(settings.KPU_SCANS_URL + scan_uri, "upload")
-
+def download(request, kelurahan, tps, filename):
+    config_file = "digit_config_pilpres_2019.json"
     try:
-        output = registration.process_file(None, 1, settings.STATIC_DIR, scan_uri, get_reference_form())
-    except:
+        url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
+        output_path = path.join(settings.STATIC_DIR, 'transformed')
+        output = registration.register_image(url, get_reference_form(config_file), output_path, None, config_file)
+    except Exception as e:
+        logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
         output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
+
     return HttpResponse(output)
+
 
 @csrf_exempt
 def transform(request):

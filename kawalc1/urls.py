@@ -22,7 +22,7 @@ from django.http import HttpResponseRedirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda x: HttpResponseRedirect("/static/index.html")),
-    path('download.wsgi', download),
+    path('download/<int:kelurahan>/<int:tps>/<str:filename>', download),
     path('transform.wsgi', transform),
     path('custom.wsgi', custom),
     path('processprobs.wsgi', get_probabilities_result),

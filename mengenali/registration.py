@@ -8,7 +8,7 @@ import math
 import json
 import logging
 from os.path import join
-from mengenali.io import write_image, read_image, image_url
+from mengenali.io import write_image, read_image, image_url, is_url
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -26,11 +26,20 @@ def create_response(image_path, success, config_file):
                       separators=(',', ':'))
 
 
-def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name, output_path,
-                            result_writer):
+def get_target_path(file_path):
+    if is_url(file_path):
+        path_parts = file_path.split(os.sep)
+        return path.join(path_parts[-3], path_parts[-2], path_parts[-1])
+    head, file_name = os.path.split(file_path)
+    return "trans" + file_name
+
+
+def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path, output_path):
     file_prefix = "~trans" if good_enough_match else "~bad"
     # transformed_image = file_prefix + "~hom" + str(homography) + "~warp" + str(transform) + "~" + file_name
-    transformed_image = "trans" + file_name
+
+    transformed_image = get_target_path(file_path)
+
     image_path = join(output_path, transformed_image)
 
     write_image(image_path, image_transformed)
@@ -66,12 +75,10 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
 
     h, w = reference.shape
     image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
-    logging.info("transformed image")
-    head, file_name = os.path.split(file_path)
-
+    logging.info("transformed image %s", file_path)
     print("the path", os.path.abspath(output_path))
-    transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_name,
-                                                output_path, result_writer)
+    transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
+                                                output_path)
     logging.info("transformed %s", transformed_image)
     return create_response(transformed_image, good_enough_match, config_file)
 
