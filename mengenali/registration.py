@@ -50,24 +50,38 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
 
 
 def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
+    from datetime import datetime
+    lap = datetime.now()
     reference = cv2.imread(reference_form_path, 0)
-    logging.info("read reference %s", reference_form_path)
+    logging.info("read reference %s %s", reference_form_path, (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
     brisk = cv2.BRISK_create()
     kp2, des2 = brisk.detectAndCompute(reference, None)
+    logging.info("BRISK reference %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
 
     image = read_image(file_path)
+    logging.info("image read %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
     kp1, des1 = brisk.detectAndCompute(image, None)
-    logging.info("detected orb")
+    logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
     bf = cv2.BFMatcher(cv2.NORM_L2)
     raw_matches = bf.knnMatch(des1, trainDescriptors=des2, k=2)
-    logging.info("knn matched")
+    logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
     matches = filter_matches(kp1, kp2, raw_matches)
     mkp1, mkp2 = zip(*matches)
     p1 = np.float32([kp.pt for kp in mkp1])
     p2 = np.float32([kp.pt for kp in mkp2])
-    logging.info("starting RANSAC")
     homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-    logging.info("RANSAC finished")
+
+    logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
     homography, transform = check_homography(homography_transform)
 
     # good_enough_match = check_match(homography, transform)
@@ -75,11 +89,12 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
 
     h, w = reference.shape
     image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
-    logging.info("transformed image %s", file_path)
-    print("the path", os.path.abspath(output_path))
+    logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
                                                 output_path)
-    logging.info("transformed %s", transformed_image)
+    logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
     return create_response(transformed_image, good_enough_match, config_file)
 
 
