@@ -64,10 +64,36 @@ def get_reference_form(config_file_name):
 
 def download(request, kelurahan, tps, filename):
     config_file = "digit_config_pilpres_2019.json"
+    loaded_config = load_config(config_file)
     try:
+        extract_digits = json.loads(request.GET.get('extractDigits', 'false').lower())
+        calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'false').lower())
+
         url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
-        output = registration.register_image(url, get_reference_form(config_file), output_path, None, config_file)
+        a = json.loads(registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
+        b = json.loads(extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+                                          settings.STATIC_DIR, loaded_config)) if extract_digits else { "numbers": [] }
+
+        probabilities = []
+        for number in b["numbers"]:
+            probability_set = {"id": number["id"]}
+            number_probabilities = []
+
+            for digit_probability in number["extracted"]:
+                number_probabilities.append(digit_probability["probabilities"])
+            probability_set["probabilitiesForNumber"] = number_probabilities
+            probabilities.insert(0, probability_set)
+
+        c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities, settings.CATEGORIES_COUNT) if calculate_numbers else {}
+
+        if calculate_numbers:
+            del b['numbers']
+            del b['signatures']
+            b['probabilityMatrix'] = c
+
+        output = json.dumps({**a, **b})
+
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
         output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
