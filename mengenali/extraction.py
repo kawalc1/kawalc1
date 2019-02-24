@@ -12,7 +12,7 @@ from skimage.morphology import skeletonize
 import sys
 import logging
 
-from mengenali.io import read_image, write_image
+from mengenali.io import read_image, write_image, image_url
 
 image_threshold = 128
 
@@ -95,8 +95,8 @@ def prepare_results(images):
     return results
 
 
-def unsharp_image(directory, file_name):
-    cv_image = read_image(join(directory, file_name))
+def unsharp_image(file_name):
+    cv_image = read_image(file_name)
     image = Image.fromarray(cv_image)
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
     # pil_im = image.filter(ImageFilter.UnsharpMask(radius=7, percent=150, threshold=2))
@@ -263,7 +263,7 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
 
 
 def extract(file_name, source_path, target_path, dataset_path, config):
-    unsharpened_image = unsharp_image(source_path, file_name)
+    unsharpened_image = unsharp_image(file_name)
 
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
@@ -299,14 +299,14 @@ def extract(file_name, source_path, target_path, dataset_path, config):
                 write_image(extracted_tif, thresholded_tif)
                 probability_matrix = imageclassifier.classify_number(extracted_tif, order, layers)
                 extracted_struct = {"probabilities": probability_matrix[0].tolist(),
-                                    "filename": 'extracted/' + digit_file}
+                                    "filename": image_url('extracted/' + digit_file)}
 
                 numbers[number_id]["extracted"].append(extracted_struct)
             else:
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": 'extracted/' + digit_area_file, "signatures": signature_result}
+    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "signatures": signature_result}
     logging.info(result)
 
     return json.dumps(result)
