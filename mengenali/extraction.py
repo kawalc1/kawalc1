@@ -309,4 +309,4 @@ def extract(file_name, source_path, target_path, dataset_path, config):
     result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "signatures": signature_result}
     logging.info(result)
 
-    return json.dumps(result)
+    return result

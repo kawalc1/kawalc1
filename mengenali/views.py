@@ -4,7 +4,7 @@ from os import path
 import json
 
 from django.core.files.storage import default_storage
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
 from kawalc1 import settings
 from django.views.static import serve as static_serve
 
@@ -33,7 +33,7 @@ def extract(request):
     filename = request.GET.get("filename", "")
     output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                 settings.STATIC_DIR, load_config(request.GET.get("configFile")))
-    return HttpResponse(output)
+    return JsonResponse(output)
 
 
 def load_config(config_file_name):
@@ -52,9 +52,9 @@ def get_probabilities_result(request):
     results = []
     for outcome in outcomes:
         results.append(outcome)
-    output = json.dumps({'probabilityMatrix': outcomes}, separators=(',', ':'))
+    output = {'probabilityMatrix': outcomes}
 
-    return HttpResponse(output)
+    return JsonResponse(output)
 
 
 def get_reference_form(config_file_name):
@@ -66,8 +66,9 @@ def download(request, kelurahan, tps, filename):
     config_file = "digit_config_pilpres_2019.json"
     loaded_config = load_config(config_file)
     try:
-        extract_digits = json.loads(request.GET.get('extractDigits', 'false').lower())
+        maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'false').lower())
         calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'false').lower())
+        extract_digits = maybe_extract_digits or calculate_numbers
 
         url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
@@ -92,13 +93,13 @@ def download(request, kelurahan, tps, filename):
             del b['signatures']
             b['probabilityMatrix'] = c
 
-        output = json.dumps({**a, **b})
+        output = {**a, **b}
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
-        output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
+        output = {'transformedUrl': None, 'success': False}
 
-    return HttpResponse(output)
+    return JsonResponse(output)
 
 
 @csrf_exempt
@@ -113,8 +114,8 @@ def transform(request):
                                                config_file)
         except Exception as e:
             logging.exception("this is not good!")
-            output = json.dumps({'transformedUrl': None, 'success': False}, separators=(',', ':'))
-        return HttpResponse(output)
+            output = {'transformedUrl': None, 'success': False}
+        return JsonResponse(output)
     else:
         return HttpResponseNotFound('Method not supported')
 
