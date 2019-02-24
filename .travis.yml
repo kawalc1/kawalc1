@@ -1,0 +1,7 @@
+before_install:
+  - echo $SERVICE_ACCOUNT > service-account.json
+deploy:
+  provider: gae
+  keyfile: service-account.json
+  project: kawalc1
+  on: master
