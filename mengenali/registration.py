@@ -1,3 +1,5 @@
+from os import path
+
 import numpy as np
 import cv2
 import os
@@ -6,7 +8,7 @@ import math
 import json
 import logging
 from os.path import join
-from mengenali.io import write_image, read_image
+from mengenali.io import write_image, read_image, image_url
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,7 +20,9 @@ def print_result(result_writer, iteration, homography, transform, result):
 
 
 def create_response(image_path, success, config_file):
-    return json.dumps({'transformedUrl': image_path, 'success': success, 'configFile': config_file},
+    transformed_path = path.join('transformed', image_path)
+    return json.dumps({'transformedUrl': image_url(transformed_path), 'transformedUri':  path.join('.', 'static', transformed_path),
+                       'success': success, 'configFile': config_file},
                       separators=(',', ':'))
 
 
