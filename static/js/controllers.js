@@ -206,10 +206,11 @@ imageProcessingControllers.controller('imageRegistrationController',
                 return;
             }
             if (transformed.success === true) {
-                $scope.uploadUrl = 'transformed/' + transformed.transformedUrl;
+                $scope.uploadUrl = transformed.transformedUrl;
+                $scope.uploadUri = transformed.transformedUri;
                 $scope.configFile = transformed.configFile;
                 $http.get('../extract.wsgi',
-                    { params: { filename: $scope.uploadUrl, configFile: $scope.configFile }}).success(function (result) {
+                    { params: { filename: $scope.uploadUri, configFile: $scope.configFile }}).success(function (result) {
                         $scope.extractedImages = getFileNames(result.numbers);
                         $scope.signatures = result.signatures;
                         $scope.registrationFailed = false;
