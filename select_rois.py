@@ -40,11 +40,13 @@ def click_and_crop(event, x, y, flags, param):
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/C1-plano-reference.jpg")
+ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/plano-C1-2019-reference.jpg")
 args = vars(ap.parse_args())
 
 # load the image, clone it, and setup the mouse callback function
 image = cv2.imread(args["image"])
+image = cv2.resize(image, (0, 0), fx=0.5, fy=0.5)
+# image = cv2.resize(image,(1000,6219))
 clone = image.copy()
 cv2.namedWindow("image")
 cv2.setMouseCallback("image", click_and_crop)
@@ -88,7 +90,7 @@ while True:
 
     if key == ord("s") and len(refPt) == 2:
         print(str(
-            "[" + str(refPt[0][1]) + "," + str(refPt[1][1]) + ", " + str(refPt[0][0]) + "," + str(refPt[1][0]) + "]"))
+            "[" + str(refPt[0][1] * 2 ) + "," + str(refPt[1][1] * 2 ) + ", " + str(refPt[0][0] * 2 ) + "," + str(refPt[1][0] * 2) + "]"))
         roi = clone[refPt[0][1]:refPt[1][1], refPt[0][0]:refPt[1][0]]
         cv2.imshow("ROI", roi)
         cv2.moveWindow("ROI", image.shape[1], int(zoom_size * zoom_factor) + 40)

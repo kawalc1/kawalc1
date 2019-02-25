@@ -73,8 +73,8 @@ def download(request, kelurahan, tps, filename):
         url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
         a = json.loads(registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
-        b = json.loads(extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                          settings.STATIC_DIR, loaded_config)) if extract_digits else { "numbers": [] }
+        b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+                                          settings.STATIC_DIR, loaded_config) if extract_digits else { "numbers": [] }
 
         probabilities = []
         for number in b["numbers"]:
