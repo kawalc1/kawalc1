@@ -3,15 +3,17 @@ import logging
 from os import path
 import json
 
-from django.core.files.storage import default_storage
+from django.core.files.storage import default_storage, get_storage_class
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
+
 from kawalc1 import settings
 from django.views.static import serve as static_serve
 
-from mengenali import registration, processprobs
+from mengenali import registration, processprobs, io
 from mengenali import extraction
 from urllib import request
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 
 def index(request):
@@ -28,6 +30,7 @@ def download_file(uri, target_path):
     with open(path.join(settings.STATIC_DIR, target_path + '/' + path.basename(uri)), 'wb') as downloaded_file:
         downloaded_file.write(file_to_get.read())
 
+
 @csrf_exempt
 def extract(request):
     filename = request.GET.get("filename", "")
@@ -40,6 +43,7 @@ def load_config(config_file_name):
     with open(path.join(settings.DATASET_DIR, config_file_name)) as config_file:
         config = json.load(config_file)
     return config
+
 
 @csrf_exempt
 def get_probabilities_result(request):
@@ -62,19 +66,45 @@ def get_reference_form(config_file_name):
     return path.join(settings.DATASET_DIR, config["referenceForm"])
 
 
+def find_number(output, name):
+    for prob_sets in output['probabilityMatrix']:
+        for prob in prob_sets:
+            for (k, v) in prob.items():
+                if type(v) is dict and v['shortName'] == name:
+                    return v['number']
+
+
+def get_outcome(output):
+    return {
+        'probowo': find_number(output, 'prabowo'),
+        'jokowi': find_number(output, 'jokowi'),
+        'jumlah': find_number(output, 'jumlah'),
+        'tidakSah': find_number(output, 'tidakSah')
+    }
+
+
 def download(request, kelurahan, tps, filename):
     config_file = "digit_config_pilpres_2019.json"
     loaded_config = load_config(config_file)
     try:
-        maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'false').lower())
-        calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'false').lower())
+        maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
+        calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'true').lower())
+        store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
+        if not store_files:
+            io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
+        else:
+            io.storage = get_storage_class(
+                'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
+                'storages.backends.gcloud.GoogleCloudStorage')()
+
         extract_digits = maybe_extract_digits or calculate_numbers
 
         url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
-        a = json.loads(registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
+        a = json.loads(
+            registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
         b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                          settings.STATIC_DIR, loaded_config) if extract_digits else { "numbers": [] }
+                               settings.STATIC_DIR, loaded_config) if extract_digits else {"numbers": []}
 
         probabilities = []
         for number in b["numbers"]:
@@ -86,7 +116,8 @@ def download(request, kelurahan, tps, filename):
             probability_set["probabilitiesForNumber"] = number_probabilities
             probabilities.insert(0, probability_set)
 
-        c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities, settings.CATEGORIES_COUNT) if calculate_numbers else {}
+        c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
+                                                          settings.CATEGORIES_COUNT) if calculate_numbers else {}
 
         if calculate_numbers:
             del b['numbers']
@@ -94,6 +125,14 @@ def download(request, kelurahan, tps, filename):
             b['probabilityMatrix'] = c
 
         output = {**a, **b}
+
+        if not store_files:
+            io.storage.delete("static")
+            output['outcome'] = get_outcome(output)
+            del output['probabilityMatrix']
+            del output['digitArea']
+            del output['transformedUri']
+            del output['transformedUrl']
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")

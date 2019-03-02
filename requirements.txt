@@ -8,3 +8,4 @@ psycopg2
 scikit-image==0.14.2
 django
 django-storages[google]
+dj-inmemorystorage
