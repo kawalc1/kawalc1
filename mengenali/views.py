@@ -76,7 +76,7 @@ def find_number(output, name):
 
 def get_outcome(output):
     return {
-        'probowo': find_number(output, 'prabowo'),
+        'prabowo': find_number(output, 'prabowo'),
         'jokowi': find_number(output, 'jokowi'),
         'jumlah': find_number(output, 'jumlah'),
         'tidakSah': find_number(output, 'tidakSah')
@@ -129,6 +129,7 @@ def download(request, kelurahan, tps, filename):
         if not store_files:
             io.storage.delete("static")
             output['outcome'] = get_outcome(output)
+            del output['configFile']
             del output['probabilityMatrix']
             del output['digitArea']
             del output['transformedUri']

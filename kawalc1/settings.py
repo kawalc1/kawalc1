@@ -12,11 +12,19 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
-LOCAL = False
+
+def __is_local():
+    import socket
+    host_name = socket.gethostname()
+    print("local hostname: ", host_name)
+    return host_name.endswith(".local")
+
+
+LOCAL = __is_local()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = "."
 
-INMEMORYSTORAGE_PERSIST=True
+INMEMORYSTORAGE_PERSIST = True
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
@@ -26,8 +34,6 @@ GS_BUCKET_NAME = 'kawalc1'
 GS_FILE_OVERWRITE = True
 GS_DEFAULT_ACL = 'publicRead'
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -35,7 +41,7 @@ GS_DEFAULT_ACL = 'publicRead'
 SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = LOCAL
 
 ALLOWED_HOSTS = [
     '159.203.92.77',
@@ -44,7 +50,6 @@ ALLOWED_HOSTS = [
     'localhost',
     'kawalc1.appspot.com'
 ]
-
 
 # Application definition
 
@@ -87,7 +92,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kawalc1.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -97,7 +101,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -117,7 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -130,7 +132,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
