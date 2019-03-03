@@ -1,0 +1,7 @@
+target
+.idea
+.settings
+.classpath
+.project
+gating.ipr
+gating.iws
