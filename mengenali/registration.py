@@ -1,3 +1,4 @@
+import pickle
 from os import path
 
 import numpy as np
@@ -49,14 +50,31 @@ def write_transformed_image(image_transformed, homography, transform, good_enoug
     return transformed_image
 
 
+def unpickle_keypoints(array):
+    keypoints = []
+    descriptors = []
+    for point in array:
+        temp_feature = cv2.KeyPoint(x=point[0][0],y=point[0][1],_size=point[1], _angle=point[2], _response=point[3], _octave=point[4], _class_id=point[5])
+        temp_descriptor = point[6]
+        keypoints.append(temp_feature)
+        descriptors.append(temp_descriptor)
+    return keypoints, np.array(descriptors)
+
+
+def read_descriptors(reference_form_path):
+    with open(reference_form_path.replace('.jpg', '.p'), "rb") as pickled:
+        return pickle.load(pickled)
+
+
 def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
     from datetime import datetime
+
     lap = datetime.now()
-    reference = cv2.imread(reference_form_path, 0)
-    logging.info("read reference %s %s", reference_form_path, (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
-    brisk = cv2.BRISK_create()
-    kp2, des2 = brisk.detectAndCompute(reference, None)
+    key_points = read_descriptors(reference_form_path)
+    ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
+    h = key_points['h']
+    w = key_points['w']
+
     logging.info("BRISK reference %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
@@ -64,7 +82,8 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     logging.info("image read %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
-    kp1, des1 = brisk.detectAndCompute(image, None)
+    brisk = cv2.BRISK_create()
+    im_kp, im_descriptors = brisk.detectAndCompute(image, None)
     logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
@@ -74,11 +93,11 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     search_params = dict(checks=50)  # or pass empty dictionary
 
     bf = cv2.FlannBasedMatcher(index_params,search_params)
-    raw_matches = bf.knnMatch(np.float32(des1), trainDescriptors=np.float32(des2), k=2)
+    raw_matches = bf.knnMatch(np.float32(im_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
     logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
-    matches = filter_matches(kp1, kp2, raw_matches)
+    matches = filter_matches(im_kp, ref_kp, raw_matches)
     mkp1, mkp2 = zip(*matches)
     p1 = np.float32([kp.pt for kp in mkp1])
     p2 = np.float32([kp.pt for kp in mkp2])
@@ -92,7 +111,6 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     # good_enough_match = check_match(homography, transform)
     good_enough_match = True
 
-    h, w = reference.shape
     image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
     logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
     lap = datetime.now()
@@ -129,7 +147,7 @@ def filter_matches(kp1, kp2, matches, ratio=0.75):
 def check_homography(homography_transform):
     homography = abs(homography_transform[0, 0] - homography_transform[1, 1])
     if homography > 0.01:
-        # test=np.array([[10,20,20,10],[10,10,20,20],[1,1,1,1]])
+        # tests=np.array([[10,20,20,10],[10,10,20,20],[1,1,1,1]])
         test = np.array([[10, 10, 1], [20, 10, 1], [20, 20, 1], [10, 20, 1]])
         # do the check
         trans = np.dot(test, homography_transform)

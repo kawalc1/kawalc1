@@ -24,6 +24,11 @@ LOCAL = __is_local()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = "."
 
+import logging
+mpl_logger = logging.getLogger('matplotlib')
+mpl_logger.setLevel(logging.WARNING)
+
+
 INMEMORYSTORAGE_PERSIST = True
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')

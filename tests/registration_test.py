@@ -66,6 +66,9 @@ class RegistrationTest(unittest.TestCase):
     def test_registration_succeeds_for_other_form6(self):
         self.assert_registration_as_expected('IMG_4221.JPG', '../static/datasets/2019-reference2.jpg', True)
 
+    def test_registration_succeeds_for_other_form7(self):
+        self.assert_registration_as_expected('IMG_4221.JPG', '../static/datasets/2019-reference2.jpg', True)
+
 
 if __name__ == '__main__':
     unittest.main()

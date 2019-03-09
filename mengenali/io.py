@@ -26,13 +26,19 @@ def _to_image(input_stream):
 
 
 def read_image(file_path):
+    return _to_image(read_file(file_path))
+
+
+def read_file(file_path):
     if is_url(file_path):
-        resp = urllib.request.urlopen(file_path, cafile=certifi.where())
-        return _to_image(resp)
+        return urllib.request.urlopen(file_path, cafile=certifi.where())
     else:
         logging.info("reading %s", file_path)
-        file = storage.open(file_path, 'rb')
-        return _to_image(file)
+        try:
+            return storage.open(file_path, 'rb')
+        except:
+            logging.error("Could not open %s", file_path)
+
 
 
 def write_image(file_path, image):

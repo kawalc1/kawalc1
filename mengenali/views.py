@@ -79,7 +79,8 @@ def get_outcome(output):
         'prabowo': find_number(output, 'prabowo'),
         'jokowi': find_number(output, 'jokowi'),
         'jumlah': find_number(output, 'jumlah'),
-        'tidakSah': find_number(output, 'tidakSah')
+        'tidakSah': find_number(output, 'tidakSah'),
+        'confidence': output['probabilityMatrix'][0][0]['confidence']
     }
 
 
@@ -101,10 +102,19 @@ def download(request, kelurahan, tps, filename):
 
         url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
+
+        from datetime import datetime
+        start_lap = datetime.now()
         a = json.loads(
             registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
+
+        logging.info("1: Register  %s", (datetime.now() - start_lap).total_seconds())
+        lap = datetime.now()
+
         b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                settings.STATIC_DIR, loaded_config) if extract_digits else {"numbers": []}
+        logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
 
         probabilities = []
         for number in b["numbers"]:
@@ -118,6 +128,7 @@ def download(request, kelurahan, tps, filename):
 
         c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
                                                           settings.CATEGORIES_COUNT) if calculate_numbers else {}
+        logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
             del b['numbers']
@@ -126,14 +137,19 @@ def download(request, kelurahan, tps, filename):
 
         output = {**a, **b}
 
+        outcome = get_outcome(output)
+        output['outcome'] = outcome
+
         if not store_files:
             io.storage.delete("static")
-            output['outcome'] = get_outcome(output)
             del output['configFile']
             del output['probabilityMatrix']
             del output['digitArea']
             del output['transformedUri']
             del output['transformedUrl']
+        output['success'] = bool(outcome['confidence'] > 0.8)
+
+        output['duration'] = (datetime.now() - start_lap).total_seconds()
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
