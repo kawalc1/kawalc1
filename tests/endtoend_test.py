@@ -8,6 +8,8 @@ from django.test.client import RequestFactory
 
 class EndToEndTest(unittest.TestCase):
 
+    test_performance = False
+
     def setUp(self):
         self.factory = RequestFactory()
         setup_django_settings()
@@ -26,8 +28,9 @@ class EndToEndTest(unittest.TestCase):
             self.assertEqual(outcome['prabowo'], 92)
             self.assertEqual(outcome['jumlah'], 103)
             self.assertEqual(outcome['tidakSah'], 8)
-        self.assertGreaterEqual(result['duration'], min)
-        self.assertLessEqual(result['duration'], max)
+        if self.test_performance:
+            self.assertGreaterEqual(result['duration'], min)
+            self.assertLessEqual(result['duration'], max)
 
     def test_1_12_1(self):
         res = self.do_end_to_end(1, 12, 1)
@@ -47,4 +50,8 @@ class EndToEndTest(unittest.TestCase):
 
     def test_1_13_2(self):
         res = self.do_end_to_end(1, 13, 2)
+        self.assert_result(res, False, 2.5, 7)
+
+    def test_3_10_6(self):
+        res = self.do_end_to_end(3, 10, 6)
         self.assert_result(res, False, 2.5, 7)

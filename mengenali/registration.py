@@ -83,24 +83,29 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     lap = datetime.now()
 
     brisk = cv2.BRISK_create()
-    im_kp, im_descriptors = brisk.detectAndCompute(image, None)
+    im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image,None, fx=1.0, fy=1.0), None)
     logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
     # FLANN parameters
-    FLANN_INDEX_KDTREE = 0
-    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    flann_index_kdtree = 0
+    index_params = dict(algorithm=flann_index_kdtree, trees=5)
     search_params = dict(checks=50)  # or pass empty dictionary
 
-    bf = cv2.FlannBasedMatcher(index_params,search_params)
+    bf = cv2.BFMatcher(cv2.NORM_L2)
     raw_matches = bf.knnMatch(np.float32(im_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
     logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
     matches = filter_matches(im_kp, ref_kp, raw_matches)
+    logging.warning("matches %s", matches.__sizeof__())
+
+    # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+
     mkp1, mkp2 = zip(*matches)
     p1 = np.float32([kp.pt for kp in mkp1])
     p2 = np.float32([kp.pt for kp in mkp2])
+
     homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
 
     logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
@@ -119,6 +124,23 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
                                                 output_path)
     logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
     return create_response(transformed_image, good_enough_match, config_file)
+
+
+def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):
+    reference = cv2.imread(reference_form_path, 0)
+    img_match = np.empty((max(reference.shape[0], image.shape[0]), reference.shape[1] + image.shape[1], 3),
+                         dtype=np.uint8)
+    good = []
+    for m, n in raw_matches:
+        if m.distance < 0.75 * n.distance:
+            good.append([m])
+    # img3 = cv2.drawMatchesKnn(image, im_kp, reference, ref_kp, matches, None, **draw_params)
+    im_matches = cv2.drawMatchesKnn(image, im_kp, reference, ref_kp, good, outImg=img_match, matchColor=None,
+                                    singlePointColor=(255, 255, 255), flags=2)
+    factor = 0.5
+    im_matches_small = cv2.resize(im_matches, None, fx=factor, fy=factor)
+    cv2.imshow("match", im_matches_small)
+    cv2.waitKey(0)
 
 
 def process_file(result_writer, count, root, file_name, reference_form_path, config_file):
