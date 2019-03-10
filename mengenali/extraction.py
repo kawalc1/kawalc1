@@ -262,7 +262,7 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
     return digit_area_file, signature_result
 
 
-def extract(file_name, source_path, target_path, dataset_path, config):
+def extract(file_name, source_path, target_path, dataset_path, config, store_files=True):
     unsharpened_image = unsharp_image(file_name)
 
     head, tail = os.path.split(file_name)
@@ -272,14 +272,19 @@ def extract(file_name, source_path, target_path, dataset_path, config):
 
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     numbers = config["numbers"]
-    digit_area_file, signature_result = extract_additional_areas(numbers, unsharpened_image, base_file_name,
-                                                                 target_path,
-                                                                 structuring_element)
+    if store_files:
+        digit_area_file, signature_result = extract_additional_areas(numbers, unsharpened_image, base_file_name,
+                                                                     target_path,
+                                                                     structuring_element)
+    else:
+        digit_area_file = ""
+        signature_result = []
 
     cut_numbers = cut_digits(unsharpened_image, numbers)
     pre_process_digits(cut_numbers, structuring_element)
 
     order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
+
     # probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
     for number in cut_numbers:
@@ -291,13 +296,16 @@ def extract(file_name, source_path, target_path, dataset_path, config):
                 extracted_file_name = base_file_name + "~" + str(number_id) + "~" + str(i)
                 digit_file = extracted_file_name + ".jpg"
                 extracted = join(target_path, digit_file)
-                write_image(extracted, digit)
+                if store_files:
+                    write_image(extracted, digit)
 
                 ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
-                write_image(extracted_tif, thresholded_tif)
-                probability_matrix = imageclassifier.classify_number(extracted_tif, order, layers)
+                if store_files:
+                    write_image(extracted_tif, thresholded_tif)
+
+                probability_matrix = imageclassifier.classify_number_in_memory(thresholded_tif, order, layers)
                 extracted_struct = {"probabilities": probability_matrix[0].tolist(),
                                     "filename": image_url('extracted/' + digit_file)}
 

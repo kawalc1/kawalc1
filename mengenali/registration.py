@@ -87,11 +87,6 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
-    # FLANN parameters
-    flann_index_kdtree = 0
-    index_params = dict(algorithm=flann_index_kdtree, trees=5)
-    search_params = dict(checks=50)  # or pass empty dictionary
-
     bf = cv2.BFMatcher(cv2.NORM_L2)
     raw_matches = bf.knnMatch(np.float32(im_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
     logging.info("knn matched %s", (datetime.now() - lap).total_seconds())

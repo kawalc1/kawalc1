@@ -16,7 +16,7 @@ class EndToEndTest(unittest.TestCase):
 
     def do_end_to_end(self, kelurahan, tps, file_name):
         request = self.factory.get(
-            f'/download/{kelurahan}/{tps}/{file_name}.JPG?extractDigits=true&calculateNumbers=true&storeFiles=true')
+            f'/download/{kelurahan}/{tps}/{file_name}.JPG?extractDigits=true&calculateNumbers=true&storeFiles=false')
         response = download(request, kelurahan, tps, f"{file_name}.JPG")
         return json.loads(response.content)
 
@@ -55,3 +55,7 @@ class EndToEndTest(unittest.TestCase):
     def test_3_10_6(self):
         res = self.do_end_to_end(3, 10, 6)
         self.assert_result(res, False, 2.5, 7)
+
+    def test_3_10_8(self):
+        res = self.do_end_to_end(3, 10, 8)
+        self.assert_result(res, True, 2.5, 7)

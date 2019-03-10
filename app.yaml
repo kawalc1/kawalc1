@@ -15,3 +15,6 @@ handlers:
 - url: /.*
   script: auto
 # [END django_app]
+
+automatic_scaling:
+  max_concurrent_requests: 6

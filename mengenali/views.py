@@ -112,7 +112,7 @@ def download(request, kelurahan, tps, filename):
         lap = datetime.now()
 
         b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                               settings.STATIC_DIR, loaded_config) if extract_digits else {"numbers": []}
+                               settings.STATIC_DIR, loaded_config, store_files) if extract_digits else {"numbers": []}
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import numpy as np
@@ -10,24 +11,23 @@ import time
 from mengenali.io import read_image
 
 
-def is_probably_x(extractedTif, orderx, layersx):
-    matrix = classify_number(extractedTif, orderx, layersx)
-    if matrix[0][10] > 0.9:
-        print("x marks the spot: " + extractedTif + " " + str(matrix[0][10]))
-        return True
-    return False
-
-
 def classify_number(input_file, order, layers):
     cv_image = read_image(input_file)
+    classify_number_in_memory(cv_image, order, layers)
+
+
+def classify_number_in_memory(cv_image, order, layers):
+
     input_image = Image.fromarray(cv_image)
     input_image = np.array(input_image.getdata()).reshape(input_image.size[0], input_image.size[1])
     input_image = input_image.astype(np.float32)
     input_image /= input_image.max()
 
     input_image = input_image.reshape((input_image.shape[0], input_image.shape[1], 1))
+
     # run through the layers
     first_fully_connected = True
+
     for layer_name, type in order:
         if type == 'conv':
             input_image = convolve_image_stack(input_image, layers[layer_name])
@@ -45,6 +45,7 @@ def classify_number(input_file, order, layers):
     input_image = np.exp(input_image)
     sum = np.sum(input_image)
     out = input_image / sum
+
     return out
 
 
