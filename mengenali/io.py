@@ -37,7 +37,7 @@ def _from_webp(input_stream):
 
 def read_image(file_path):
     filename, file_extension = os.path.splitext(file_path)
-    if file_extension == ".webp":
+    if file_extension.lower() == ".webp":
         return _from_webp(read_file(file_path))
     return _to_image(read_file(file_path))
 
