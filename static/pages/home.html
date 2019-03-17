@@ -1,5 +1,5 @@
 <div flow-init="{singleFile:true, query: {configFile : 'digit_config_pilpres_2019.json'}}"
-     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,webp:1}[$file.getExtension()]"
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
      flow-file-success="setImage($message)">

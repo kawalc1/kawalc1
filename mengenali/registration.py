@@ -83,7 +83,7 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     lap = datetime.now()
 
     brisk = cv2.BRISK_create()
-    im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image,None, fx=1.0, fy=1.0), None)
+    im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
     logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 

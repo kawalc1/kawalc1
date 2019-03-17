@@ -1,6 +1,8 @@
 import logging
+import os
 import urllib
 
+from io import BytesIO
 from django.core.files.base import ContentFile
 import cv2
 from os import path
@@ -8,6 +10,8 @@ import numpy as np
 from urllib import parse
 import urllib.request
 import certifi
+from PIL import Image
+
 from django.core.files.storage import get_storage_class
 
 from kawalc1 import settings
@@ -25,7 +29,16 @@ def _to_image(input_stream):
     return cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
 
 
+def _from_webp(input_stream):
+    pil_image = Image.open(BytesIO(input_stream.read()))
+    input_stream.close()
+    return cv2.cvtColor(np.array(pil_image), cv2.COLOR_BGR2GRAY)
+
+
 def read_image(file_path):
+    filename, file_extension = os.path.splitext(file_path)
+    if file_extension == ".webp":
+        return _from_webp(read_file(file_path))
     return _to_image(read_file(file_path))
 
 
@@ -38,7 +51,6 @@ def read_file(file_path):
             return storage.open(file_path, 'rb')
         except:
             logging.error("Could not open %s", file_path)
-
 
 
 def write_image(file_path, image):
