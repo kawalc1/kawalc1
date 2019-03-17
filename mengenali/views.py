@@ -166,8 +166,8 @@ def transform(request):
 
         try:
             config_file = request.POST.get("configFile", "")
-            output = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                               config_file)
+            output = json.loads(registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
+                                               config_file))
         except Exception as e:
             logging.exception("this is not good!")
             output = {'transformedUrl': None, 'success': False}
