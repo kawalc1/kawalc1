@@ -22,8 +22,6 @@ def __is_local():
 
 FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
-print("Local ", LOCAL)
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = "."
 
 import logging
@@ -40,6 +38,7 @@ CATEGORIES_COUNT = 11
 GS_BUCKET_NAME = 'kawalc1'
 GS_FILE_OVERWRITE = True
 GS_DEFAULT_ACL = 'publicRead'
+VERSION = 'v0.9.1-alpha'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -57,6 +56,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'kawalc1.org',
+    'www.kawalc1.org',
     'kawalc1.appspot.com'
 ]
 

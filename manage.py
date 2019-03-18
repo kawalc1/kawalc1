@@ -3,9 +3,12 @@ import logging
 import os
 import sys
 
+from kawalc1 import settings
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kawalc1.settings")
     logging.disable(logging.DEBUG)
+    logging.warning("version %s", settings.VERSION)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -51,7 +51,6 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         print("probz", probabilities)
 
         outcomes = pp.get_possible_outcomes_for_config(config, probabilities, 11)
-        print("kak", outcomes)
         most_likely = outcomes[0][0]
         print("most likely", str(most_likely))
         self.assertAlmostEqual(most_likely['confidence'], 0.7020011959926853)
