@@ -5,6 +5,8 @@ lazy val json4sVersion = "3.5.4"
 lazy val scalaLoggingVersion = "3.8.0"
 lazy val enumeratumVersion       = "1.5.13"
 lazy val enumeratumJson4sVersion = "1.5.14"
+lazy val slickVersion = "3.2.1"
+lazy val logbackVersion = "1.2.3"
 
 
 lazy val root = (project in file(".")).
@@ -27,6 +29,11 @@ lazy val root = (project in file(".")).
       "org.json4s"        %% "json4s-ext"           % json4sVersion,
       "com.beachape"      %% "enumeratum"           % enumeratumVersion,
       "com.beachape"      %% "enumeratum-json4s"    % enumeratumJson4sVersion,
+
+      "com.typesafe.slick" %% "slick"               % slickVersion,
+      "com.typesafe.slick" %% "slick-hikaricp"      % slickVersion,
+      "com.h2database"     % "h2"                   % "1.4.196",
+      "ch.qos.logback" % "logback-classic" % logbackVersion,
 
       "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,

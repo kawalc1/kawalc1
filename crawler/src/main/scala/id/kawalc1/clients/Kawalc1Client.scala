@@ -3,6 +3,7 @@ package id.kawalc1.clients
 import akka.actor.ActorSystem
 import akka.http.scaladsl.client.RequestBuilding._
 import akka.stream.Materializer
+import id.kawalc1.Kelurahan
 
 import scala.concurrent.Future
 
