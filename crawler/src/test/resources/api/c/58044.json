@@ -1,0 +1,316 @@
+{
+  "id": 58044,
+  "name": "NUNBAUN DELHA",
+  "depth": 4,
+  "parentIds": [
+    0,
+    55065,
+    58040,
+    58041
+  ],
+  "parentNames": [
+    "IDN",
+    "NUSA TENGGARA TIMUR",
+    "KOTA KUPANG",
+    "ALAK"
+  ],
+  "children": [
+    [
+      1,
+      104,
+      109
+    ],
+    [
+      2,
+      111,
+      96
+    ],
+    [
+      3,
+      89,
+      103
+    ],
+    [
+      4,
+      104,
+      92
+    ],
+    [
+      5,
+      112,
+      113
+    ],
+    [
+      6,
+      94,
+      109
+    ],
+    [
+      7,
+      85,
+      104
+    ],
+    [
+      8,
+      94,
+      92
+    ],
+    [
+      9,
+      123,
+      106
+    ],
+    [
+      10,
+      120,
+      130
+    ],
+    [
+      11,
+      84,
+      105
+    ],
+    [
+      12,
+      79,
+      93
+    ],
+    [
+      13,
+      91,
+      78
+    ],
+    [
+      14,
+      80,
+      87
+    ]
+  ],
+  "data": {
+    "1": {
+      "sum": {
+        "cakupan": 1,
+        "pending": 0,
+        "error": 0,
+        "janggal": 1,
+        "pas1": 456,
+        "pas2": 123,
+        "tSah": 2,
+        "sah": 579,
+        "pJum": 12
+      },
+      "ts": 1553328605541,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/Fb1gLAye2l_ElXa2bwvdZoFSN23DsofpqwbrCwawe1hHj03F0O99z9vhCEKNIZZZPm0muwoYdezWw5GzQ5jl": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas2": 123,
+            "pas1": 456,
+            "tSah": 2,
+            "sah": 579
+          },
+          "ts": 1553006172429
+        },
+        "http://lh3.googleusercontent.com/iZ6dEMsq9mWCEs7H6iK2npa-u9k25QiCxQGnU5-3SciEOfBS1rSb3BOohanM7CAEp3FSU5m_XteeQ-ymfIn4": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas2": 92,
+            "pas1": 11,
+            "tSah": 8,
+            "sah": 103
+          },
+          "ts": 1553010577931
+        },
+        "http://lh3.googleusercontent.com/kx_06ukBfDqVosNXO7Mkx1ND8-O6BsW6ZMl_ZLK7g8PSJ1CEg7YRgm4vH7J3CJKn44SlxBhpX8Y20H7qQA": {
+          "sum": {
+            "pJum": 12
+          },
+          "ts": 1553010641871,
+          "c1": {
+            "type": 2,
+            "plano": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/ioAH-uYw3qCFTW_pbavGvCGklHzHyQuygN548S4Hj7tG7F5d0EhHNlFl6mAkCSFjJvsE99cq3tJKMlUxflI": {
+          "c1": {
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "pas2": 456,
+            "pas1": 123,
+            "tSah": 13,
+            "sah": 579
+          },
+          "ts": 1553328605541
+        }
+      }
+    },
+    "2": {
+      "sum": {
+        "pending": 0,
+        "cakupan": 1,
+        "janggal": 0,
+        "error": 0,
+        "pas1": 132,
+        "pas2": 58,
+        "tSah": 12,
+        "sah": 190
+      },
+      "ts": 1553011315964,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/WTvdxxWKufFL4n6ZbBPzIoS4pAYY2EPJjWt_8q-21BO_YVS5uXyzfelpaAE4qi8ROs-JVkjxqL42leMLvb4": {
+          "ts": 1553011315964,
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas1": 132,
+            "tSah": 12,
+            "sah": 190,
+            "pas2": 58
+          }
+        }
+      }
+    },
+    "3": {
+      "sum": {
+        "cakupan": 1,
+        "pending": 0,
+        "error": 0,
+        "janggal": 1,
+        "jum": 223,
+        "pas1": 654,
+        "pas2": 321,
+        "tSah": 2,
+        "sah": 975,
+        "pJum": 111,
+        "pkb": 21,
+        "ger": 22,
+        "pdi": 23,
+        "pTSah": 3,
+        "pSah": 3
+      },
+      "ts": 1553330051885,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/uXUcb2KsHZIxVHVLMIdgosY5mipHhfU5UHmeZxl1SYoxWcXs-9PM4L3EPde2IutNL9awTTCEhbNSeLpQMZvx": {
+          "c1": {
+            "type": 1,
+            "plano": 1
+          },
+          "sum": {
+            "jum": 123
+          },
+          "ts": 1553328888931
+        },
+        "http://lh3.googleusercontent.com/UfJkHyxw5xfwkIKIHMx8KftyoUCbhdkRLk5nNzqsoWIg9qe2ySoeNnz9sis8CBcQ677PYC1CBPxQf8YnTYPN": {
+          "c1": {
+            "type": 1,
+            "plano": 1
+          },
+          "sum": {
+            "pas2": 321,
+            "pas1": 654,
+            "tSah": 2,
+            "sah": 975
+          },
+          "ts": 1553328965463
+        },
+        "http://lh3.googleusercontent.com/4ek__lHuSE9xB-FqGwa6oeOhXoTTCWofyKJWoT0nQm5VI3Tlqs8J8wBonT4TTn43PWcvXXyjXElOg7EuDSg": {
+          "c1": {
+            "plano": 2,
+            "type": 1
+          },
+          "sum": {
+            "jum": 223
+          },
+          "ts": 1553329067618
+        },
+        "http://lh3.googleusercontent.com/VvrOuwjtz9Msi3bzWHKTxxcn62527zOTEZO9FHn13y51ZOnTx4FFSpRo_Q8ASW3-HPDHIF7ddrO6unUowQ": {
+          "sum": {
+            "jum": 223
+          },
+          "ts": 1553329128760,
+          "c1": {
+            "plano": 2,
+            "type": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/112k-9-NflCZLN-V40c-viTCUamyzGzNPCmwtnlFaSCUAYfGdhESqqj0OhDuxwop8NMmLd1Q35ClHCPTqLt-": {
+          "sum": {
+            "pas2": 221,
+            "pas1": 554,
+            "tSah": 3,
+            "sah": 775
+          },
+          "ts": 1553329208755,
+          "c1": {
+            "plano": 2,
+            "type": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/xa97A6Wp1sJyx9RTeLCEZ9hi3a9bK1DxObayO0XAtcG11jtPgV841ufC9JDWr6KB9mD3N4Lof6VpvffaoBg": {
+          "c1": {
+            "type": 2,
+            "plano": 1
+          },
+          "sum": {
+            "pJum": 111
+          },
+          "ts": 1553329754969
+        },
+        "http://lh3.googleusercontent.com/nk6CV8po_9Ky-E1If27fbAFhFtLY3bJ8ioUAVT_lL9BdLyidAiUGuppr8OdOriELAsHHRwdIzfF_bURQHtS2": {
+          "sum": {
+            "pkb": 21
+          },
+          "ts": 1553329817343,
+          "c1": {
+            "type": 2,
+            "plano": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/5BZyx05JQOK0i_H6joh-QKdnf5WdbJW5BxgDy8Rp-ux4F0QcrGNBBGbVmgHTwiS8a99jiP1ZYbFQErecDqc": {
+          "sum": {
+            "ger": 22
+          },
+          "ts": 1553329908189,
+          "c1": {
+            "plano": 1,
+            "type": 2
+          }
+        },
+        "http://lh3.googleusercontent.com/a186pLQhXePTSJ49eNNX4P9l7n5oNRFwM-REGlBPMaCrfG8AMJHnjt8z4EO-0CjFZaREupW-Iw9SuAYEJg": {
+          "c1": {
+            "plano": 1,
+            "type": 2
+          },
+          "sum": {
+            "pdi": 23
+          },
+          "ts": 1553329990116
+        },
+        "http://lh3.googleusercontent.com/WQz9sCczJwSPOp6i9K_KgUz5-VuFhTYnybQ5L_8X76Q2nQO6ngew3h_w38016A2lLpHXmrhI950otgDbBohN": {
+          "c1": {
+            "type": 2,
+            "plano": 1
+          },
+          "sum": {
+            "pTSah": 3,
+            "pSah": 3
+          },
+          "ts": 1553330051885
+        }
+      }
+    }
+  }
+}

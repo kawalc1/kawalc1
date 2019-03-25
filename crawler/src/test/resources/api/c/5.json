@@ -1,0 +1,60 @@
+{
+  "children": [
+    [
+      1,
+      124,
+      136
+    ],
+    [
+      2,
+      114,
+      107
+    ]
+  ],
+  "data": {
+    "1": {
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/6Y0Kjbbe6W6mLYHojof1JFwKDCbQRAGZa8WwyP1uj87haLxiQgzWmh8OznpCuy3vqSoXiB-xKp-DSfhciF0": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas1": 100,
+            "pas2": 100,
+            "sah": 200,
+            "tSah": 3
+          },
+          "ts": 1553141653960
+        }
+      },
+      "sum": {
+        "cakupan": 1,
+        "error": 0,
+        "janggal": 0,
+        "pas1": 100,
+        "pas2": 100,
+        "pending": 1,
+        "sah": 200,
+        "tSah": 3
+      },
+      "ts": 1553141653960
+    }
+  },
+  "depth": 4,
+  "id": 5,
+  "name": "UJONG MANGKI",
+  "parentIds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "parentNames": [
+    "IDN",
+    "ACEH",
+    "ACEH SELATAN",
+    "BAKONGAN"
+  ]
+}

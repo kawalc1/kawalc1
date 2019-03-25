@@ -1,0 +1,176 @@
+{
+  "children": [
+    [
+      1,
+      137,
+      155
+    ],
+    [
+      2,
+      149,
+      139
+    ],
+    [
+      3,
+      134,
+      155
+    ]
+  ],
+  "data": {
+    "1": {
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/7b9otqPyVoflSnarXHm3fWrKh5GOJ64EVtjJp_MqXflv_l5OrbO-3Dxp0cE9bxYnAbjOoDU6CQqo0K9BKQ": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "jum": 24
+          },
+          "ts": 1552895635843
+        },
+        "http://lh3.googleusercontent.com/9YGUaSBkHjht6XtZ1MIgn9BqCSHfSCXCjuDLQ8gBMsdV9bSw6q2acXjZN0A9QP9Jn4g7gw6m7at0XGvWJWs": {
+          "c1": {
+            "plano": 1,
+            "type": 2
+          },
+          "sum": {
+            "pJum": 24
+          },
+          "ts": 1552895652163
+        },
+        "http://lh3.googleusercontent.com/C1_tqFfjqhBjSxbmUtj_Xg2gQefRAzpyWiRWGpIFLCTwfbXELOJ9NZliQTPVtPPJ1kjWJKQn4Jz7WQ1hOzU": {
+          "c1": {
+            "plano": 2,
+            "type": 2
+          },
+          "sum": {
+            "dem": 2,
+            "han": 2,
+            "pbb": 2,
+            "pkp": 2
+          },
+          "ts": 1552895686457
+        },
+        "http://lh3.googleusercontent.com/HZ6AJF6YYqA2M5MXxH99XedoaE1Rk3-IelJEsnosBVPLdMb73X0w7T5_mWvExCsIZlI-cud3kSU9Lk7c700": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas1": 11,
+            "pas2": 92,
+            "sah": 103,
+            "tSah": 8
+          },
+          "ts": 1553166791332
+        },
+        "http://lh3.googleusercontent.com/HtYEOLb65GTR9bE_a85HR-uZyG_PPA53Gg0j5km7JbKpelTpTUC6W3q3GYaHq6asuOYtfXOU8Clds0N3Nsch": {
+          "c1": {
+            "plano": 2,
+            "type": 2
+          },
+          "sum": {
+            "ger": 4,
+            "gol": 4,
+            "pdi": 4,
+            "pkb": 4
+          },
+          "ts": 1552895669164
+        },
+        "http://lh3.googleusercontent.com/pkdzBz7HQLlFzFV0NUnjbp2eYTvjyZGV82M_ZjGoIG1gw6Ndkq_DKbz2_yg2-xFv9QAV3TK9NLrfuETzo8eS": {
+          "c1": {
+            "plano": 1,
+            "type": 1
+          },
+          "sum": {
+            "pas1": 234,
+            "pas2": 234,
+            "sah": 468,
+            "tSah": 8
+          },
+          "ts": 1552895707716
+        },
+        "http://lh3.googleusercontent.com/tJRTs-oEDZKfABNLS0lqlXaL-hrb-rBLb3n47Ffuhagq4VwmtX0Tnmaj4nNFRLR0Y4seqJHkCLy_DLcRwA4": {
+          "c1": {
+            "plano": 2,
+            "type": 1
+          },
+          "sum": {
+            "jum": 25
+          },
+          "ts": 1553282046622
+        }
+      },
+      "sum": {
+        "cakupan": 1,
+        "dem": 2,
+        "error": 0,
+        "ger": 4,
+        "gol": 4,
+        "han": 2,
+        "janggal": 1,
+        "jum": 24,
+        "pJum": 24,
+        "pas1": 234,
+        "pas2": 234,
+        "pbb": 2,
+        "pdi": 4,
+        "pending": 0,
+        "pkb": 4,
+        "pkp": 2,
+        "sah": 468,
+        "tSah": 8
+      },
+      "ts": 1553282046622
+    },
+    "2": {
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/-2r5FmY1YgZoMKgGd1ncuTwu04AtO1CPgsFlE2YYIAYwwBDX_5S6RC4oMB8_Q54Z5CqrjkrEKM7zgsUia-s": {
+          "c1": {
+            "plano": 1,
+            "type": 2
+          },
+          "sum": {
+            "pJum": 55
+          },
+          "ts": 1553092559467
+        }
+      },
+      "sum": {
+        "cakupan": 1,
+        "error": 0,
+        "janggal": 0,
+        "pJum": 55,
+        "pending": 1
+      },
+      "ts": 1553228900010
+    },
+    "3": {
+      "c1": null,
+      "photos": {},
+      "sum": {
+        "cakupan": 1,
+        "pending": 1
+      },
+      "ts": 1553327799471
+    }
+  },
+  "depth": 4,
+  "id": 4,
+  "name": "KEUDE BAKONGAN",
+  "parentIds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "parentNames": [
+    "IDN",
+    "ACEH",
+    "ACEH SELATAN",
+    "BAKONGAN"
+  ]
+}
