@@ -24,7 +24,7 @@ class DatabaseSpecs
       val response  = Source.fromURL(getClass.getResource("/api/c/58044.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
       val setup = DBIO.seq(
-        //        Tables.tpsQuery.schema.drop,
+        Tables.tpsQuery.schema.drop,
         Tables.tpsQuery.schema.create,
         Tables.tpsQuery ++= Kelurahan.toTps(kelurahan)
       )
