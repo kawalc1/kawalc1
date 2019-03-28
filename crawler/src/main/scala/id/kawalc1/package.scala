@@ -8,68 +8,72 @@ import scala.collection.immutable
 
 package object kawalc1 {
 
-
   case class C1(
-    plano: Plano,
-    `type`: FormType
+      plano: Plano,
+      `type`: FormType
   )
 
   case class Verification(
-    ts: Timestamp,
-    c1: Option[C1],
-    sum: Option[Summary]
+      ts: Timestamp,
+      c1: Option[C1],
+      sum: Option[Summary]
   )
 
   case class SingleTps(
-    photo: String,
-    kelurahanId: Int,
-    tpsId: Int,
-    verification: Verification
+      photo: String,
+      kelurahanId: Int,
+      tpsId: Int,
+      verification: Verification
   )
 
-  case class Tps(
-    photos: Map[String, Verification])
+  case class Tps(photos: Map[String, Verification])
 
   case class Kelurahan(
-    id: Int,
-    name: String,
-    parentNames: Seq[String],
-    data: Map[Int, Tps]
+      id: Int,
+      name: String,
+      parentNames: Seq[String],
+      data: Map[Int, Tps]
   )
+
+  object Kelurahan {
+    def toTps(kelurahan: Kelurahan) = {
+      for {
+        tps   <- kelurahan.data
+        photo <- tps._2.photos
+      } yield SingleTps(photo._1, kelurahan.id, tps._1, photo._2)
+    }
+  }
 
   trait Summary
 
   case class PresidentialLembar1(
-    jum: Int,
-    plano: Boolean
+      jum: Int,
+      plano: Boolean
   ) extends Summary
-
 
   case class PresidentialLembar2(
-    pas1: Int,
-    pas2: Int,
-    sah: Int,
-    tSah: Int,
+      pas1: Int,
+      pas2: Int,
+      sah: Int,
+      tSah: Int,
   ) extends Summary
 
-
   case class SingleSum(
-    jum: Int,
+      jum: Int,
   ) extends Summary
 
   case class LegislativeSum(
-    jum: Int,
+      jum: Int,
   ) extends Summary
 
   case class Dpr(
-    votes: Map[String, Int],
+      votes: Map[String, Int],
   ) extends Summary
 
   case class Pending(
-    cakupan: Int,
-    pending: Int
+      cakupan: Int,
+      pending: Int
   ) extends Summary
-
 
   sealed abstract class Plano(val value: Short) extends ShortEnumEntry
 
