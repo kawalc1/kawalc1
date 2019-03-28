@@ -10,7 +10,7 @@ import id.kawalc1._
 import org.json4s.JsonAST.{JInt, JObject}
 import org.json4s.native.Serialization
 import org.json4s.{CustomSerializer, Formats, native}
-
+import org.json4s._
 
 trait JsonSupport extends Json4sSupport with LazyLogging {
   implicit val serialization: Serialization.type = native.Serialization
@@ -18,16 +18,20 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
   private def parseSummary(c1: Option[C1], summary: JObject): Option[Summary] = {
     c1 match {
       case Some(C1(Plano.YES, FormType.PPWP)) => Some(summary.extract[PresidentialLembar2])
-      case Some(C1(Plano.YES, FormType.DPR)) => Some(summary.extract[Dpr])
+      case Some(C1(Plano.YES, FormType.DPR)) =>
+        val map = summary.extract[Map[String, Int]]
+        Some(Dpr(map))
       case None => Some(summary.extract[Pending])
       case _ => None
     }
   }
 
   case object SummarySerialize extends CustomSerializer[Verification](format => ( {
-    case JObject(List(("c1", c1Json: JObject), ("sum", sum: JObject), ("ts", JInt(tss)))) =>
-      val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss.toLong))
-      val maybeC1 = c1Json.extract[Option[C1]]
+    case x: JObject =>
+      val tss = (x \ "ts").extract[Long]
+      val maybeC1 = (x \ "c1").extract[Option[C1]]
+      val sum = (x \ "sum").extract[JObject]
+      val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss))
       val summary = sum match {
         case JObject(List(("jum", JInt(num)))) => Some(SingleSum(num.toInt))
         case JObject(List(("pJum", JInt(num)))) => Some(LegislativeSum(num.toInt))

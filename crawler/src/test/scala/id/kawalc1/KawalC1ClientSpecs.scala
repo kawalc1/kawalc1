@@ -30,5 +30,15 @@ class KawalC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with S
       val verification = tps.photos.head._2
       verification.sum.get shouldBe SingleSum(25)
     }
+
+    "parse the `58044.json` response" in {
+      val response = Source.fromURL(getClass.getResource("/api/c/58044.json")).mkString
+      val kelurahan = Serialization.read[Kelurahan](response)
+      kelurahan.data.keySet.size shouldBe 3
+      val tps = kelurahan.data(1)
+      tps.photos.keySet.size shouldBe 4
+      val verification = tps.photos.head._2
+      verification.sum.get shouldBe PresidentialLembar2(456,123,579,2)
+    }
   }
 }

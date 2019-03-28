@@ -33,7 +33,8 @@ lazy val root = (project in file(".")).
       "com.typesafe.slick" %% "slick"               % slickVersion,
       "com.typesafe.slick" %% "slick-hikaricp"      % slickVersion,
       "com.h2database"     % "h2"                   % "1.4.196",
-      "ch.qos.logback" % "logback-classic" % logbackVersion,
+      "org.xerial"         %  "sqlite-jdbc"         % "3.7.2",
+      "ch.qos.logback"     % "logback-classic"      % logbackVersion,
 
       "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
