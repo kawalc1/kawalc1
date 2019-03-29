@@ -3,7 +3,8 @@ package id.kawalc1.database
 import java.sql.Timestamp
 
 import enumeratum.values.SlickValueEnumSupport
-import id.kawalc1.{C1, FormType, Plano, PresidentialLembar2, SingleTps, Summary, Verification}
+import id.kawalc1
+import id.kawalc1.{C1, Dpr, FormType, Plano, PresidentialLembar2, SingleTps, Summary, Verification}
 import slick.ast.ColumnOption.PrimaryKey
 import slick.lifted.Tag
 import slick.jdbc.SQLiteProfile.api._
@@ -37,20 +38,94 @@ object Tables extends SlickValueEnumSupport {
 
     def tSah = column[Option[Int]]("tSah")
 
-    private def unpackSummary(sum: Option[Summary]) = {
-      val bla = sum.map {
+    def pkb = column[Option[Int]]("pkb")
+
+    def ger = column[Option[Int]]("ger")
+
+    def pdi = column[Option[Int]]("pdi")
+
+    def gol = column[Option[Int]]("gol")
+
+    def nas = column[Option[Int]]("nas")
+
+    def gar = column[Option[Int]]("gar")
+
+    def ber = column[Option[Int]]("ber")
+
+    def sej = column[Option[Int]]("sej")
+
+    def per = column[Option[Int]]("per")
+
+    def ppp = column[Option[Int]]("ppp")
+
+    def psi = column[Option[Int]]("psi")
+
+    def pan = column[Option[Int]]("pan")
+
+    def han = column[Option[Int]]("han")
+
+    def dem = column[Option[Int]]("dem")
+
+    def pa = column[Option[Int]]("pa")
+
+    def ps = column[Option[Int]]("ps")
+
+    def pda = column[Option[Int]]("pda")
+
+    def pna = column[Option[Int]]("pna")
+
+    def pbb = column[Option[Int]]("pbb")
+
+    def pkp = column[Option[Int]]("pkp")
+
+    def parties =
+      (pkb,
+       ger,
+       pdi,
+       gol,
+       nas,
+       gar,
+       ber,
+       sej,
+       per,
+       ppp,
+       psi,
+       pan,
+       han,
+       dem,
+       pa,
+       ps,
+       pda,
+       pna,
+       pbb,
+       pkp)
+
+    private def upackPresidential(sum: Option[Summary]) = {
+      sum.flatMap {
         case p: PresidentialLembar2 =>
           Some(Some(p.pas1), Some(p.pas2), Some(p.sah), Some(p.tSah))
         case _ => None
       }
-      println(s"$bla")
-      bla.flatten
+    }
 
+    private def upackDpr(sum: Option[Summary]) = {
+      val emptyResults = kawalc1.Parties.map(_ => Option.empty[Int])
+      val dprResults = sum match {
+        case Some(x: Dpr) =>
+          val resultmap = kawalc1.Parties.zip(emptyResults).toMap
+          resultmap.map {
+            case (index: String, _: Option[Int]) => index -> x.votes.get(index).flatten
+          }.values
+
+        case _ => emptyResults
+      }
+      dprResults.toSeq
     }
 
     override def * =
-      (id, tps, timestamp, photo, plano, formType, presLembar2).shaped <> ({
-        case (id, tps, timestamp, photo, plano, formType, presLembar2) =>
+      (id, tps, timestamp, photo, plano, formType, presLembar2, parties).shaped <> ({
+        case (id, tps, timestamp, photo, plano, formType, presLembar2, parties) =>
+          val bla = parties
           val sum = formType match {
             case Some(FormType.PPWP) =>
               presLembar2._1 match {
@@ -62,16 +137,73 @@ object Tables extends SlickValueEnumSupport {
                                                          presLembar2._4.get))
                 case None => None
               }
+            case Some(FormType.DPR) =>
+              val partyColumns = kawalc1.Parties
+                .zip(parties.productIterator.toSeq)
+                .toMap
+                .mapValues(_.asInstanceOf[Option[Int]])
+              Some(Dpr(votes = partyColumns))
             case _ => None
           }
           SingleTps(photo, id, tps, Verification(timestamp, plano.map(C1(_, formType.get)), sum))
       }, { v: SingleTps =>
-        val plano         = v.verification.c1.map(_.plano)
-        val formType      = v.verification.c1.map(_.`type`)
-        val maybeTyple    = unpackSummary(v.verification.sum)
-        val summaryFields = maybeTyple.getOrElse((None, None, None, None))
+        val plano                 = v.verification.c1.map(_.plano)
+        val formType              = v.verification.c1.map(_.`type`)
+        val maybeTyple            = upackPresidential(v.verification.sum)
+        val summaryFields         = maybeTyple.getOrElse((None, None, None, None))
+        val kak: Seq[Option[Int]] = upackDpr(v.verification.sum)
+        val tupled = kak match {
+          case Seq(pkb,
+                   ger,
+                   pdi,
+                   gol,
+                   nas,
+                   gar,
+                   ber,
+                   sej,
+                   per,
+                   ppp,
+                   psi,
+                   pan,
+                   han,
+                   dem,
+                   pa,
+                   ps,
+                   pda,
+                   pna,
+                   pbb,
+                   pkp) =>
+            (pkb,
+             ger,
+             pdi,
+             gol,
+             nas,
+             gar,
+             ber,
+             sej,
+             per,
+             ppp,
+             psi,
+             pan,
+             han,
+             dem,
+             pa,
+             ps,
+             pda,
+             pna,
+             pbb,
+             pkp)
 
-        Some(v.kelurahanId, v.tpsId, v.verification.ts, v.photo, plano, formType, summaryFields)
+        }
+
+        Some(v.kelurahanId,
+             v.tpsId,
+             v.verification.ts,
+             v.photo,
+             plano,
+             formType,
+             summaryFields,
+             tupled)
       })
   }
 

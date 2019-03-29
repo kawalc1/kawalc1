@@ -19,34 +19,36 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
     c1 match {
       case Some(C1(Plano.YES, FormType.PPWP)) => Some(summary.extract[PresidentialLembar2])
       case Some(C1(Plano.YES, FormType.DPR)) =>
-        val map = summary.extract[Map[String, Int]]
+        val map = summary.extract[Map[String, Option[Int]]]
         Some(Dpr(map))
       case None => Some(summary.extract[Pending])
-      case _ => None
+      case _    => None
     }
   }
 
-  case object SummarySerialize extends CustomSerializer[Verification](format => ( {
-    case x: JObject =>
-      val tss = (x \ "ts").extract[Long]
-      val maybeC1 = (x \ "c1").extract[Option[C1]]
-      val sum = (x \ "sum").extract[JObject]
-      val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss))
-      val summary = sum match {
-        case JObject(List(("jum", JInt(num)))) => Some(SingleSum(num.toInt))
-        case JObject(List(("pJum", JInt(num)))) => Some(LegislativeSum(num.toInt))
-        case _: JObject => parseSummary(maybeC1, sum)
-      }
-      Verification(timeStamp, maybeC1, summary)
-  }, {
-    case x: Verification => throw new Exception("cannot serialize")
-  }
-  )
-  )
+  case object SummarySerialize
+      extends CustomSerializer[Verification](format =>
+        ({
+          case x: JObject =>
+            val tss       = (x \ "ts").extract[Long]
+            val maybeC1   = (x \ "c1").extract[Option[C1]]
+            val sum       = (x \ "sum").extract[JObject]
+            val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss))
+            val summary = sum match {
+              case JObject(List(("jum", JInt(num))))  => Some(SingleSum(num.toInt))
+              case JObject(List(("pJum", JInt(num)))) => Some(LegislativeSum(num.toInt))
+              case _: JObject                         => parseSummary(maybeC1, sum)
+            }
+            Verification(timeStamp, maybeC1, summary)
+        }, {
+          case x: Verification => throw new Exception("cannot serialize")
+        }))
 
   import org.json4s.DefaultFormats
 
-  val standardFormats: Formats = DefaultFormats + SummarySerialize ++ Seq(Json4s.serializer(FormType), Json4s.serializer(Plano))
+  val standardFormats: Formats = DefaultFormats + SummarySerialize ++ Seq(
+    Json4s.serializer(FormType),
+    Json4s.serializer(Plano))
 
   implicit val formats: Formats = standardFormats
 }

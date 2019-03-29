@@ -67,7 +67,7 @@ package object kawalc1 {
   ) extends Summary
 
   case class Dpr(
-      votes: Map[String, Int],
+      votes: Map[String, Option[Int]],
   ) extends Summary
 
   case class Pending(
@@ -119,4 +119,27 @@ package object kawalc1 {
 
     val values: immutable.IndexedSeq[FormType] = findValues
   }
+
+  val Parties = Seq(
+    "pkb",
+    "ger",
+    "pdi",
+    "gol",
+    "nas",
+    "gar",
+    "ber",
+    "sej",
+    "per",
+    "ppp",
+    "psi",
+    "pan",
+    "han",
+    "dem",
+    "pa",
+    "ps",
+    "pda",
+    "pna",
+    "pbb",
+    "pkp"
+  )
 }

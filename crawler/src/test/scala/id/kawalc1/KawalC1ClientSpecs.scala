@@ -8,11 +8,16 @@ import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
 
-class KawalC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
+class KawalC1ClientSpecs
+    extends WordSpec
+    with Matchers
+    with ScalaFutures
+    with ScalatestRouteTest
+    with JsonSupport {
   "KawalC1Client" should {
 
     "parse the `5.json` response" in {
-      val response = Source.fromURL(getClass.getResource("/api/c/5.json")).mkString
+      val response  = Source.fromURL(getClass.getResource("/api/c/5.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
       kelurahan.data.keySet.size shouldBe 1
       val tps = kelurahan.data(1)
@@ -22,7 +27,7 @@ class KawalC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with S
     }
 
     "parse the `4.json` response" in {
-      val response = Source.fromURL(getClass.getResource("/api/c/4.json")).mkString
+      val response  = Source.fromURL(getClass.getResource("/api/c/4.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
       kelurahan.data.keySet.size shouldBe 3
       val tps = kelurahan.data(1)
@@ -32,7 +37,7 @@ class KawalC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with S
     }
 
     "parse the `58044.json` response" in {
-      val response = Source.fromURL(getClass.getResource("/api/c/58044.json")).mkString
+      val response  = Source.fromURL(getClass.getResource("/api/c/58044.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
       kelurahan.data.keySet.size shouldBe 3
       val tps = kelurahan.data(1)

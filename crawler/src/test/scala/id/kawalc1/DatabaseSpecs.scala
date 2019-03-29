@@ -1,7 +1,5 @@
 package id.kawalc1
 
-import java.sql.Timestamp
-
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.clients.JsonSupport
 import id.kawalc1.database.Tables
@@ -23,15 +21,13 @@ class DatabaseSpecs
       val db        = Database.forConfig("tpsTestDatabase")
       val response  = Source.fromURL(getClass.getResource("/api/c/58044.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
-      val setup = DBIO.seq(
-        Tables.tpsQuery.schema.drop,
-        Tables.tpsQuery.schema.create,
-        Tables.tpsQuery ++= Kelurahan.toTps(kelurahan)
-      )
+      val setup = DBIO.seq(Tables.tpsQuery.schema.drop,
+                           Tables.tpsQuery.schema.create,
+                           Tables.tpsQuery ++= Kelurahan.toTps(kelurahan))
       try {
         db.run(setup).futureValue
         val tpses = db.run(Tables.tpsQuery.result).futureValue
-//        tpses.head shouldBe testTps
+        //        tpses.head shouldBe testTps
       } finally db.close()
     }
   }
