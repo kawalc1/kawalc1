@@ -29,7 +29,7 @@ Run a single simulation
 -----------------------
 
 ```bash
-> gatling:testOnly kawalc1.KawalC1Simulation
+> gatling:testOnly kawalc1.KawalPemiluSimulation
 ```
 
 List all tasks
