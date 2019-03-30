@@ -10,7 +10,7 @@ import io.gatling.http.request.builder.HttpRequestBuilder
 import scala.concurrent.duration._
 
 class KawalPemiluSimulation extends Simulation {
-  val rps = 1
+  val rps = 4000
 
   val csvFeeder: SourceFeederBuilder[String] = csv("main_kelurahan.csv").circular
 
@@ -31,7 +31,7 @@ class KawalPemiluSimulation extends Simulation {
       .exec(tpsRequest)
 
   setUp(
-    alignScenario.inject(constantUsersPerSec(1000) during (2 minutes)).throttle(
+    alignScenario.inject(constantUsersPerSec(400) during (2 minutes)).throttle(
       reachRps(rps).in(1 minute),
       holdFor(2 minutes),
     ).protocols(httpProtocol))
