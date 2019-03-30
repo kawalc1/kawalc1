@@ -19,7 +19,13 @@ package object kawalc1 {
       sum: Option[Summary]
   )
 
+  case class KelurahanId(
+      idKel: Int,
+      nama: String
+  )
+
   case class SingleTps(
+      nama: String,
       photo: String,
       kelurahanId: Int,
       tpsId: Int,
@@ -40,7 +46,7 @@ package object kawalc1 {
       for {
         tps   <- kelurahan.data
         photo <- tps._2.photos
-      } yield SingleTps(photo._1, kelurahan.id, tps._1, photo._2)
+      } yield SingleTps(kelurahan.name, photo._1, kelurahan.id, tps._1, photo._2)
     }
   }
 

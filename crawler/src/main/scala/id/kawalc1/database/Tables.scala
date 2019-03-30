@@ -4,7 +4,17 @@ import java.sql.Timestamp
 
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
-import id.kawalc1.{C1, Dpr, FormType, Plano, PresidentialLembar2, SingleTps, Summary, Verification}
+import id.kawalc1.{
+  C1,
+  Dpr,
+  FormType,
+  KelurahanId,
+  Plano,
+  PresidentialLembar2,
+  SingleTps,
+  Summary,
+  Verification
+}
 import slick.ast.ColumnOption.PrimaryKey
 import slick.lifted.Tag
 import slick.jdbc.SQLiteProfile.api._
@@ -12,17 +22,28 @@ import slick.jdbc.SQLiteProfile.api._
 object Tables extends SlickValueEnumSupport {
   val profile = slick.jdbc.SQLiteProfile
 
+  class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
+    def idKel = column[Int]("idKel", O.PrimaryKey)
+    def nama  = column[String]("nama")
+
+    override def * = (idKel, nama) <> (KelurahanId.tupled, KelurahanId.unapply)
+  }
+
+  val kelurahanQuery = TableQuery[Kelurahan]
+
   class Tps(tag: Tag) extends Table[SingleTps](tag, "tps") {
     implicit lazy val planoMapper    = mappedColumnTypeForValueEnum(Plano)
     implicit lazy val formTypeMapper = mappedColumnTypeForValueEnum(FormType)
 
     def id = column[Int]("kelurahan")
 
+    def nama = column[String]("nama")
+
     def tps = column[Int]("tps")
 
-    def timestamp = column[Timestamp]("ts", PrimaryKey)
+    def timestamp = column[Timestamp]("ts")
 
-    def photo = column[String]("photo")
+    def photo = column[String]("photo", O.PrimaryKey)
 
     def plano = column[Option[Plano]]("plano")
 
@@ -123,8 +144,8 @@ object Tables extends SlickValueEnumSupport {
     }
 
     override def * =
-      (id, tps, timestamp, photo, plano, formType, presLembar2, parties).shaped <> ({
-        case (id, tps, timestamp, photo, plano, formType, presLembar2, parties) =>
+      (id, nama, tps, timestamp, photo, plano, formType, presLembar2, parties).shaped <> ({
+        case (id, nama, tps, timestamp, photo, plano, formType, presLembar2, parties) =>
           val bla = parties
           val sum = formType match {
             case Some(FormType.PPWP) =>
@@ -145,14 +166,18 @@ object Tables extends SlickValueEnumSupport {
               Some(Dpr(votes = partyColumns))
             case _ => None
           }
-          SingleTps(photo, id, tps, Verification(timestamp, plano.map(C1(_, formType.get)), sum))
+          SingleTps(nama,
+                    photo,
+                    id,
+                    tps,
+                    Verification(timestamp, plano.map(C1(_, formType.get)), sum))
       }, { v: SingleTps =>
-        val plano                 = v.verification.c1.map(_.plano)
-        val formType              = v.verification.c1.map(_.`type`)
-        val maybeTyple            = upackPresidential(v.verification.sum)
-        val summaryFields         = maybeTyple.getOrElse((None, None, None, None))
-        val kak: Seq[Option[Int]] = upackDpr(v.verification.sum)
-        val tupled = kak match {
+        val plano                       = v.verification.c1.map(_.plano)
+        val formType                    = v.verification.c1.map(_.`type`)
+        val maybeTyple                  = upackPresidential(v.verification.sum)
+        val summaryFields               = maybeTyple.getOrElse((None, None, None, None))
+        val dprFields: Seq[Option[Int]] = upackDpr(v.verification.sum)
+        val tupled = dprFields match {
           case Seq(pkb,
                    ger,
                    pdi,
@@ -197,6 +222,7 @@ object Tables extends SlickValueEnumSupport {
         }
 
         Some(v.kelurahanId,
+             v.nama,
              v.tpsId,
              v.verification.ts,
              v.photo,
