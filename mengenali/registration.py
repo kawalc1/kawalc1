@@ -22,11 +22,11 @@ def print_result(result_writer, iteration, homography, transform, result):
     print(row)
 
 
-def create_response(image_path, success, config_file):
+def create_response(image_path, success):
     transformed_path = path.join('transformed', image_path)
     return json.dumps(
         {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
-         'success': success, 'configFile': config_file},
+         'success': success},
         separators=(',', ':'))
 
 
@@ -73,7 +73,7 @@ def read_descriptors(reference_form_path):
         return pickle.load(pickled)
 
 
-def register_image(file_path, reference_form_path, output_path, result_writer, config_file, target_path=""):
+def register_image(file_path, reference_form_path, output_path, result_writer, target_path=""):
     from datetime import datetime
 
     lap = datetime.now()
@@ -125,7 +125,7 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
                                                 output_path, target_path)
     logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-    return create_response(transformed_image, good_enough_match, config_file)
+    return create_response(transformed_image, good_enough_match)
 
 
 def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):

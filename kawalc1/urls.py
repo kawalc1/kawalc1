@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from mengenali.views import download, transform, extract, get_probabilities_result, custom
+from mengenali.views import download, transform, extract, get_probabilities_result, custom, align
 from django.http import HttpResponseRedirect
 
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda x: HttpResponseRedirect("/static/index.html")),
     path('download/<int:kelurahan>/<int:tps>/<str:filename>', download),
+    path('align/<int:kelurahan>/<int:tps>/<str:filename>', align),
     path('transform.wsgi', transform),
     path('custom.wsgi', custom),
     path('processprobs.wsgi', get_probabilities_result),

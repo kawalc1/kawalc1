@@ -14,6 +14,7 @@ from mengenali import extraction
 from urllib import request
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from datetime import datetime
 
 
 def index(request):
@@ -84,6 +85,39 @@ def get_outcome(output):
     }
 
 
+def align(request, kelurahan, tps, filename):
+    try:
+        reference_form = request.GET.get('referenceForm', 'plano-C1-2019-reference.jpg').lower()
+        reference_form_path = path.join(settings.DATASET_DIR, reference_form)
+        a = __do_alignment(filename, kelurahan, request, tps, reference_form_path)
+        output = {**a}
+
+    except Exception as e:
+        logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
+        output = {'transformedUrl': None, 'success': False}
+
+    return JsonResponse(output)
+
+
+def __do_alignment(filename, kelurahan, request, tps, reference_form):
+    store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
+    base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
+    if not store_files:
+        io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
+    else:
+        io.storage = get_storage_class(
+            'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
+            'storages.backends.gcloud.GoogleCloudStorage')()
+    url = f'{base_url}/{filename}'
+    output_path = path.join(settings.STATIC_DIR, 'transformed')
+    from datetime import datetime
+    lap = datetime.now()
+    a = json.loads(
+        registration.register_image(url, reference_form, output_path, None, f'{kelurahan}/{tps}'))
+    logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
+    return a
+
+
 def download(request, kelurahan, tps, filename):
     config_file = "digit_config_pilpres_2019.json"
     loaded_config = load_config(config_file)
@@ -91,27 +125,12 @@ def download(request, kelurahan, tps, filename):
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
         calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'true').lower())
         store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
-        base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
-        if not store_files:
-            io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
-        else:
-            io.storage = get_storage_class(
-                'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
-                'storages.backends.gcloud.GoogleCloudStorage')()
 
+        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file))
         extract_digits = maybe_extract_digits or calculate_numbers
-
-        url = f'{base_url}/{filename}'
-        output_path = path.join(settings.STATIC_DIR, 'transformed')
-
-        from datetime import datetime
         start_lap = datetime.now()
-        a = json.loads(
-            registration.register_image(url, get_reference_form(config_file), output_path, None, config_file, f'{kelurahan}/{tps}'))
 
-        logging.info("1: Register  %s", (datetime.now() - start_lap).total_seconds())
         lap = datetime.now()
-
         b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                settings.STATIC_DIR, loaded_config, store_files) if extract_digits else {"numbers": []}
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
@@ -151,6 +170,7 @@ def download(request, kelurahan, tps, filename):
         output['success'] = bool(outcome['confidence'] > 0.8)
 
         output['duration'] = (datetime.now() - start_lap).total_seconds()
+        output['configFile'] = config_file
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
@@ -167,8 +187,9 @@ def transform(request):
 
         try:
             config_file = request.POST.get("configFile", "")
-            output = json.loads(registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                               config_file))
+            output = json.loads(
+                registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
+                                          config_file))
         except Exception as e:
             logging.exception("this is not good!")
             output = {'transformedUrl': None, 'success': False}
