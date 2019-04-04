@@ -55,10 +55,17 @@ def read_file(file_path):
 
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)
-    encoded, name = cv2.imencode(extension, image)
-    logging.info("writing %s", file_path)
-    storage.save(file_path, ContentFile(name))
+    if extension.lower() == ".webp":
+        logging.info("writing .webp %s", file_path)
+        fp = BytesIO()
+        im_pil = Image.fromarray(image)
+        im_pil.save(fp, Image.registered_extensions()['.webp'])
 
+        storage.save(file_path, ContentFile(fp.getbuffer()))
+    else:
+        logging.info("writing jpeg %s %s", file_path, extension)
+        encoded, image = cv2.imencode(extension, image)
+        storage.save(file_path, ContentFile(image))
 
 def image_url(file_path):
     return file_path if settings.LOCAL else storage.url(path.join(settings.STATIC_DIR, file_path))

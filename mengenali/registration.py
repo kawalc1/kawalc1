@@ -9,6 +9,8 @@ import math
 import json
 import logging
 from os.path import join
+
+from kawalc1 import settings
 from mengenali.io import write_image, read_image, image_url, is_url
 
 logging.basicConfig(level=logging.DEBUG)
@@ -22,24 +24,28 @@ def print_result(result_writer, iteration, homography, transform, result):
 
 def create_response(image_path, success, config_file):
     transformed_path = path.join('transformed', image_path)
-    return json.dumps({'transformedUrl': image_url(transformed_path), 'transformedUri':  path.join('.', 'static', transformed_path),
-                       'success': success, 'configFile': config_file},
-                      separators=(',', ':'))
+    return json.dumps(
+        {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
+         'success': success, 'configFile': config_file},
+        separators=(',', ':'))
 
 
-def get_target_path(file_path):
-    if is_url(file_path):
-        path_parts = file_path.split(os.sep)
-        return path.join(path_parts[-3], path_parts[-2], path_parts[-1])
-    head, file_name = os.path.split(file_path)
+def get_target_path(file_path, target_path):
+    full_path, ext = os.path.splitext(file_path)
+    path_with_ext = f'{full_path}{settings.TARGET_EXTENSION}'
+    if is_url(path_with_ext):
+        path_parts = path_with_ext.split(os.sep)
+        return path.join(target_path, path_parts[-1])
+    head, file_name = os.path.split(path_with_ext)
     return "trans" + file_name
 
 
-def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path, output_path):
+def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path, output_path,
+                            target_path):
     file_prefix = "~trans" if good_enough_match else "~bad"
     # transformed_image = file_prefix + "~hom" + str(homography) + "~warp" + str(transform) + "~" + file_name
 
-    transformed_image = get_target_path(file_path)
+    transformed_image = get_target_path(file_path, target_path)
 
     image_path = join(output_path, transformed_image)
 
@@ -54,7 +60,8 @@ def unpickle_keypoints(array):
     keypoints = []
     descriptors = []
     for point in array:
-        temp_feature = cv2.KeyPoint(x=point[0][0],y=point[0][1],_size=point[1], _angle=point[2], _response=point[3], _octave=point[4], _class_id=point[5])
+        temp_feature = cv2.KeyPoint(x=point[0][0], y=point[0][1], _size=point[1], _angle=point[2], _response=point[3],
+                                    _octave=point[4], _class_id=point[5])
         temp_descriptor = point[6]
         keypoints.append(temp_feature)
         descriptors.append(temp_descriptor)
@@ -66,7 +73,7 @@ def read_descriptors(reference_form_path):
         return pickle.load(pickled)
 
 
-def register_image(file_path, reference_form_path, output_path, result_writer, config_file):
+def register_image(file_path, reference_form_path, output_path, result_writer, config_file, target_path=""):
     from datetime import datetime
 
     lap = datetime.now()
@@ -116,7 +123,7 @@ def register_image(file_path, reference_form_path, output_path, result_writer, c
     lap = datetime.now()
 
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
-                                                output_path)
+                                                output_path, target_path)
     logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
     return create_response(transformed_image, good_enough_match, config_file)
 

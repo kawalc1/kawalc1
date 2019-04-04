@@ -27,16 +27,16 @@
       "digitCoordinates": [
         [ 814, 854, 950, 988 ],
         [ 814, 854, 992, 1032 ],
-        [ 814, 852, 1038, 1076 ]
+        [ 814, 854, 1038, 1076 ]
       ]
     },
     {
       "id": "3",
       "shortName": "tidakSah",
-      "displayName": "Jumlah Suara Tidak Sah",
+      "displayName": "Suara Tidak Sah",
       "digitCoordinates": [
         [ 650, 700, 950, 986 ],
-        [ 650, 702, 994, 1032 ],
+        [ 650, 700, 994, 1032 ],
         [ 650, 700, 1040, 1076 ]
       ]
     },
@@ -45,9 +45,9 @@
       "shortName": "jumlahSeluruh",
       "displayName": "Jumlah Seluruh",
       "digitCoordinates": [
-        [ 930, 970, 950, 988 ],
-        [ 930, 970, 992, 1034 ],
-        [ 930, 970, 1038, 1076 ]
+        [ 920, 970, 950, 988 ],
+        [ 920, 970, 992, 1034 ],
+        [ 920, 970, 1038, 1076 ]
       ]
     }
   ],

@@ -7,6 +7,8 @@ from scipy import ndimage
 from os.path import join
 import json
 import io
+
+from kawalc1 import settings
 from mengenali import imageclassifier
 from skimage.morphology import skeletonize
 import sys
@@ -238,7 +240,7 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
     signatures = [digit_image[932:972, 597:745], digit_image[977:1018, 597:745]]
 
     # save
-    digit_area_file = base_file_name + "~digit-area.jpg"
+    digit_area_file = f'{base_file_name}~digit-area{settings.TARGET_EXTENSION}'
     digit_area_path = join(target_path, digit_area_file)
     logging.info("writing %s", digit_area_path)
 
@@ -293,8 +295,8 @@ def extract(file_name, source_path, target_path, dataset_path, config, store_fil
         numbers[number_id]["extracted"] = []
         for i, digit in enumerate(digits):
             if digit is not None:
-                extracted_file_name = base_file_name + "~" + str(number_id) + "~" + str(i)
-                digit_file = extracted_file_name + ".jpg"
+                extracted_file_name = f'{base_file_name}~{str(number_id)}~{str(i)}'
+                digit_file = extracted_file_name + settings.TARGET_EXTENSION
                 extracted = join(target_path, digit_file)
                 if store_files:
                     write_image(extracted, digit)

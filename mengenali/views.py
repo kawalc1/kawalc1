@@ -91,6 +91,7 @@ def download(request, kelurahan, tps, filename):
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
         calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'true').lower())
         store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
+        base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
         if not store_files:
             io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
         else:
@@ -100,13 +101,13 @@ def download(request, kelurahan, tps, filename):
 
         extract_digits = maybe_extract_digits or calculate_numbers
 
-        url = f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/{filename}'
+        url = f'{base_url}/{filename}'
         output_path = path.join(settings.STATIC_DIR, 'transformed')
 
         from datetime import datetime
         start_lap = datetime.now()
         a = json.loads(
-            registration.register_image(url, get_reference_form(config_file), output_path, None, config_file))
+            registration.register_image(url, get_reference_form(config_file), output_path, None, config_file, f'{kelurahan}/{tps}'))
 
         logging.info("1: Register  %s", (datetime.now() - start_lap).total_seconds())
         lap = datetime.now()

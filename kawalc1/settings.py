@@ -20,9 +20,13 @@ def __is_local():
     return host_name.endswith(".local")
 
 
+
 FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 BASE_DIR = "."
+TARGET_EXTENSION = ".webp"
 
 import logging
 
