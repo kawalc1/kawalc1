@@ -25,27 +25,33 @@ trait HttpClientSupport extends LazyLogging {
 
   def SecurityContext: HttpsConnectionContext = http.defaultClientHttpsContext
 
-  def parseJson[A: Manifest](responseBody: String)(implicit mat: Materializer, formats: Formats): A = {
+  def parseJson[A: Manifest](responseBody: String)(implicit
+    mat: Materializer,
+    formats: Formats): Either[String, A] = {
     Try(read[A](responseBody)) match {
-      case Success(parsed) => parsed
+      case Success(parsed) => Right(parsed)
       case Failure(ex) =>
         logger.error(s"could not parse response: $ex \n$responseBody")
-        throw ex
+        Left(responseBody)
     }
   }
 
-  def execute[A](request: HttpRequest)(implicit formats: Formats): Future[Either[String, A]] =
+  def execute[A: Manifest](request: HttpRequest)(
+    implicit
+    formats: Formats): Future[Either[String, A]] = {
+    logger.info(s"Request ${request.uri}")
     for {
       resp: HttpResponse <- http.singleRequest(request, SecurityContext)
       str: String <- consumeEntity(resp.entity)
     } yield {
       resp.status match {
-        case code: StatusCode if code.isSuccess() => Right(parseJson(str))
+        case code: StatusCode if code.isSuccess() => parseJson(str)
         case _ =>
           logger.warn(s"Response ${resp.status.value} ${request.uri} $str")
           Left(str)
       }
     }
+  }
 
   private def consumeEntity(entity: HttpEntity)(implicit mat: Materializer): Future[String] =
     entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.utf8String)

@@ -8,6 +8,12 @@ import scala.collection.immutable
 
 package object kawalc1 {
 
+  def formTypeToConfig(formType: FormType) = formType match {
+    case FormType.PPWP => "digit_config_pilpres_2019.json"
+    case FormType.DPR  => ???
+    case _             => ???
+  }
+
   case class C1(
       plano: Plano,
       `type`: FormType
@@ -16,7 +22,15 @@ package object kawalc1 {
   case class Verification(
       ts: Timestamp,
       c1: Option[C1],
-      sum: Option[Summary]
+      sum: Option[Summary],
+      common: Common
+  )
+
+  case class Common(
+      cakupan: Option[Int],
+      pending: Option[Int],
+      error: Option[Int],
+      janggal: Option[Int],
   )
 
   case class KelurahanId(
