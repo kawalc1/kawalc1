@@ -22,31 +22,33 @@ def get_possible_outcomes_for_config(config, numbers, categories_count, summary_
     return all_sets
 
 
-def get_possible_values(list_of_probs, threshold=.10):
-    """ [[digit, confidence]] -> [[digit], confidence]
-    Each item in the list that has a confidence of higher than the threshold is
-    taken into account as a possibility. All possible lists of digits are
-    constructed (taking one digit per outer list) and given a confidence by
-    multiplying the confidences of its digits."""
+def possible_numbers_for_digit_confidence_matrix(digit_confidence_matrix, threshold=.10):
+    """ For each digit in the final number we are given the probabilities for each value. This
+    function disregards any values with a probability lower than the threshold and then computes
+    all possible numbers by taking the cartesian product of all possible values for each digit.
+    The confidence rating for each number will be the product of the confidence rating of each of
+    its digits
+    """
 
-    total_probs = []
+    possible_numbers = []
 
-    for probs in list_of_probs:
-        high_probs = filter(lambda x: x[1] > threshold, enumerate(probs))
+    for digit_confidence_list in digit_confidence_matrix:
+        possible_digits = list(filter(lambda x: x[1] > threshold, enumerate(digit_confidence_list)))
 
-        if not total_probs:
-            total_probs = map(lambda x: ([x[0]], x[1]), high_probs)
+        if not possible_numbers:
+            possible_numbers = list(map(lambda x: ([x[0]], x[1]), possible_digits))
         else:
-            new_total_probs = []
+            new_possible_numbers = []
 
-            for current_prob in total_probs:
-                for high_prob in high_probs:
-                    new_total_probs.append((current_prob[0] + [high_prob[0]],
-                                            current_prob[1] * high_prob[1]))
+            for [number, number_confidence] in possible_numbers:
+                for [digit, digit_confidence] in possible_digits:
+                    new_number = number + [digit]
+                    new_confidence = number_confidence * digit_confidence
+                    new_possible_numbers.append((new_number, new_confidence))
 
-            total_probs = new_total_probs
+            possible_numbers = new_possible_numbers
 
-    return total_probs
+    return possible_numbers
 
 
 def get_possible_end_results(list_of_probs):
@@ -232,8 +234,8 @@ def numbers_add_up(probabilities, sigma_total):
 def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
     all_numbers_matrix = all_squares.reshape(number_count, DIGITS_PER_NUMBER, categories_count)
 
-    def matrix_to_number(number_matrix):
-        possible_values = get_possible_values(number_matrix)
+    def matrix_to_number(digit_confidence_matrix):
+        possible_values = possible_numbers_for_digit_confidence_matrix(digit_confidence_matrix)
         return map(lambda x: make_number(x[0], x[1]), possible_values)
 
     all_numbers = map(matrix_to_number, all_numbers_matrix[0:number_count])

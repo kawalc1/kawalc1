@@ -12,7 +12,7 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         json_file = open('./resources/probabilities/1773007-005324400804.json')
         cls.json_data = json.load(json_file)
 
-        config_file = open('../static/datasets/digit_config.json')
+        config_file = open('../static/datasets/digit_config_pilpres_2019.json')
         cls.config = json.load(config_file)
         json_file.close()
 
@@ -37,10 +37,10 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         outcomes = pp.get_possible_outcomes_for_config(self.config, json_data_yosua["probabilities"], 11, print_outcome)
         most_likely = outcomes[0][0]
         print("most likely", str(most_likely))
-        self.assertAlmostEqual(most_likely['confidence'], 0.7020011959926853)
         self.assertEqual(most_likely['jokowi'], 186)
         self.assertEqual(most_likely['prabowo'], 117)
         self.assertEqual(most_likely['jumlah'], 303)
+        self.assertAlmostEqual(most_likely['confidence'], 0.7020011959926853)
 
     def test_get_numbers2(self):
         json_file = open('./resources/probabilities/IMG_4221.json')
