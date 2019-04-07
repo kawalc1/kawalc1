@@ -26,7 +26,7 @@ package object kawalc1 {
       displayName: String
   )
 
-  case class Probabilities(
+  case class ProbabilitiesResponse(
       probabilityMatrix: Seq[Seq[NumberSet]]
   )
 

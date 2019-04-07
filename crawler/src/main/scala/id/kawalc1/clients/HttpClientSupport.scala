@@ -3,7 +3,7 @@ package id.kawalc1.clients
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Authorization
-import akka.http.scaladsl.{ Http, HttpExt, HttpsConnectionContext }
+import akka.http.scaladsl.{Http, HttpExt, HttpsConnectionContext}
 import akka.stream.Materializer
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
@@ -13,7 +13,7 @@ import org.json4s.native.Serialization.read
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.Manifest
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 trait HttpClientSupport extends LazyLogging {
 
@@ -26,8 +26,8 @@ trait HttpClientSupport extends LazyLogging {
   def SecurityContext: HttpsConnectionContext = http.defaultClientHttpsContext
 
   def parseJson[A: Manifest](responseBody: String)(implicit
-    mat: Materializer,
-    formats: Formats): Either[String, A] = {
+                                                   mat: Materializer,
+                                                   formats: Formats): Either[String, A] = {
     Try(read[A](responseBody)) match {
       case Success(parsed) => Right(parsed)
       case Failure(ex) =>
@@ -36,13 +36,12 @@ trait HttpClientSupport extends LazyLogging {
     }
   }
 
-  def execute[A: Manifest](request: HttpRequest)(
-    implicit
-    formats: Formats): Future[Either[String, A]] = {
-    logger.info(s"Request ${request.uri}")
+  def execute[A: Manifest](request: HttpRequest)(implicit
+                                                 formats: Formats): Future[Either[String, A]] = {
+    logger.info(s"Request ${request.method.value} ${request.uri}")
     for {
       resp: HttpResponse <- http.singleRequest(request, SecurityContext)
-      str: String <- consumeEntity(resp.entity)
+      str: String        <- consumeEntity(resp.entity)
     } yield {
       resp.status match {
         case code: StatusCode if code.isSuccess() => parseJson(str)

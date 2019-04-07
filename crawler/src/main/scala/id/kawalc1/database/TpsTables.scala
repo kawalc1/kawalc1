@@ -4,22 +4,9 @@ import java.sql.Timestamp
 
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
-import id.kawalc1.{
-  C1,
-  Common,
-  Dpr,
-  FormType,
-  KelurahanId,
-  Plano,
-  PresidentialLembar2,
-  SingleTps,
-  Summary,
-  Verification
-}
-import slick.ast.BaseTypedType
-import slick.jdbc.{JdbcType, SQLiteProfile}
-import slick.lifted.Tag
+import id.kawalc1._
 import slick.jdbc.SQLiteProfile.api._
+import slick.lifted.Tag
 
 object TpsTables extends SlickValueEnumSupport {
   val profile = slick.jdbc.SQLiteProfile

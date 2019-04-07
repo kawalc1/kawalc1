@@ -4,7 +4,13 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.clients.{KawalC1Client, KawalPemiluClient}
-import id.kawalc1.database.{AlignResult, ExtractResult, ResultsTables, TpsTables}
+import id.kawalc1.database.{
+  AlignResult,
+  ExtractResult,
+  PresidentialResult,
+  ResultsTables,
+  TpsTables
+}
 import id.kawalc1.services.{PhotoProcessor, TpsFetcher}
 import slick.jdbc.SQLiteProfile
 import slick.jdbc.SQLiteProfile.api._
@@ -83,18 +89,37 @@ object Crawler extends App with LazyLogging {
       val res = Await.result(extraction, 1.hour)
       logger.info(s"Extracted ${res.size} photo(s)")
 
+    case "presidential" =>
+      val extraction = for {
+        extractResults <- resultsDatabase.run(ResultsTables.extractResultsQuery.result)
+        probResults    <- processor.processProbabilities(extractResults)
+        inserted <- {
+          val toInsert = probResults.flatMap {
+            case Right(p: PresidentialResult) => Some(p)
+            case Left(err) =>
+              logger.warn(s"failed to extract $err")
+              None
+          }
+          resultsDatabase.run(DBIO.sequence(ResultsTables.upsertPresidential(toInsert)))
+        }
+      } yield inserted
+      val res = Await.result(extraction, 1.hour)
+      logger.info(s"Processed ${res.size} presidential result(s)")
+
     case "createDb" =>
       args(1) match {
         case "results" =>
-          val resultsCreate = DBIO.seq(
-            //            ResultsTables.resultsQuery.schema.drop,
-            ResultsTables.alignResultsQuery.schema.create)
+          val resultsCreate = DBIO.seq(ResultsTables.alignResultsQuery.schema.create)
           Await.result(resultsDatabase.run(resultsCreate), 1.minute)
           logger.info("created results Database")
         case "extract" =>
           val extractCreate = DBIO.seq(ResultsTables.extractResultsQuery.schema.create)
           Await.result(resultsDatabase.run(extractCreate), 1.minute)
           logger.info("created extraction Database")
+        case "presidential" =>
+          val presidentialCreate = DBIO.seq(ResultsTables.presidentialResultsQuery.schema.create)
+          Await.result(resultsDatabase.run(presidentialCreate), 1.minute)
+          logger.info("created presidential Database")
       }
   }
   system.terminate()

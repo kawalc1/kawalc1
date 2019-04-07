@@ -21,6 +21,7 @@ case class ExtractResult(
   tps: Int,
   photo: String,
   response: String,
+  config: String,
   digitArea: String,
   tpsArea: String)
 
@@ -63,10 +64,11 @@ object ResultsTables extends SlickValueEnumSupport {
     def photo = column[String]("photo", O.PrimaryKey)
     def response = column[String]("response")
     def digitArea = column[String]("digit_area")
+    def config = column[String]("cofnig")
     def tpsArea = column[String]("tps_area")
 
     override def * =
-      (id, tps, photo, response, digitArea, tpsArea) <> (ExtractResult.tupled, ExtractResult.unapply)
+      (id, tps, photo, response, digitArea, config, tpsArea) <> (ExtractResult.tupled, ExtractResult.unapply)
   }
 
   val extractResultsQuery = TableQuery[ExtractResults]
