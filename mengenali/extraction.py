@@ -237,17 +237,9 @@ def find_numbers_roi(numbers_roi, digit_image):
 
 
 def extract_additional_areas(numbers, digit_image, base_file_name, target_path, structuring_element):
+    digit_area_file = extract_digit_area(base_file_name, digit_image, numbers, target_path)
+
     signatures = [digit_image[932:972, 597:745], digit_image[977:1018, 597:745]]
-
-    # save
-    digit_area_file = f'{base_file_name}~digit-area{settings.TARGET_EXTENSION}'
-    digit_area_path = join(target_path, digit_area_file)
-    logging.info("writing %s", digit_area_path)
-
-    digit_roi = find_numbers_roi(numbers, digit_image)
-    logging.info("dimensions %s", digit_roi.shape)
-    write_image(digit_area_path, digit_roi)
-
     signature_result = prepare_results(signatures)
 
     for i, signature in enumerate(signatures):
@@ -262,6 +254,16 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
         signature_result[i]["filename"] = 'extracted/' + signature_file
         signature_result[i]["isValid"] = is_valid
     return digit_area_file, signature_result
+
+
+def extract_digit_area(base_file_name, digit_image, numbers, target_path):
+    digit_area_file = f'{base_file_name}~digit-area{settings.TARGET_EXTENSION}'
+    digit_area_path = join(target_path, digit_area_file)
+    logging.info("writing %s", digit_area_path)
+    digit_roi = find_numbers_roi(numbers, digit_image)
+    logging.info("dimensions %s", digit_roi.shape)
+    write_image(digit_area_path, digit_roi)
+    return digit_area_file
 
 
 def extract(file_name, source_path, target_path, dataset_path, config, store_files=True):
@@ -317,6 +319,61 @@ def extract(file_name, source_path, target_path, dataset_path, config, store_fil
                 numbers[number_id]["extracted"].append(empty_struct)
 
     result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "signatures": signature_result}
+    logging.info(result)
+
+    return result
+
+
+def extract2(file_name, source_path, target_path, dataset_path, config, store_files=True):
+    unsharpened_image = unsharp_image(file_name)
+
+    head, tail = os.path.split(file_name)
+    full_file_name, ext = os.path.splitext(tail)
+    base_file_name = full_file_name.split('~')[-1]
+    # create structuring element for the connected component analysis
+
+    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    numbers = config["numbers"]
+    if store_files:
+        digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path)
+    else:
+        digit_area_file = ""
+
+    cut_numbers = cut_digits(unsharpened_image, numbers)
+    pre_process_digits(cut_numbers, structuring_element)
+
+    order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
+
+    # probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
+
+    for number in cut_numbers:
+        digits = number["digits"]
+        number_id = int(number["id"])
+        numbers[number_id]["extracted"] = []
+        for i, digit in enumerate(digits):
+            if digit is not None:
+                extracted_file_name = f'{base_file_name}~{str(number_id)}~{str(i)}'
+                digit_file = extracted_file_name + settings.TARGET_EXTENSION
+                extracted = join(target_path, digit_file)
+                if store_files:
+                    write_image(extracted, digit)
+
+                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
+                digit_tif = extracted_file_name + ".tif"
+                extracted_tif = join(target_path, digit_tif)
+                if store_files:
+                    write_image(extracted_tif, thresholded_tif)
+
+                probability_matrix = imageclassifier.classify_number_in_memory(thresholded_tif, order, layers)
+                extracted_struct = {"probabilities": probability_matrix[0].tolist(),
+                                    "filename": image_url('extracted/' + digit_file)}
+
+                numbers[number_id]["extracted"].append(extracted_struct)
+            else:
+                empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
+                numbers[number_id]["extracted"].append(empty_struct)
+
+    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file) }
     logging.info(result)
 
     return result

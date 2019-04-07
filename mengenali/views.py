@@ -16,6 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from datetime import datetime
 
+from mengenali.processprobs import print_outcome, print_outcome_parsable
+
 
 def index(request):
     return static_serve(request, 'index.html', '/home/sjappelodorus/verifikatorc1/static')
@@ -36,7 +38,23 @@ def download_file(uri, target_path):
 def extract(request):
     filename = request.GET.get("filename", "")
     output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                settings.STATIC_DIR, load_config(request.GET.get("configFile")))
+                                settings.STATIC_DIR,
+                                load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
+    return JsonResponse(output)
+
+
+@csrf_exempt
+def extract_tps(request, kelurahan, tps, filename):
+    config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
+    config = load_config(config_file)
+    base_url = request.GET.get('baseUrl',
+                               f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/')
+    file_path = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/{filename}')
+
+    output = extraction.extract2(file_path, settings.STATIC_DIR,
+                                 path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/extracted'),
+                                 settings.STATIC_DIR,
+                                 load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
     return JsonResponse(output)
 
 
@@ -47,13 +65,26 @@ def load_config(config_file_name):
 
 
 @csrf_exempt
+def get_probabilities_result_parsable(request):
+    json_data = json.loads(request.body.decode('utf-8'))
+    outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
+                                                             json_data["probabilities"], settings.CATEGORIES_COUNT, print_outcome_parsable)
+    results = []
+    for outcome in outcomes:
+        results.append(outcome)
+    output = {'probabilityMatrix': outcomes}
+
+    return JsonResponse(output)
+
+
+@csrf_exempt
 def get_probabilities_result(request):
     json_data = json.loads(request.body.decode('utf-8'))
 
     logging.info(str(json_data))
 
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
-                                                             json_data["probabilities"], settings.CATEGORIES_COUNT)
+                                                             json_data["probabilities"], settings.CATEGORIES_COUNT, print_outcome)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -87,9 +118,8 @@ def get_outcome(output):
 
 def align(request, kelurahan, tps, filename):
     try:
-        reference_form = request.GET.get('referenceForm', 'plano-C1-2019-reference.jpg').lower()
-        reference_form_path = path.join(settings.DATASET_DIR, reference_form)
-        a = __do_alignment(filename, kelurahan, request, tps, reference_form_path)
+        config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
+        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file))
         output = {**a}
 
     except Exception as e:
@@ -190,6 +220,7 @@ def transform(request):
             output = json.loads(
                 registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
                                           config_file))
+            output["configFile"] = config_file
         except Exception as e:
             logging.exception("this is not good!")
             output = {'transformedUrl': None, 'success': False}

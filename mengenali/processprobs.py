@@ -116,6 +116,30 @@ def print_outcome(config, outcome_matrix, all_probabilities):
     return outcomes
 
 
+def print_outcome_parsable(config, outcome_matrix, all_probabilities):
+    outcomes = []
+    logging.info(outcome_matrix)
+    for outcome in outcome_matrix:
+        numbers = outcome[0]
+        confidence = outcome[1]
+        outcome_array = []
+        for i, number in enumerate(numbers):
+            outcome_config = get_number_config_for_index(config, all_probabilities[i])
+            res = {
+                "id": outcome_config["id"],
+                "number": number,
+                "shortName": outcome_config["shortName"],
+                "displayName": outcome_config["displayName"]
+            }
+            outcome_array.append(res)
+        number_set = {
+            "numbers": outcome_array,
+            "confidence": confidence
+        }
+        outcomes.append(number_set)
+    return outcomes
+
+
 def get_checksum_indexes(checksum_config, numbers):
     sigma = checksum_config["sigma"]
     sigma_indexes = []
@@ -128,10 +152,10 @@ def get_checksum_indexes(checksum_config, numbers):
     return sigma_indexes, total
 
 
-def calculate_single_set(categories_count, config, all_probabilities, checksum):
+def calculate_single_set(categories_count, config, all_probabilities, checksum, print_function):
     checksum_indexes = get_checksum_indexes(checksum, all_probabilities)
     outcome_matrix = get_numbers(checksum_indexes, all_probabilities, categories_count)
-    return print_outcome(config, outcome_matrix, all_probabilities)
+    return print_function(config, outcome_matrix, all_probabilities)
 
 
 def get_total_of_checksum(numbers, checksum):
@@ -171,16 +195,17 @@ def get_individual_numbers(numbers, checksums):
     return numbers_not_in_checksums
 
 
-def get_possible_outcomes_for_config(config, numbers, categories_count):
+def get_possible_outcomes_for_config(config, numbers, categories_count, summary_function):
     all_sets = []
     for checksum in config["checkSums"]:
         numbers_in_set = get_numbers_in_checksum_set(numbers, checksum)
-        all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum))
+        all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum, summary_function))
 
     individual_numbers = get_individual_numbers(numbers, config["checkSums"])
     for individual_number in individual_numbers:
         single_set = calculate_single_set(categories_count, config, individual_numbers,
-                                          {"total": individual_number["id"], "sigma": individual_number["id"]})
+                                          {"total": individual_number["id"], "sigma": individual_number["id"]},
+                                          summary_function)
         all_sets.append(single_set)
     return all_sets
 

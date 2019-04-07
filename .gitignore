@@ -41,3 +41,4 @@ db.sqlite3
 mydatabase
 static/datasets/plano-C1-2019-reference.jpg
 kawalc1-google-credentials.json
+temp/
