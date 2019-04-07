@@ -1,6 +1,7 @@
 import unittest
 import json
 from mengenali import processprobs as pp
+from mengenali.processprobs import print_outcome
 
 
 class ProcessProbabilitiesTest(unittest.TestCase):
@@ -20,10 +21,23 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         self.assertAlmostEqual(numpy_table[0][0], 0.00055694778)
 
     def test_get_numbers(self):
-        outcomes = pp.get_possible_outcomes_for_config(self.config, self.json_data["probabilities"], 11)
+        outcomes = pp.get_possible_outcomes_for_config(self.config, self.json_data["numbers"], 11, print_outcome)
         most_likely = outcomes[0][0]
         print("most likely", str(most_likely))
         self.assertAlmostEqual(most_likely['confidence'],  0.7020011959926853)
+        self.assertEqual(most_likely['jokowi'], 186)
+        self.assertEqual(most_likely['prabowo'], 117)
+        self.assertEqual(most_likely['jumlah'], 303)
+
+    def test_get_numbers_yosua(self):
+        json_file_yosua = open('./resources/probabilities/yosua-probablities.json')
+        json_data_yosua = json.load(json_file_yosua)
+        json_file_yosua.close()
+
+        outcomes = pp.get_possible_outcomes_for_config(self.config, json_data_yosua["probabilities"], 11, print_outcome)
+        most_likely = outcomes[0][0]
+        print("most likely", str(most_likely))
+        self.assertAlmostEqual(most_likely['confidence'], 0.7020011959926853)
         self.assertEqual(most_likely['jokowi'], 186)
         self.assertEqual(most_likely['prabowo'], 117)
         self.assertEqual(most_likely['jumlah'], 303)
