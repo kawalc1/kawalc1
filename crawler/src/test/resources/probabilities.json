@@ -1,0 +1,54 @@
+{
+  "probabilityMatrix": [
+    [
+      {
+        "numbers": [
+          {
+            "id": "0",
+            "number": 102,
+            "shortName": "jokowi",
+            "displayName": "Ir. H. Jokowidodo"
+          },
+          {
+            "id": "1",
+            "number": 102,
+            "shortName": "prabowo",
+            "displayName": "H. Prabowo Subianto"
+          },
+          {
+            "id": "2",
+            "number": 204,
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah"
+          }
+        ],
+        "confidence": 0.595609837357855
+      }
+    ],
+    [
+      {
+        "numbers": [
+          {
+            "id": "2",
+            "number": 204,
+            "shortName": "jumlah",
+            "displayName": "Jumlah Suara Sah"
+          },
+          {
+            "id": "3",
+            "number": 5,
+            "shortName": "tidakSah",
+            "displayName": "Suara Tidak Sah"
+          },
+          {
+            "id": "4",
+            "number": 209,
+            "shortName": "jumlahSeluruh",
+            "displayName": "Jumlah Seluruh"
+          }
+        ],
+        "confidence": 0.6996885663627433
+      }
+    ]
+  ]
+}

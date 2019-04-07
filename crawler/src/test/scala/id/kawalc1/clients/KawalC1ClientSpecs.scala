@@ -1,7 +1,7 @@
-package id.kawalc1
+package id.kawalc1.clients
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import id.kawalc1.clients._
+import id.kawalc1.{Kelurahan, PresidentialLembar2, SingleSum}
 import org.json4s.native.Serialization
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}

@@ -14,6 +14,22 @@ package object kawalc1 {
     case _             => ???
   }
 
+  case class NumberSet(
+      numbers: Seq[Numbers],
+      confidence: Double
+  )
+
+  case class Numbers(
+      id: String,
+      number: Int,
+      shortName: String,
+      displayName: String
+  )
+
+  case class Probabilities(
+      probabilityMatrix: Seq[Seq[NumberSet]]
+  )
+
   case class C1(
       plano: Plano,
       `type`: FormType

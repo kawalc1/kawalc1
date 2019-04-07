@@ -1,12 +1,11 @@
 package id.kawalc1
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.Uri
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
-import id.kawalc1.clients.{KawalC1Client, KawalPemiluClient, Transform}
+import id.kawalc1.clients.{KawalC1Client, KawalPemiluClient}
 import id.kawalc1.database.{AlignResult, ExtractResult, ResultsTables, TpsTables}
-import id.kawalc1.services.{AlignedPicture, PhotoProcessor, TpsFetcher}
+import id.kawalc1.services.{PhotoProcessor, TpsFetcher}
 import slick.jdbc.SQLiteProfile
 import slick.jdbc.SQLiteProfile.api._
 
@@ -69,7 +68,7 @@ object Crawler extends App with LazyLogging {
 
     case "extract" =>
       val extraction = for {
-        alignResults   <- resultsDatabase.run(ResultsTables.resultsQuery.result)
+        alignResults   <- resultsDatabase.run(ResultsTables.alignResultsQuery.result)
         extractResults <- processor.extractNumbers(alignResults)
         inserted <- {
           val toInsert = extractResults.flatMap {
@@ -87,7 +86,9 @@ object Crawler extends App with LazyLogging {
     case "createDb" =>
       args(1) match {
         case "results" =>
-          val resultsCreate = DBIO.seq(ResultsTables.resultsQuery.schema.create)
+          val resultsCreate = DBIO.seq(
+            //            ResultsTables.resultsQuery.schema.drop,
+            ResultsTables.alignResultsQuery.schema.create)
           Await.result(resultsDatabase.run(resultsCreate), 1.minute)
           logger.info("created results Database")
         case "extract" =>
