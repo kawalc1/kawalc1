@@ -1,11 +1,25 @@
 import itertools
 import logging
-import string
 import numpy as np
 
 NUMBER_COUNT = 4
 DIGITS_PER_NUMBER = 3
 X_INDEX = 10
+
+
+def get_possible_outcomes_for_config(config, numbers, categories_count, summary_function):
+    all_sets = []
+    for checksum in config["checkSums"]:
+        numbers_in_set = get_numbers_in_checksum_set(numbers, checksum)
+        all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum, summary_function))
+
+    individual_numbers = get_individual_numbers(numbers, config["checkSums"])
+    for individual_number in individual_numbers:
+        single_set = calculate_single_set(categories_count, config, individual_numbers,
+                                          {"total": individual_number["id"], "sigma": individual_number["id"]},
+                                          summary_function)
+        all_sets.append(single_set)
+    return all_sets
 
 
 def get_possible_values(list_of_probs, threshold=.10):
@@ -193,21 +207,6 @@ def get_individual_numbers(numbers, checksums):
             numbers_not_in_checksums.append(number)
 
     return numbers_not_in_checksums
-
-
-def get_possible_outcomes_for_config(config, numbers, categories_count, summary_function):
-    all_sets = []
-    for checksum in config["checkSums"]:
-        numbers_in_set = get_numbers_in_checksum_set(numbers, checksum)
-        all_sets.append(calculate_single_set(categories_count, config, numbers_in_set, checksum, summary_function))
-
-    individual_numbers = get_individual_numbers(numbers, config["checkSums"])
-    for individual_number in individual_numbers:
-        single_set = calculate_single_set(categories_count, config, individual_numbers,
-                                          {"total": individual_number["id"], "sigma": individual_number["id"]},
-                                          summary_function)
-        all_sets.append(single_set)
-    return all_sets
 
 
 def get_numbers(check_sums, all_probabilities, categories_count):
