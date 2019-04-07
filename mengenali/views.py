@@ -177,7 +177,7 @@ def download(request, kelurahan, tps, filename):
             probabilities.insert(0, probability_set)
 
         c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
-                                                          settings.CATEGORIES_COUNT) if calculate_numbers else {}
+                                                          settings.CATEGORIES_COUNT, print_outcome) if calculate_numbers else {}
         logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
@@ -319,7 +319,7 @@ def process_form(config_name, posted_config, scan_url):
         probability_set["probabilitiesForNumber"] = number_probabilities
         probabilities.insert(0, probability_set)
     outcomes = processprobs.get_possible_outcomes_for_config(posted_config,
-                                                             probabilities, settings.CATEGORIES_COUNT)
+                                                             probabilities, settings.CATEGORIES_COUNT, print_outcome)
     results = []
     for outcome in outcomes:
         results.append(outcome)
