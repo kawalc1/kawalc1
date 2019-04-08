@@ -12,7 +12,7 @@ from tests import setup_django_settings
 import numpy as np
 
 
-class RegistrationTest(unittest.TestCase):
+class PartyMatchTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
