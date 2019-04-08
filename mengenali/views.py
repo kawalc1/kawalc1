@@ -37,7 +37,7 @@ def download_file(uri, target_path):
 @csrf_exempt
 def extract(request):
     filename = request.GET.get("filename", "")
-    output = extraction.extract(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+    output = extraction.extract2(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                 settings.STATIC_DIR,
                                 load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
     return JsonResponse(output)

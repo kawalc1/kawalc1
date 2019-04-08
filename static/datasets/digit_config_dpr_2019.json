@@ -63,5 +63,10 @@
       "total": "0"
     }
   ],
-  "referenceForm": "DPR-2019-plano-masked.jpg"
+  "roi": [{
+        "name": "namaPartai",
+        "coordinates": [236,360, 72,298]
+
+    }],
+  "referenceForm": "DPR-2019-plano.jpg"
 }

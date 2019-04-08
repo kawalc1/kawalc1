@@ -97,8 +97,7 @@ def prepare_results(images):
     return results
 
 
-def unsharp_image(file_name):
-    cv_image = read_image(file_name)
+def unsharp_image(cv_image):
     image = Image.fromarray(cv_image)
     pil_im = image.filter(ImageFilter.UnsharpMask(radius=15, percent=350, threshold=3))
     # pil_im = image.filter(ImageFilter.UnsharpMask(radius=7, percent=150, threshold=2))
@@ -265,9 +264,9 @@ def extract_digit_area(base_file_name, digit_image, numbers, target_path):
     write_image(digit_area_path, digit_roi)
     return digit_area_file
 
-
 def extract(file_name, source_path, target_path, dataset_path, config, store_files=True):
-    unsharpened_image = unsharp_image(file_name)
+    original_image = read_image(file_name)
+    unsharpened_image = unsharp_image(original_image)
 
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
@@ -325,7 +324,8 @@ def extract(file_name, source_path, target_path, dataset_path, config, store_fil
 
 
 def extract2(file_name, source_path, target_path, dataset_path, config, store_files=True):
-    unsharpened_image = unsharp_image(file_name)
+    original_image = read_image(file_name)
+    unsharpened_image = unsharp_image(original_image)
 
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
@@ -339,12 +339,18 @@ def extract2(file_name, source_path, target_path, dataset_path, config, store_fi
     else:
         digit_area_file = ""
 
+    roi = config["roi"]
+    for region in roi:
+        name = region["name"]
+        digit = region["coordinates"]
+        roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
+        roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
+        write_image(roi_file, roi_image)
+
     cut_numbers = cut_digits(unsharpened_image, numbers)
     pre_process_digits(cut_numbers, structuring_element)
 
     order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
-
-    # probability_matrix = np.ndarray(shape=(12, settings.CATEGORIES_COUNT), dtype='f')
 
     for number in cut_numbers:
         digits = number["digits"]
