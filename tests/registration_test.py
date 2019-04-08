@@ -5,11 +5,15 @@ import json
 import io
 from os.path import join, exists, abspath
 
+from tests import setup_django_settings
+
 
 class RegistrationTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         cls.overwrite_resources = False
+        setup_django_settings()
 
     def assert_registration_as_expected(self, c1_form, reference_form, expected_result):
         originals_path = './resources/forms/original/'
@@ -47,6 +51,9 @@ class RegistrationTest(unittest.TestCase):
 
     def test_registration_succeeds_for_reference_form(self):
         self.assert_registration_as_expected('1773007-005324400804.jpg', '../static/datasets/referenceform.jpg', True)
+
+    def test_registration_succeeds_for_reference_form_plano(self):
+        self.assert_registration_as_expected('DPR-2019-plano.jpg', '../static/datasets/DPR-2019-plano.jpg', True)
 
     def test_registration_fails_for_incorrect_form(self):
         self.assert_registration_as_expected('1386928-005381002001.jpg', '../static/datasets/referenceform.jpg', False)

@@ -1,0 +1,67 @@
+{
+  "numbers": [
+        {
+      "id": "0",
+      "shortName": "jumlah",
+      "displayName": "jumlah",
+      "digitCoordinates": [
+        [232,282, 1112,1162],
+        [232,282, 1164,1212],
+        [232,282, 1216,1264]
+      ]
+    },
+    {
+      "id": "1",
+      "shortName": "calon1",
+      "displayName": "calon1",
+      "digitCoordinates": [
+          [392,442, 1112,1162],
+          [392,440, 1164,1212],
+          [392,440, 1216,1264]
+      ]
+    },
+    {
+      "id": "2",
+      "shortName": "calon2",
+      "displayName": "calon2",
+      "digitCoordinates": [
+          [524,572, 1112,1160],
+          [524,572, 1164,1214],
+          [524,572, 1216,1264]
+      ]
+    },
+    {
+      "id": "3",
+      "shortName": "calon3",
+      "displayName": "calon3",
+      "digitCoordinates": [
+        [656,704, 1112,1160],
+        [656,704, 1164,1212],
+        [656,704, 1216,1264]
+      ]
+    },
+    {
+      "id": "4",
+      "shortName": "calon4",
+      "displayName": "calon4",
+      "digitCoordinates": [
+        [788,836, 1112,1160],
+        [788,836, 1164,1214],
+        [788,836, 1216,1266]
+      ]
+    }
+
+  ],
+  "checkSums": [
+    {
+      "sigma": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "total": "0"
+    }
+  ],
+  "referenceForm": "DPR-2019-plano-masked.jpg"
+}

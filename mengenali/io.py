@@ -37,20 +37,21 @@ def _from_webp(input_stream):
 
 def read_image(file_path):
     filename, file_extension = os.path.splitext(file_path)
+    file = read_file(file_path)
     if file_extension.lower() == ".webp":
-        return _from_webp(read_file(file_path))
-    return _to_image(read_file(file_path))
+        return _from_webp(file)
+    return _to_image(file)
 
 
 def read_file(file_path):
     if is_url(file_path):
         return urllib.request.urlopen(file_path, cafile=certifi.where())
     else:
-        logging.info("reading %s", file_path)
+        logging.info("reading %s", os.path.abspath(file_path))
         try:
             return storage.open(file_path, 'rb')
-        except:
-            logging.error("Could not open %s", file_path)
+        except Exception as e:
+            logging.error("Could not open %s \n %s", os.path.abspath(file_path), e)
 
 
 def write_image(file_path, image):
