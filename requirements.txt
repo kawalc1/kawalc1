@@ -4,7 +4,7 @@ opencv-python==3.4.5.20
 Pillow>=2.1.0
 dask[array]
 lxml
-psycopg2
+psycopg2-binary
 scikit-image==0.14.2
 django
 django-storages[google]
