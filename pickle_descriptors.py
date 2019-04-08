@@ -25,6 +25,6 @@ ref_kp, ref_descriptors = brisk.detectAndCompute(img, None)
 
 keypoint_array = convert_key_points(ref_kp, ref_descriptors)
 print(img.shape)
-w, h = img.shape
+h, w = img.shape
 
 pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, open(image_path.replace('.jpg', '.p'), "wb"))
