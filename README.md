@@ -22,3 +22,13 @@ Use Case Description:
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SamTheisens/verifikatorc1/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+
+## Development setup - python
+
+To run unittests
+ 1. copy the example.env file to pycharm.env
+ 1. adjust the BASEDIR to point to your project location
+ 1. install [envfile](https://plugins.jetbrains.com/plugin/7861-envfile) plugin in PyCharm; follow the instructions
+ 1. run the unittests from the Run menu; they will fail, but you will have configuration
+ 1. edit the unittest configuration via the Run menu; point the unittest configuration to the pycharm.env file you just created
+ 1. run the unittests again, they should now succeed.
