@@ -1,10 +1,20 @@
 package id.kawalc1.services
 
 import id.kawalc1
-import id.kawalc1.{ProbabilitiesResponse, SingleTps}
-import id.kawalc1.clients.{Extraction, JsonSupport, KawalC1Client, Probabilities}
-import id.kawalc1.database.{AlignResult, ExtractResult, PresidentialResult}
+import id.kawalc1.clients.{Extraction, JsonSupport, KawalC1Client}
+import id.kawalc1.database.{
+  AlignResult,
+  ExtractResult,
+  PresidentialResult,
+  ResultsTables,
+  TpsTables
+}
+import id.kawalc1.{FormType, ProbabilitiesResponse, SingleTps}
 import org.json4s.native.Serialization
+import slick.dbio.Effect
+import slick.jdbc.SQLiteProfile
+import slick.jdbc.SQLiteProfile.api._
+import slick.sql.{FixedSqlAction, FixedSqlStreamingAction}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -13,6 +23,58 @@ case class AlignedPicture(url: String, imageSize: Int)
 class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) extends JsonSupport {
 
   val ImageSize = 1280
+
+  private def transform[A, B](
+      sourceDb: SQLiteProfile.backend.Database,
+      targetDb: SQLiteProfile.backend.Database,
+      query: FixedSqlStreamingAction[Seq[A], A, Effect.Read],
+      process: Seq[A] => Future[Seq[Either[String, B]]],
+      insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]]) = {
+    for {
+      alignResults   <- sourceDb.run(query)
+      extractResults <- process(alignResults)
+      inserted <- {
+        val toInsert = extractResults.flatMap {
+          case Right(e: B) => Some(e)
+          case Left(err) =>
+            logger.warn(s"failed to process $err")
+            None
+        }
+        targetDb.run(DBIO.sequence(insert(toInsert)))
+      }
+    } yield inserted
+
+  }
+
+  def align(sourceDb: SQLiteProfile.backend.Database,
+            targetDb: SQLiteProfile.backend.Database): Future[Seq[Int]] = {
+    val url =
+      "http://lh3.googleusercontent.com/112k-9-NflCZLN-V40c-viTCUamyzGzNPCmwtnlFaSCUAYfGdhESqqj0OhDuxwop8NMmLd1Q35ClHCPTqLt-"
+    transform(sourceDb,
+              targetDb,
+              TpsTables.tpsQuery
+                .filter(_.photo === url)
+                .filter(_.formType === FormType.PPWP.value)
+                .result,
+              alignPhoto,
+              ResultsTables.upsertAlign)
+  }
+
+  def extract(sourceDb: SQLiteProfile.backend.Database,
+              targetDb: SQLiteProfile.backend.Database): Future[Seq[Int]] =
+    transform(sourceDb,
+              targetDb,
+              ResultsTables.alignResultsQuery.result,
+              extractNumbers,
+              ResultsTables.upsertExtract)
+
+  def processProbabilities(sourceDb: SQLiteProfile.backend.Database,
+                           targetDb: SQLiteProfile.backend.Database): Future[Seq[Int]] =
+    transform(sourceDb,
+              targetDb,
+              ResultsTables.extractResultsQuery.result,
+              processProbabilities,
+              ResultsTables.upsertPresidential)
 
   def alignPhoto(tps: Seq[SingleTps]): Future[Seq[Either[String, AlignResult]]] = {
     Future
@@ -50,7 +112,8 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
       })
   }
 
-  def extractNumbers(results: Seq[AlignResult]): Future[Seq[Either[String, ExtractResult]]] = {
+  private def extractNumbers(
+      results: Seq[AlignResult]): Future[Seq[Either[String, ExtractResult]]] = {
     Future
       .sequence(results.map { res: AlignResult =>
         val alignedLastSegment = res.alignedUrl.get.split("/")
@@ -75,7 +138,7 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
 
   }
 
-  def processProbabilities(
+  private def processProbabilities(
       results: Seq[ExtractResult]): Future[Seq[Either[String, PresidentialResult]]] = {
     Future
       .sequence(results.map { res: ExtractResult =>

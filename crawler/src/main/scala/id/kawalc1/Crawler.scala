@@ -31,9 +31,9 @@ object Crawler extends App with LazyLogging {
   }
   val arg = args(0)
 
-  val tpsDb: SQLiteProfile.backend.Database = Database.forConfig("tpsDatabase")
-  val kelurahanDatabase                     = Database.forConfig("kelurahanMinimalDatabase")
-  val resultsDatabase                       = Database.forConfig("verificationResults")
+  val tpsDb             = Database.forConfig("tpsDatabase")
+  val kelurahanDatabase = Database.forConfig("kelurahanMinimalDatabase")
+  val resultsDatabase   = Database.forConfig("verificationResults")
 
   def createDatabase() = {
     val create = DBIO.seq(TpsTables.tpsQuery.schema.drop, TpsTables.tpsQuery.schema.create)
@@ -50,60 +50,18 @@ object Crawler extends App with LazyLogging {
                                   tpsDb).ingestAllTps(),
                    1.hour)
     case "align" =>
-      val url =
-        "http://lh3.googleusercontent.com/112k-9-NflCZLN-V40c-viTCUamyzGzNPCmwtnlFaSCUAYfGdhESqqj0OhDuxwop8NMmLd1Q35ClHCPTqLt-"
-      val results = for {
-        tps <- tpsDb.run(
-          TpsTables.tpsQuery
-            .filter(_.photo === url)
-            .filter(_.formType === FormType.PPWP.value)
-            .result)
-        results <- processor.alignPhoto(tps)
-        inserted <- {
-          val toInsert = results.flatMap {
-            case Right(pic: AlignResult) => Some(pic)
-            case Left(err) =>
-              logger.warn(s"failed to align $err")
-              None
-          }
-          resultsDatabase.run(DBIO.sequence(ResultsTables.upsertAlign(toInsert)))
-        }
-      } yield inserted
-      val res = Await.result(results, 1.hour)
+      val alignment = processor.align(tpsDb, resultsDatabase)
+      val res       = Await.result(alignment, 1.hour)
       logger.info(s"Aligned ${res.size} photo(s)")
 
     case "extract" =>
-      val extraction = for {
-        alignResults   <- resultsDatabase.run(ResultsTables.alignResultsQuery.result)
-        extractResults <- processor.extractNumbers(alignResults)
-        inserted <- {
-          val toInsert = extractResults.flatMap {
-            case Right(e: ExtractResult) => Some(e)
-            case Left(err) =>
-              logger.warn(s"failed to extract $err")
-              None
-          }
-          resultsDatabase.run(DBIO.sequence(ResultsTables.upsertExtract(toInsert)))
-        }
-      } yield inserted
-      val res = Await.result(extraction, 1.hour)
+      val extraction = processor.extract(resultsDatabase, resultsDatabase)
+      val res        = Await.result(extraction, 1.hour)
       logger.info(s"Extracted ${res.size} photo(s)")
 
     case "presidential" =>
-      val extraction = for {
-        extractResults <- resultsDatabase.run(ResultsTables.extractResultsQuery.result)
-        probResults    <- processor.processProbabilities(extractResults)
-        inserted <- {
-          val toInsert = probResults.flatMap {
-            case Right(p: PresidentialResult) => Some(p)
-            case Left(err) =>
-              logger.warn(s"failed to extract $err")
-              None
-          }
-          resultsDatabase.run(DBIO.sequence(ResultsTables.upsertPresidential(toInsert)))
-        }
-      } yield inserted
-      val res = Await.result(extraction, 1.hour)
+      val probs = processor.processProbabilities(resultsDatabase, resultsDatabase)
+      val res   = Await.result(probs, 1.hour)
       logger.info(s"Processed ${res.size} presidential result(s)")
 
     case "createDb" =>
