@@ -1,3 +1,4 @@
+import os
 import unittest
 from mengenali import registration
 import tempfile
@@ -18,21 +19,24 @@ class RegistrationTest(unittest.TestCase):
     def assert_registration_as_expected(self, c1_form, reference_form, expected_result):
         originals_path = './resources/forms/original/'
         image = join(originals_path, c1_form)
+        print("\n" + os.path.abspath(image))
         self.assertTrue(exists(image))
         expected_output_path = './resources/forms/transformed'
-        output_path = tempfile.gettempdir()
+        output_path = './resources/temp/transformed'
         registration_output = registration.register_image(image, reference_form, output_path, None, None)
         registration_json = json.loads(registration_output)
         success = registration_json["success"]
 
         self.assertEqual(success, expected_result, msg="registration success should be as expected")
 
-        image_url = registration_json["transformedUrl"]
-        temp_image_path = join(output_path, image_url)
-        expected_image_path = join(expected_output_path, image_url)
+        image_name = registration_json["transformedUrl"].split('/')[1]
+        temp_image_path = join(output_path, image_name)
+        expected_image_path = join(expected_output_path, image_name)
         print("url", abspath(expected_image_path))
+
         self.assertTrue(exists(expected_image_path))
 
+        print(os.path.abspath(temp_image_path))
         self.assertTrue(exists(temp_image_path))
 
         with io.FileIO(temp_image_path, mode='rb') as actual_image, io.FileIO(expected_image_path,
