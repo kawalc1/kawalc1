@@ -15,6 +15,7 @@ import sys
 import logging
 
 from mengenali.io import read_image, write_image, image_url
+from mengenali.partyclassifier import detect_party
 
 image_threshold = 128
 
@@ -340,12 +341,16 @@ def extract2(file_name, source_path, target_path, dataset_path, config, store_fi
         digit_area_file = ""
 
     roi = config["roi"]
+    party_name  = {}
     for region in roi:
         name = region["name"]
         digit = region["coordinates"]
         roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
         write_image(roi_file, roi_image)
+        if name == "namaPartai":
+            most_similar_form, most_similar = detect_party(roi_image)
+            party_name = {"party": most_similar_form, "confidence": most_similar}
 
     cut_numbers = cut_digits(unsharpened_image, numbers)
     pre_process_digits(cut_numbers, structuring_element)
@@ -379,7 +384,7 @@ def extract2(file_name, source_path, target_path, dataset_path, config, store_fi
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file) }
+    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "party": party_name }
     logging.info(result)
 
     return result
