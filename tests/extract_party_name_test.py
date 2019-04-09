@@ -18,7 +18,6 @@ class PartyMatchTest(unittest.TestCase):
     def setUpClass(cls):
         setup_django_settings()
 
-
     def assert_most_similar(self, party_file, expected_result):
         def read_descriptors(reference_form_path):
             with open(reference_form_path, "rb") as pickled:
@@ -82,3 +81,6 @@ class PartyMatchTest(unittest.TestCase):
 
     def test_detect_party_pkb(self):
         self.assert_most_similar('transDPR-PKB~namaPartai.jpg', 'PARTAI-KEBANGKITAN-BANGSA')
+
+    def test_detect_party_gerindra(self):
+        self.assert_most_similar('transDPR-GERINDRA~namaPartai.jpg', 'PARTAI-GERINDRA')

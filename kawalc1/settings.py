@@ -26,7 +26,7 @@ LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 BASE_DIR = "."
-TARGET_EXTENSION = ".webp"
+TARGET_EXTENSION = ".jpg"
 
 import logging
 
