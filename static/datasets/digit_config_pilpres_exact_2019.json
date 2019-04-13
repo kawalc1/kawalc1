@@ -1,0 +1,72 @@
+{
+  "numbers": [
+    {
+      "id": "0",
+      "shortName": "jokowi",
+      "displayName": "Ir. H. Jokowidodo",
+      "digitCoordinates": [
+        [310,392, 1336,1402],
+        [310,392, 1400,1462],
+        [310,392, 1464,1526]
+      ]
+    },
+    {
+      "id": "1",
+      "shortName": "prabowo",
+      "displayName": "H. Prabowo Subianto",
+      "digitCoordinates": [
+[546,626, 1336,1398],
+[546,626, 1400,1462],
+[546,626, 1464,1526]
+      ]
+    },
+    {
+      "id": "2",
+      "shortName": "tidakSah",
+      "displayName": "Suara Tidak Sah",
+      "digitCoordinates": [
+[890,972, 1336,1398],
+[890,972, 1400,1462],
+[892,972, 1462,1524]
+      ]
+    },
+    {
+      "id": "3",
+      "shortName": "jumlah",
+      "displayName": "Jumlah Sah",
+      "digitCoordinates": [
+[1126,1192, 1336,1398],
+[1126,1192, 1400,1462],
+[1126,1192, 1462,1524]
+      ]
+    },
+    {
+      "id": "4",
+      "shortName": "jumlahSeluruh",
+      "displayName": "Jumlah Seluruh",
+      "digitCoordinates": [
+[1292,1358, 1336,1398],
+[1292,1358, 1398,1462],
+[1292,1358, 1462,1524]
+      ]
+    }
+  ],
+  "checkSums": [
+    {
+      "sigma": [
+        "0",
+        "1"
+      ],
+      "total": "3"
+    },
+    {
+      "sigma": [
+        "2",
+        "3"
+      ],
+      "total": "4"
+    }
+  ],
+  "roi": [],
+  "referenceForm": "PPWP-2019-plano.jpg"
+}

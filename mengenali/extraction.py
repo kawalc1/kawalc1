@@ -13,6 +13,7 @@ from mengenali import imageclassifier
 from skimage.morphology import skeletonize
 import sys
 import logging
+import matplotlib.pyplot as plt
 
 from mengenali.io import read_image, write_image, image_url
 from mengenali.partyclassifier import detect_party
@@ -115,9 +116,17 @@ def cut_digits(unsharpened_image, numbers):
     digit_bitmap_struct = []
     for number in numbers:
         digit_bitmaps = []
-        for digit in number["digitCoordinates"]:
-            digit_bitmaps.append(unsharpened_image[digit[0]:digit[1], digit[2]:digit[3]])
+        for i, digit in enumerate(number["digitCoordinates"]):
+            padding = settings.PADDING_OUTER
+            x1 = digit[0] - padding
+            x2 = digit[1] + padding
+            y1 = digit[2] - padding
+            y2 = digit[3] + padding
+            extracted = unsharpened_image[x1:x2, y1:y2]
+            digit_bitmaps.append(extracted)
+            # write_image("./temp/" + number["id"] + "-" + str(i) + "orig.jpg", extracted)
         entry = {"id": number["id"], "digits": digit_bitmaps}
+
         digit_bitmap_struct.append(entry)
     return digit_bitmap_struct
 
@@ -140,63 +149,73 @@ def isMinus(image):
 def pre_process_digits(cut_numbers, structuring_element, filter_invalids=True):
     for number in cut_numbers:
         digits = number["digits"]
-        for i, digit in enumerate(digits):
+        select_digits(digits, filter_invalids, structuring_element, number["id"])
 
-            ret, thresholded = cv2.threshold(digit, image_threshold, 1, type=cv2.THRESH_BINARY_INV)
 
-            # do connected component analysis
-            digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
-            # determine the sizes of the objects
-            sizes = np.bincount(np.reshape(digits[i], -1).astype(np.int64))
-            selected_object = -1
-            max_size = 0
+def extract_biggest_boxes(digits, name):
+    for i, digit in enumerate(digits):
+        digit_big_box = extract_biggest_box(digit)
+        # cv2.imwrite("ex" + name + "-" + str(i) + ".jpg", digit_big_box)
+        digits[i] = digit_big_box
 
-            log = ""
-            for j in range(1, nr_of_objects + 1):
-                if sizes[j] < 11:
-                    if filter_invalids:
-                        log += str(i) + ": too small"
-                        continue  # this is too small to be a number
-                maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
-                # commented out because 1's were detected as vertical borders
-                if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
+
+def select_digits(digits, filter_invalids, structuring_element, name):
+    extract_biggest_boxes(digits, name)
+    for i, digit in enumerate(digits):
+        ret, thresholded = cv2.threshold(digit, image_threshold, 1, type=cv2.THRESH_BINARY_INV)
+        # do connected component analysis
+        digits[i], nr_of_objects = ndimage.measurements.label(thresholded, structuring_element)
+        # determine the sizes of the objects
+        sizes = np.bincount(np.reshape(digits[i], -1).astype(np.int64))
+        selected_object = -1
+        max_size = 0
+
+        log = ""
+        for j in range(1, nr_of_objects + 1):
+            if sizes[j] < 11:
+                if filter_invalids:
+                    log += str(i) + ": too small"
+                    continue  # this is too small to be a number
+            maxy, miny, maxx, minx = get_bounding_box(digits[i], j)
+            # commented out because 1's were detected as vertical borders
+            if (maxy - miny < 3 and (miny < 2 or maxy > 59)) or (maxx - minx < 3 and (minx < 2 or maxx > 25)):
                 # if maxy - miny < 3 and (miny < 2 or maxy > 59):
-                    if filter_invalids:
-                        log += str(i) + ": on border"
-                        continue  # this is likely a border artifact
-                border_dist = get_avg_border_distance(digits[i], j)
-                # print borderdist
-                if border_dist > 0.2:
-                    if filter_invalids:
-                        log += str(i) + ": too close to border"
-                        continue  # this is likely a border artifact
+                if filter_invalids:
+                    log += str(i) + ": on border"
+                    continue  # this is likely a border artifact
+            border_dist = get_avg_border_distance(digits[i], j)
+            # print borderdist
+            if border_dist > 0.2:
+                if filter_invalids:
+                    log += str(i) + ": too close to border"
+                    continue  # this is likely a border artifact
 
-                if sizes[j] > max_size:
-                    max_size = sizes[j]
-                    selected_object = j
+            if sizes[j] > max_size:
+                max_size = sizes[j]
+                selected_object = j
 
-            if selected_object == -1 and filter_invalids:
-                digits[i] = None
-                logging.info(log)
-                continue
+        if selected_object == -1 and filter_invalids:
+            digits[i] = None
+            logging.error(log)
+            continue
 
-            if selected_object == -1 and not filter_invalids:
-                loc = (slice(25, 42, None), slice(8, 13, None))
-            else:
-                loc = ndimage.find_objects(digits[i])[selected_object - 1]
+        if selected_object == -1 and not filter_invalids:
+            loc = (slice(25, 42, None), slice(8, 13, None))
+        else:
+            loc = ndimage.find_objects(digits[i])[selected_object - 1]
 
-            cropped = digits[i][loc]
+        cropped = digits[i][loc]
 
-            # replace the shape number by 255
-            cropped[cropped == selected_object] = 255
+        # replace the shape number by 255
+        cropped[cropped == selected_object] = 255
 
-            output_image = process_image(cropped)
+        output_image = process_image(cropped)
 
-            image_array = np.array(output_image)
-            if isMinus(image_array):
-                digits[i] = None
-                continue
-            digits[i] = image_array
+        image_array = np.array(output_image)
+        if isMinus(image_array):
+            digits[i] = None
+            continue
+        digits[i] = image_array
 
 
 def find_numbers_roi(numbers_roi, digit_image):
@@ -265,6 +284,7 @@ def extract_digit_area(base_file_name, digit_image, numbers, target_path):
     write_image(digit_area_path, digit_roi)
     return digit_area_file
 
+
 def extract(file_name, source_path, target_path, dataset_path, config, store_files=True):
     original_image = read_image(file_name)
     unsharpened_image = unsharp_image(original_image)
@@ -322,6 +342,64 @@ def extract(file_name, source_path, target_path, dataset_path, config, store_fil
     logging.info(result)
 
     return result
+
+
+def extract_biggest_box(digit):
+    (thresh, img_bin) = cv2.threshold(digit, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    img_bin = 255 - img_bin
+    # Defining a kernel length
+    height = np.array(digit).shape[0]
+    width = np.array(digit).shape[1]
+    # A verticle kernel of (1 X kernel_length), which will detect all the verticle lines from the image.
+    verticle_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, height // 10))
+    # A horizontal kernel of (kernel_length X 1), which will help to detect all the horizontal line from the image.
+    hori_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (width // 10, 1))
+    # A kernel of (3 X 3) ones.
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    # Morphological operation to detect vertical lines from an image
+    img_temp1 = cv2.erode(img_bin, verticle_kernel, iterations=3)
+    verticle_lines_img = cv2.dilate(img_temp1, verticle_kernel, iterations=3)
+    # Morphological operation to detect horizontal lines from an image
+    img_temp2 = cv2.erode(img_bin, hori_kernel, iterations=3)
+    horizontal_lines_img = cv2.dilate(img_temp2, hori_kernel, iterations=3)
+    # Weighting parameters, this will decide the quantity of an image to be added to make a new image.
+    alpha = 0.5
+    beta = 1.0 - alpha
+
+    img_final_bin = cv2.addWeighted(verticle_lines_img, alpha, horizontal_lines_img, beta, 0.0)
+    img_final_bin = cv2.erode(~img_final_bin, kernel, iterations=2)
+    (thresh, img_final_bin) = cv2.threshold(img_final_bin, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    new_image, nr_of_objects = ndimage.measurements.label(img_final_bin, structuring_element)
+    # plt.imshow(new_image)
+    # plt.waitforbuttonpress()
+    blobs = ndimage.find_objects(new_image)
+
+    biggest_surface = 0
+    biggest_feature = -1
+    for i, ob in enumerate(blobs):
+        slice_y, slice_x = blobs[i]
+        w = slice_y.stop - slice_y.start
+        h = slice_x.stop - slice_x.start
+        surface = w * h
+        print(i,"-", surface, "-", w, h, " x: (", slice_y.start, ",", slice_y.stop, ") y: (", slice_x.start, ",", slice_x.stop, ")")
+        if surface > biggest_surface:
+            biggest_surface = surface
+            biggest_feature = i
+    slice_y, slice_x = blobs[biggest_feature]
+
+    y1 = slice_y.start
+    y2 = slice_y.stop
+    x1 = slice_x.start
+    x2 = slice_x.stop
+
+    if y1 == 0 or x1 == 0 or y2 == height or x2 == width:
+        padding = settings.PADDING_OUTER + settings.PADDING_INNER
+        logging.info("biggest connected structure is touching the sides, cropping based on configured coordinates")
+        return digit[0+padding:height-padding, 0+padding:width-padding]
+
+    padding = settings.PADDING_INNER
+    return digit[y1 - padding:y2 + padding, x1 - padding:x2 + padding]
 
 
 def extract2(file_name, source_path, target_path, dataset_path, config, store_files=True):

@@ -13,7 +13,7 @@ def convert_key_points(keypoints, descriptors):
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/plano-C1-2019-reference.jpg")
+ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2019-plano.jpg")
 args = vars(ap.parse_args())
 
 image_path = args["image"]

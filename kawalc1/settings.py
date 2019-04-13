@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import pathlib
 
 
 def __is_local():
@@ -25,8 +26,11 @@ FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
+# BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
 BASE_DIR = "."
 TARGET_EXTENSION = ".jpg"
+PADDING_INNER = 2
+PADDING_OUTER = 8
 
 import logging
 
@@ -43,6 +47,7 @@ GS_BUCKET_NAME = 'kawalc1'
 GS_FILE_OVERWRITE = True
 GS_DEFAULT_ACL = 'publicRead'
 VERSION = 'v0.9.1-alpha'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
