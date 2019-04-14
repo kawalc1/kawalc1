@@ -22,11 +22,11 @@ def print_result(result_writer, iteration, homography, transform, result):
     print(row)
 
 
-def create_response(image_path, success):
+def create_response(image_path, success, hash):
     transformed_path = path.join('transformed', image_path)
     return json.dumps(
         {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
-         'success': success},
+         'hash': hash, 'success': success},
         separators=(',', ':'))
 
 
@@ -72,6 +72,12 @@ def read_descriptors(reference_form_path):
     with open(reference_form_path.replace('.jpg', '.p'), "rb") as pickled:
         return pickle.load(pickled)
 
+# https://www.pyimagesearch.com/2017/11/27/image-hashing-opencv-python/
+def dhash(image, hashSize=8):
+    resized = cv2.resize(image, (hashSize + 1, hashSize))
+    diff = resized[:, 1:] > resized[:, :-1]
+    return sum([2 ** i for (i, v) in enumerate(diff.flatten()) if v])
+
 
 def register_image(file_path, reference_form_path, output_path, result_writer, target_path=""):
     from datetime import datetime
@@ -88,6 +94,8 @@ def register_image(file_path, reference_form_path, output_path, result_writer, t
     image = read_image(file_path)
     logging.info("image read %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
+
+    hash = dhash(image)
 
     brisk = cv2.BRISK_create()
     im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
@@ -125,7 +133,7 @@ def register_image(file_path, reference_form_path, output_path, result_writer, t
     transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
                                                 output_path, target_path)
     logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-    return create_response(transformed_image, good_enough_match)
+    return create_response(transformed_image, good_enough_match, hash)
 
 
 def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):

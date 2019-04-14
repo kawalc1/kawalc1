@@ -56,7 +56,7 @@ class ExtractFromBoxes(unittest.TestCase):
 
         # party_file = '0-2-pure.jpg'
         # reference_form_path = f'./resources/numbers/set1/{party_file}'
-        base_folder = './resources/numbers/set4/bad/'
+        base_folder = './resources/numbers/set3/'
         for file_name in cv2.os.listdir(base_folder):
             reference_form_path = f'{base_folder}{file_name}'
             digit = read_image(reference_form_path)
