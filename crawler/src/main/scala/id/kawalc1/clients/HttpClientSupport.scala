@@ -15,6 +15,8 @@ import scala.concurrent.Future
 import scala.reflect.Manifest
 import scala.util.{Failure, Success, Try}
 
+case class Response(code: Int, response: String)
+
 trait HttpClientSupport extends LazyLogging {
 
   def credentialsProvider: Future[Option[Authorization]] = Future.successful(None)
@@ -27,27 +29,25 @@ trait HttpClientSupport extends LazyLogging {
 
   def parseJson[A: Manifest](responseBody: String)(implicit
                                                    mat: Materializer,
-                                                   formats: Formats): Either[String, A] = {
+                                                   formats: Formats): Either[Response, A] = {
     Try(read[A](responseBody)) match {
       case Success(parsed) => Right(parsed)
       case Failure(ex) =>
         logger.error(s"could not parse response: $ex \n$responseBody")
-        Left(responseBody)
+        Left(Response(500, responseBody))
     }
   }
 
   def execute[A: Manifest](request: HttpRequest)(implicit
-                                                 formats: Formats): Future[Either[String, A]] = {
+                                                 formats: Formats): Future[Either[Response, A]] = {
     logger.info(s"Request ${request.method.value} ${request.uri}")
     for {
       resp: HttpResponse <- http.singleRequest(request, SecurityContext)
       str: String        <- consumeEntity(resp.entity)
     } yield {
       resp.status match {
-        case code: StatusCode if code.isSuccess() => parseJson(str)
-        case _ =>
-          logger.warn(s"Response ${resp.status.value} ${request.uri} $str")
-          Left(str)
+        case code: StatusCode if code.isSuccess() => parseJson[A](str)
+        case errorCode                            => Left(Response(errorCode.intValue(), str))
       }
     }
   }

@@ -11,7 +11,7 @@ class KawalPemiluClient(baseUrl: String)(implicit val system: ActorSystem, val m
   extends HttpClientSupport
   with JsonSupport {
 
-  def getKelurahan(number: Long): Future[Either[String, Kelurahan]] =
+  def getKelurahan(number: Long): Future[Either[Response, Kelurahan]] =
     execute[Kelurahan](Get(s"$baseUrl/$number"))
 
 }

@@ -28,20 +28,12 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
       sourceDb: SQLiteProfile.backend.Database,
       targetDb: SQLiteProfile.backend.Database,
       query: FixedSqlStreamingAction[Seq[A], A, Effect.Read],
-      process: Seq[A] => Future[Seq[Either[String, B]]],
+      process: Seq[A] => Future[Seq[B]],
       insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]]) = {
     for {
-      alignResults   <- sourceDb.run(query)
-      extractResults <- process(alignResults)
-      inserted <- {
-        val toInsert = extractResults.flatMap {
-          case Right(e: B) => Some(e)
-          case Left(err) =>
-            logger.warn(s"failed to process $err")
-            None
-        }
-        targetDb.run(DBIO.sequence(insert(toInsert)))
-      }
+      toProcess <- sourceDb.run(query)
+      processed <- process(toProcess)
+      inserted  <- targetDb.run(DBIO.sequence(insert(processed)))
     } yield inserted
 
   }
@@ -76,7 +68,7 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
               processProbabilities,
               ResultsTables.upsertPresidential)
 
-  def alignPhoto(tps: Seq[SingleTps]): Future[Seq[Either[String, AlignResult]]] = {
+  def alignPhoto(tps: Seq[SingleTps]): Future[Seq[AlignResult]] = {
     Future
       .sequence(tps.map { tps: SingleTps =>
         val photo: Array[String] = tps.photo.split("/")
@@ -87,33 +79,47 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
           case Right(t) =>
             t.transformedUrl match {
               case Some(trans) =>
-                Right(
-                  AlignResult(tps.kelurahanId,
-                              tps.tpsId,
-                              tps.photo,
-                              ImageSize,
-                              100,
-                              formConfig,
-                              Some(trans),
-                              None))
+                AlignResult(tps.kelurahanId,
+                            tps.tpsId,
+                            Serialization.write(t),
+                            200,
+                            tps.photo,
+                            ImageSize,
+                            100,
+                            formConfig,
+                            Some(trans),
+                            None,
+                            Some(t.hash))
               case None =>
-                Right(
-                  AlignResult(tps.kelurahanId,
-                              tps.tpsId,
-                              tps.photo,
-                              ImageSize,
-                              0,
-                              formConfig,
-                              None,
-                              None))
+                AlignResult(tps.kelurahanId,
+                            tps.tpsId,
+                            Serialization.write(t),
+                            200,
+                            tps.photo,
+                            ImageSize,
+                            0,
+                            formConfig,
+                            None,
+                            None,
+                            Some(t.hash))
             }
-          case Left(str) => Left(str)
+          case Left(resp) =>
+            AlignResult(tps.kelurahanId,
+                        tps.tpsId,
+                        resp.response,
+                        resp.code,
+                        tps.photo,
+                        ImageSize,
+                        0,
+                        formConfig,
+                        None,
+                        None,
+                        None)
         }
       })
   }
 
-  private def extractNumbers(
-      results: Seq[AlignResult]): Future[Seq[Either[String, ExtractResult]]] = {
+  private def extractNumbers(results: Seq[AlignResult]): Future[Seq[ExtractResult]] = {
     Future
       .sequence(results.map { res: AlignResult =>
         val alignedLastSegment = res.alignedUrl.get.split("/")
@@ -123,28 +129,35 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
         } yield {
           extracted match {
             case Right(e: Extraction) =>
-              Right(
-                ExtractResult(res.id,
-                              res.tps,
-                              res.photo,
-                              Serialization.write(e),
-                              res.config,
-                              e.digitArea,
-                              ""))
-            case Left(str) => Left(str)
+              ExtractResult(res.id,
+                            res.tps,
+                            res.photo,
+                            Serialization.write(e),
+                            200,
+                            e.digitArea,
+                            res.config,
+                            "")
+            case Left(resp) =>
+              ExtractResult(res.id,
+                            res.tps,
+                            res.photo,
+                            resp.response,
+                            resp.code,
+                            "",
+                            res.config,
+                            "")
           }
         }
       })
-
   }
 
-  private def processProbabilities(
-      results: Seq[ExtractResult]): Future[Seq[Either[String, PresidentialResult]]] = {
+  private def processProbabilities(results: Seq[ExtractResult]): Future[Seq[PresidentialResult]] = {
     Future
       .sequence(results.map { res: ExtractResult =>
         for {
           extracted <- {
             val extraction = Serialization.read[Extraction](res.response)
+            println(s"${res.config} - $res")
             client.processProbabilities(res.id, res.tps, extraction.numbers, res.config)
           }
         } yield {
@@ -163,22 +176,37 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext) e
               val jumlahSeluruh    = second.numbers.filter(_.shortName == "jumlahSeluruh").head.number
               val jumlahConfidence = second.confidence
 
-              Right(
-                PresidentialResult(
-                  id = res.id,
-                  tps = res.tps,
-                  photo = res.photo,
-                  response = "resp",
-                  pas1 = pas1,
-                  pas2 = pas2,
-                  jumlahCalon = jumlahCalon,
-                  calonConfidence = calonConfidence,
-                  jumlahSah = jumlah,
-                  tidakSah = tidakSah,
-                  jumlahSeluruh = jumlahSeluruh,
-                  jumlahConfidence = jumlahConfidence
-                ))
-            case Left(str) => Left(str)
+              PresidentialResult(
+                id = res.id,
+                tps = res.tps,
+                photo = res.photo,
+                response = Serialization.write(p),
+                responseCode = 200,
+                pas1 = pas1,
+                pas2 = pas2,
+                jumlahCalon = jumlahCalon,
+                calonConfidence = calonConfidence,
+                jumlahSah = jumlah,
+                tidakSah = tidakSah,
+                jumlahSeluruh = jumlahSeluruh,
+                jumlahConfidence = jumlahConfidence
+              )
+            case Left(resp) =>
+              PresidentialResult(
+                id = res.id,
+                tps = res.tps,
+                photo = res.photo,
+                response = resp.response,
+                responseCode = resp.code.intValue(),
+                pas1 = -1,
+                pas2 = -1,
+                jumlahCalon = -1,
+                calonConfidence = -1.0,
+                jumlahSah = -1,
+                tidakSah = -1,
+                jumlahSeluruh = -1,
+                jumlahConfidence = -1
+              )
           }
         }
       })

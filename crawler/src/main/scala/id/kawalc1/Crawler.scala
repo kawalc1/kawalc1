@@ -4,21 +4,15 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.clients.{KawalC1Client, KawalPemiluClient}
-import id.kawalc1.database.{
-  AlignResult,
-  ExtractResult,
-  PresidentialResult,
-  ResultsTables,
-  TpsTables
-}
-import id.kawalc1.services.{PhotoProcessor, TpsFetcher}
-import slick.jdbc.SQLiteProfile
+import id.kawalc1.database.{ResultsTables, TpsTables}
+import id.kawalc1.services.{BlockingSupport, PhotoProcessor, TpsFetcher}
 import slick.jdbc.SQLiteProfile.api._
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext}
 
-object Crawler extends App with LazyLogging {
+object Crawler extends App with LazyLogging with BlockingSupport {
+  override def duration: FiniteDuration = 1.hour
 
   implicit val system: ActorSystem                = ActorSystem("crawler")
   implicit val materializer: ActorMaterializer    = ActorMaterializer()
@@ -32,7 +26,7 @@ object Crawler extends App with LazyLogging {
   val arg = args(0)
 
   val tpsDb             = Database.forConfig("tpsDatabase")
-  val kelurahanDatabase = Database.forConfig("kelurahanMinimalDatabase")
+  val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
   val resultsDatabase   = Database.forConfig("verificationResults")
 
   def createDatabase() = {
@@ -44,42 +38,64 @@ object Crawler extends App with LazyLogging {
 
   arg match {
     case "fullSync" =>
-      Await.result(createDatabase(), 1.minute)
-      Await.result(new TpsFetcher(new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"),
-                                  kelurahanDatabase,
-                                  tpsDb).ingestAllTps(),
-                   1.hour)
+      //        Await.result(createDatabase(), 1.minute)
+      new TpsFetcher(new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"),
+                     kelurahanDatabase,
+                     tpsDb).ingestAllTps().futureValue
     case "align" =>
-      val alignment = processor.align(tpsDb, resultsDatabase)
-      val res       = Await.result(alignment, 1.hour)
-      logger.info(s"Aligned ${res.size} photo(s)")
-
+      processor
+        .align(tpsDb, resultsDatabase)
+        .map { res =>
+          logger.info(s"Aligned ${res.size} photo(s)")
+        }
+        .futureValue
     case "extract" =>
-      val extraction = processor.extract(resultsDatabase, resultsDatabase)
-      val res        = Await.result(extraction, 1.hour)
-      logger.info(s"Extracted ${res.size} photo(s)")
+      processor
+        .extract(resultsDatabase, resultsDatabase)
+        .map { res =>
+          logger.info(s"Extracted ${res.size} photo(s)")
+        }
+        .futureValue
 
     case "presidential" =>
-      val probs = processor.processProbabilities(resultsDatabase, resultsDatabase)
-      val res   = Await.result(probs, 1.hour)
-      logger.info(s"Processed ${res.size} presidential result(s)")
+      processor
+        .processProbabilities(resultsDatabase, resultsDatabase)
+        .map { res =>
+          logger.info(s"Processed ${res.size} presidential result(s)")
+        }
+        .futureValue
 
     case "createDb" =>
       args(1) match {
-        case "results" =>
-          val resultsCreate = DBIO.seq(ResultsTables.alignResultsQuery.schema.create)
-          Await.result(resultsDatabase.run(resultsCreate), 1.minute)
-          logger.info("created results Database")
+        case "align" =>
+          val resultsCreate = DBIO.seq(ResultsTables.alignResultsQuery.schema.drop,
+                                       ResultsTables.alignResultsQuery.schema.create)
+          resultsDatabase
+            .run(resultsCreate)
+            .map { _ =>
+              logger.info("created results Database")
+            }
+            .futureValue
         case "extract" =>
-          val extractCreate = DBIO.seq(ResultsTables.extractResultsQuery.schema.create)
-          Await.result(resultsDatabase.run(extractCreate), 1.minute)
-          logger.info("created extraction Database")
+          val extractCreate = DBIO.seq(ResultsTables.extractResultsQuery.schema.drop,
+                                       ResultsTables.extractResultsQuery.schema.create)
+          resultsDatabase
+            .run(extractCreate)
+            .map { _ =>
+              logger.info("created extraction Database")
+            }
+            .futureValue
         case "presidential" =>
-          val presidentialCreate = DBIO.seq(ResultsTables.presidentialResultsQuery.schema.create)
-          Await.result(resultsDatabase.run(presidentialCreate), 1.minute)
-          logger.info("created presidential Database")
+          val presidentialCreate = DBIO.seq(ResultsTables.presidentialResultsQuery.schema.drop,
+                                            ResultsTables.presidentialResultsQuery.schema.create)
+          resultsDatabase
+            .run(presidentialCreate)
+            .map { _ =>
+              logger.info("created presidential Database")
+            }
+            .futureValue
       }
+      system.terminate()
   }
-  system.terminate()
 
 }

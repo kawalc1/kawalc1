@@ -8,11 +8,13 @@ import akka.stream.Materializer
 import id.kawalc1.ProbabilitiesResponse
 import org.json4s.native.Serialization
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-case class Transform(transformedUrl: Option[String],
-                     transformedUri: Option[String],
-                     success: Boolean)
+case class Transform(
+  transformedUrl: Option[String],
+  transformedUri: Option[String],
+  success: Boolean,
+  hash: String)
 
 case class Extracted(probabilities: Seq[Double], filename: String)
 
@@ -25,41 +27,46 @@ case class Probabilities(id: String, probabilitiesForNumber: Seq[Seq[Double]])
 case class ProbabilitiesRequest(configFile: String, probabilities: Seq[Probabilities])
 
 class KawalC1Client(baseUrl: String)(implicit
-                                     val system: ActorSystem,
-                                     val mat: Materializer,
-                                     val ec: ExecutionContext)
-    extends HttpClientSupport
-    with JsonSupport {
+  val system: ActorSystem,
+  val mat: Materializer,
+  val ec: ExecutionContext)
+  extends HttpClientSupport
+  with JsonSupport {
 
-  def alignPhoto(kelurahan: Int,
-                 tps: Int,
-                 photoUrl: String,
-                 quality: Int,
-                 formConfig: String): Future[Either[String, Transform]] = {
+  def alignPhoto(
+    kelurahan: Int,
+    tps: Int,
+    photoUrl: String,
+    quality: Int,
+    formConfig: String): Future[Either[Response, Transform]] = {
     val url = Uri(s"$baseUrl/align/$kelurahan/$tps/$photoUrl=s$quality")
       .withQuery(
-        Query("storeFiles" -> "true",
-              "baseUrl"    -> "http://lh3.googleusercontent.com",
-              "configFile" -> formConfig))
+        Query(
+          "storeFiles" -> "true",
+          "baseUrl" -> "http://lh3.googleusercontent.com",
+          "configFile" -> formConfig))
     execute[Transform](Get(url))
   }
 
-  def extractNumbers(kelurahan: Int,
-                     tps: Int,
-                     photoUrl: String,
-                     formConfig: String): Future[Either[String, Extraction]] = {
+  def extractNumbers(
+    kelurahan: Int,
+    tps: Int,
+    photoUrl: String,
+    formConfig: String): Future[Either[Response, Extraction]] = {
 
     val url = Uri(s"$baseUrl/extract/$kelurahan/$tps/$photoUrl")
       .withQuery(
-        Query("baseUrl"    -> "https://storage.googleapis.com/kawalc1/static/transformed",
-              "configFile" -> formConfig))
+        Query(
+          "baseUrl" -> "https://storage.googleapis.com/kawalc1/static/transformed",
+          "configFile" -> formConfig))
     execute[Extraction](Get(url))
   }
 
-  def processProbabilities(kelurahan: Int,
-                           tps: Int,
-                           numbers: Seq[Numbers],
-                           formConfig: String): Future[Either[String, ProbabilitiesResponse]] = {
+  def processProbabilities(
+    kelurahan: Int,
+    tps: Int,
+    numbers: Seq[Numbers],
+    formConfig: String): Future[Either[Response, ProbabilitiesResponse]] = {
 
     val probs = numbers.map { n =>
       Probabilities(n.id, n.extracted.map(_.probabilities))

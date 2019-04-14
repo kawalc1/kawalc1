@@ -26,7 +26,7 @@ def create_response(image_path, success, hash):
     transformed_path = path.join('transformed', image_path)
     return json.dumps(
         {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
-         'hash': hash, 'success': success},
+         'hash': str(hash), 'success': success},
         separators=(',', ':'))
 
 
