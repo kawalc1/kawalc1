@@ -3,7 +3,7 @@ package id.kawalc1.clients
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Authorization
-import akka.http.scaladsl.{Http, HttpExt, HttpsConnectionContext}
+import akka.http.scaladsl.{ Http, HttpExt, HttpsConnectionContext }
 import akka.stream.Materializer
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
@@ -13,7 +13,7 @@ import org.json4s.native.Serialization.read
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.Manifest
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 case class Response(code: Int, response: String)
 
@@ -28,8 +28,8 @@ trait HttpClientSupport extends LazyLogging {
   def SecurityContext: HttpsConnectionContext = http.defaultClientHttpsContext
 
   def parseJson[A: Manifest](responseBody: String)(implicit
-                                                   mat: Materializer,
-                                                   formats: Formats): Either[Response, A] = {
+    mat: Materializer,
+    formats: Formats): Either[Response, A] = {
     Try(read[A](responseBody)) match {
       case Success(parsed) => Right(parsed)
       case Failure(ex) =>
@@ -38,16 +38,15 @@ trait HttpClientSupport extends LazyLogging {
     }
   }
 
-  def execute[A: Manifest](request: HttpRequest)(implicit
-                                                 formats: Formats): Future[Either[Response, A]] = {
+  def execute[A: Manifest](request: HttpRequest)(implicit formats: Formats): Future[Either[Response, A]] = {
     logger.info(s"Request ${request.method.value} ${request.uri}")
     for {
       resp: HttpResponse <- http.singleRequest(request, SecurityContext)
-      str: String        <- consumeEntity(resp.entity)
+      str: String <- consumeEntity(resp.entity)
     } yield {
       resp.status match {
         case code: StatusCode if code.isSuccess() => parseJson[A](str)
-        case errorCode                            => Left(Response(errorCode.intValue(), str))
+        case errorCode => Left(Response(errorCode.intValue(), str))
       }
     }
   }
