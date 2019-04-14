@@ -24,6 +24,9 @@ app.config(function($routeProvider) {
 	}).when('/page3', {
         templateUrl: 'pages/page3.html',
         controller: 'imageRegistrationController'
+    }).when('/dpr', {
+        templateUrl: 'pages/dpr.html',
+        controller: 'imageRegistrationController'
     });
 
 });
