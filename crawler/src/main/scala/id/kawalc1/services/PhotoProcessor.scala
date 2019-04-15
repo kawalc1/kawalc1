@@ -24,6 +24,7 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
   override def duration: FiniteDuration = 1.hour
 
   val ImageSize = 1280
+  val FeatureAlgorithm = "akaze"
 
   private def transform[A, B](
     sourceDb: SQLiteProfile.backend.Database,
@@ -104,7 +105,7 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
     val photoUrl = photo(photo.length - 1)
     val formType = tps.verification.c1.get.`type`
     val formConfig = kawalc1.formTypeToConfig(formType)
-    client.alignPhoto(tps.kelurahanId, tps.tpsId, photoUrl, ImageSize, formConfig).map {
+    client.alignPhoto(tps.kelurahanId, tps.tpsId, photoUrl, ImageSize, formConfig, FeatureAlgorithm).map {
       case Right(t) =>
         t.transformedUrl match {
           case Some(trans) =>
@@ -117,6 +118,7 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
               ImageSize,
               t.similarity,
               formConfig,
+              FeatureAlgorithm,
               Some(trans),
               None,
               Some(t.hash))
@@ -130,12 +132,25 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
               ImageSize,
               -1.0,
               formConfig,
+              FeatureAlgorithm,
               None,
               None,
               Some(t.hash))
         }
       case Left(resp) =>
-        AlignResult(tps.kelurahanId, tps.tpsId, resp.response, resp.code, tps.photo, ImageSize, -1.0, formConfig, None, None, None)
+        AlignResult(
+          tps.kelurahanId,
+          tps.tpsId,
+          resp.response,
+          resp.code,
+          tps.photo,
+          ImageSize,
+          -1.0,
+          formConfig,
+          FeatureAlgorithm,
+          None,
+          None,
+          None)
     }
   }
 

@@ -22,11 +22,11 @@ def print_result(result_writer, iteration, homography, transform, result):
     print(row)
 
 
-def create_response(image_path, success, hash):
+def create_response(image_path, success, hash, similarity):
     transformed_path = path.join('transformed', image_path)
     return json.dumps(
         {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
-         'hash': str(hash), 'success': success},
+         'similarity': similarity, 'hash': str(hash), 'success': success},
         separators=(',', ':'))
 
 
@@ -72,6 +72,7 @@ def read_descriptors(reference_form_path):
     with open(reference_form_path.replace('.jpg', '.p'), "rb") as pickled:
         return pickle.load(pickled)
 
+
 # https://www.pyimagesearch.com/2017/11/27/image-hashing-opencv-python/
 def dhash(image, hashSize=8):
     resized = cv2.resize(image, (hashSize + 1, hashSize))
@@ -79,9 +80,158 @@ def dhash(image, hashSize=8):
     return sum([2 ** i for (i, v) in enumerate(diff.flatten()) if v])
 
 
-def register_image(file_path, reference_form_path, output_path, result_writer, target_path=""):
+def register_image_sift(file_path, reference_form_path, output_path, result_writer, target_path=""):
     from datetime import datetime
+    lap = datetime.now()
 
+    reference = read_image(reference_form_path)
+    logging.info("read reference %s", reference_form_path)
+    sift = cv2.xfeatures2d.SIFT_create()
+    ref_kp, ref_descriptors = sift.detectAndCompute(reference, None)
+
+
+
+    logging.info("SIFT reference %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    image = read_image(file_path)
+    logging.info("image read %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    difference_hash = dhash(image)
+    similarity = 0.0
+    try:
+        im_kp, im_descriptors = sift.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
+        logging.info("SIFT image %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        bf = cv2.BFMatcher(cv2.NORM_L2)
+        raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
+        logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
+        mkp1, mkp2 = zip(*matches)
+        logging.warning("matches %s", matches.__sizeof__())
+
+        # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+
+        p1 = np.float32([kp.pt for kp in mkp1])
+        p2 = np.float32([kp.pt for kp in mkp2])
+
+        homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+
+        logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        homography, transform = check_homography(homography_transform)
+
+        # good_enough_match = check_match(homography, transform)
+        good_enough_match = True
+
+        h, w = reference.shape
+        image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
+        logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        tr_kp, tr_descriptors = sift.detectAndCompute(image_transformed, None)
+        tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
+        tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
+        trkp1, trkp2 = zip(*tr_matches_filtered)
+        similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
+
+        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+                                                    file_path,
+                                                    output_path, target_path)
+        logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+    except Exception as e:
+        logging.exception("Registration failed")
+        return json.dumps(
+            {'transformedUrl': None,
+             'transformedUri': None,
+             'similarity': -1.0,
+             'hash': str(difference_hash), 'success': False},
+            separators=(',', ':'))
+
+
+def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path=""):
+    from datetime import datetime
+    lap = datetime.now()
+
+    reference = read_image(reference_form_path)
+    logging.info("read reference %s", reference_form_path)
+    sift = cv2.AKAZE_create()
+    ref_kp, ref_descriptors = sift.detectAndCompute(reference, None)
+
+
+
+    logging.info("AKAZE reference %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    image = read_image(file_path)
+    logging.info("image read %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    difference_hash = dhash(image)
+    similarity = 0.0
+    try:
+        im_kp, im_descriptors = sift.detectAndCompute(image, None)
+        logging.info("AKAZE image %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        bf = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+        raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
+        logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
+        mkp1, mkp2 = zip(*matches)
+        logging.warning("matches %s", matches.__sizeof__())
+
+        # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+
+        p1 = np.float32([kp.pt for kp in mkp1])
+        p2 = np.float32([kp.pt for kp in mkp2])
+
+        homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+
+        logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        homography, transform = check_homography(homography_transform)
+
+        # good_enough_match = check_match(homography, transform)
+        good_enough_match = True
+
+        h, w = reference.shape
+        image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
+        logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        tr_kp, tr_descriptors = sift.detectAndCompute(image_transformed, None)
+        tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
+        tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
+        trkp1, trkp2 = zip(*tr_matches_filtered)
+        similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
+
+        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+                                                    file_path,
+                                                    output_path, target_path)
+        logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+    except Exception as e:
+        logging.exception("Registration failed")
+        return json.dumps(
+            {'transformedUrl': None,
+             'transformedUri': None,
+             'similarity': -1.0,
+             'hash': str(difference_hash), 'success': False},
+            separators=(',', ':'))
+
+
+def register_image_brisk(file_path, reference_form_path, output_path, result_writer, target_path=""):
+    from datetime import datetime
     lap = datetime.now()
     key_points = read_descriptors(reference_form_path)
     ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
@@ -95,45 +245,62 @@ def register_image(file_path, reference_form_path, output_path, result_writer, t
     logging.info("image read %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
 
-    hash = dhash(image)
+    difference_hash = dhash(image)
+    similarity = 0.0
+    try:
+        brisk = cv2.BRISK_create()
+        im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
+        logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
 
-    brisk = cv2.BRISK_create()
-    im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
-    logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
+        bf = cv2.BFMatcher(cv2.NORM_L2)
+        raw_matches = bf.knnMatch(np.float32(im_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
+        logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
 
-    bf = cv2.BFMatcher(cv2.NORM_L2)
-    raw_matches = bf.knnMatch(np.float32(im_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
-    logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
+        amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
+        mkp1, mkp2 = zip(*matches)
+        logging.warning("matches %s", matches.__sizeof__())
 
-    matches = filter_matches(im_kp, ref_kp, raw_matches)
-    logging.warning("matches %s", matches.__sizeof__())
 
-    # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+        # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
 
-    mkp1, mkp2 = zip(*matches)
-    p1 = np.float32([kp.pt for kp in mkp1])
-    p2 = np.float32([kp.pt for kp in mkp2])
+        p1 = np.float32([kp.pt for kp in mkp1])
+        p2 = np.float32([kp.pt for kp in mkp2])
 
-    homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+        homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
 
-    logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
+        logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
 
-    homography, transform = check_homography(homography_transform)
+        homography, transform = check_homography(homography_transform)
 
-    # good_enough_match = check_match(homography, transform)
-    good_enough_match = True
+        # good_enough_match = check_match(homography, transform)
+        good_enough_match = True
 
-    image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
-    logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
+        image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
+        logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
 
-    transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path,
-                                                output_path, target_path)
-    logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-    return create_response(transformed_image, good_enough_match, hash)
+        tr_kp, tr_descriptors = brisk.detectAndCompute(image_transformed, None)
+        tr_raw_matches = bf.knnMatch(np.float32(tr_descriptors), trainDescriptors=np.float32(ref_descriptors), k=2)
+        tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
+        trkp1, trkp2 = zip(*tr_matches_filtered)
+        similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
+
+        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+                                                    file_path,
+                                                    output_path, target_path)
+        logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+    except Exception as e:
+        logging.exception("Registration failed")
+        return json.dumps(
+            {'transformedUrl': None,
+             'transformedUri': None,
+             'similarity': -1.0,
+             'hash': str(difference_hash), 'success': False},
+            separators=(',', ':'))
 
 
 def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):
@@ -153,10 +320,18 @@ def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):
     cv2.waitKey(0)
 
 
-def process_file(result_writer, count, root, file_name, reference_form_path, config_file):
+def process_file(result_writer, count, root, file_name, reference_form_path, config_file, feature_algorithm):
     image_path = join(root + '/upload', file_name)
     output_path = join(root, 'transformed')
-    return register_image(image_path, reference_form_path, output_path, result_writer, config_file)
+
+    func = ""
+    if feature_algorithm == "akaze":
+        func = register_image_akaze
+    if feature_algorithm == "brisk":
+        func = register_image_brisk
+    if feature_algorithm == "sift":
+        func = register_image_sift
+    return func(image_path, reference_form_path, output_path, result_writer, config_file)
 
 
 def check_match(homography, transform):
@@ -165,15 +340,31 @@ def check_match(homography, transform):
     return homography < 1.0 or transform < 0.3
 
 
-def filter_matches(kp1, kp2, matches, ratio=0.75):
+def feature_similarity(mkp1, mkp2):
+    p1 = np.float32([kp.pt for kp in mkp1])
+    p2 = np.float32([kp.pt for kp in mkp2])
+    distances = []
+    for i in range(len(p1)):
+        x_dist = p1[i][0] - p2[i][0]
+        y_dist = p1[i][1] - p2[i][1]
+        hypot = math.pow(math.hypot(x_dist, y_dist), 2)
+        distances.append(hypot)
+    median = np.median(distances)
+    similarity = len(distances) / median
+    return similarity
+
+
+def filter_matches_with_amount(kp1, kp2, matches, ratio=0.75):
     mkp1, mkp2 = [], []
+    total = 0
     for m in matches:
         if len(m) == 2 and m[0].distance < m[1].distance * ratio:
             m = m[0]
+            total += 1
             mkp1.append(kp1[m.queryIdx])
             mkp2.append(kp2[m.trainIdx])
     kp_pairs = zip(mkp1, mkp2)
-    return kp_pairs
+    return total, kp_pairs
 
 
 def check_homography(homography_transform):

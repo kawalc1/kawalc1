@@ -1,7 +1,8 @@
 numpy==1.15.4
 scipy>=0.15.1
-opencv-python==3.4.5.20
 Pillow>=2.1.0
+opencv-python==3.4.2.16
+opencv-contrib-python==3.4.2.16
 dask[array]
 lxml
 psycopg2-binary

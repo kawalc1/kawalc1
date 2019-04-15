@@ -7,25 +7,12 @@ from kawalc1 import settings
 import pathlib
 import numpy as np
 
-from mengenali.registration import unpickle_keypoints
+from mengenali.registration import unpickle_keypoints, filter_matches_with_amount, feature_similarity
 
 
 def read_descriptors(reference_form_path):
     with open(reference_form_path, "rb") as pickled:
         return pickle.load(pickled)
-
-
-def filter_matches_with_amount(kp1, kp2, matches, ratio=0.75):
-    mkp1, mkp2 = [], []
-    total = 0
-    for m in matches:
-        if len(m) == 2 and m[0].distance < m[1].distance * ratio:
-            m = m[0]
-            total += 1
-            mkp1.append(kp1[m.queryIdx])
-            mkp2.append(kp2[m.trainIdx])
-    kp_pairs = zip(mkp1, mkp2)
-    return total, kp_pairs
 
 
 def detect_party(image):
@@ -48,19 +35,12 @@ def detect_party(image):
 
         if amount > 0:
             mkp1, mkp2 = zip(*matches)
-            p1 = np.float32([kp.pt for kp in mkp1])
-            p2 = np.float32([kp.pt for kp in mkp2])
-
-            distances = []
-            for i in range(len(p1)):
-                x_dist = p1[i][0] - p2[i][0]
-                y_dist = p1[i][1] - p2[i][1]
-                hypot = math.pow(math.hypot(x_dist, y_dist), 2)
-                distances.append(hypot)
-            median = np.median(distances)
-            similarity = len(distances) / median
+            similarity = feature_similarity(mkp1, mkp2)
             if similarity > most_similar:
                 most_similar = similarity
                 most_similar_form = file
     logging.info("match: %s %s", most_similar, most_similar_form)
     return most_similar_form.replace(".p", ""), most_similar
+
+
+

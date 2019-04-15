@@ -15,6 +15,7 @@ case class AlignResult(
   photoSize: Int,
   alignQuality: Double,
   config: String,
+  featureAlgorithm: String,
   alignedUrl: Option[String],
   extracted: Option[Boolean],
   hash: Option[String])
@@ -56,12 +57,13 @@ object ResultsTables extends SlickValueEnumSupport {
     def photoSize = column[Int]("photo_size")
     def alignQuality = column[Double]("align_quality")
     def config = column[String]("config")
+    def featureAlgorithm = column[String]("feature_algorithm")
     def alignedUrl = column[Option[String]]("aligned_url")
     def extracted = column[Option[Boolean]]("extracted")
     def hash = column[Option[String]]("hash")
 
     override def * =
-      (id, tps, response, responseCode, photo, photoSize, alignQuality, config, alignedUrl, extracted, hash) <> (AlignResult.tupled, AlignResult.unapply)
+      (id, tps, response, responseCode, photo, photoSize, alignQuality, config, featureAlgorithm, alignedUrl, extracted, hash) <> (AlignResult.tupled, AlignResult.unapply)
   }
 
   val alignResultsQuery = TableQuery[AlignResults]

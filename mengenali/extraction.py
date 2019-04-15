@@ -382,7 +382,7 @@ def extract_biggest_box(digit):
         w = slice_y.stop - slice_y.start
         h = slice_x.stop - slice_x.start
         surface = w * h
-        print(i,"-", surface, "-", w, h, " x: (", slice_y.start, ",", slice_y.stop, ") y: (", slice_x.start, ",", slice_x.stop, ")")
+        # print(i,"-", surface, "-", w, h, " x: (", slice_y.start, ",", slice_y.stop, ") y: (", slice_x.start, ",", slice_x.stop, ")")
         if surface > biggest_surface:
             biggest_surface = surface
             biggest_feature = i

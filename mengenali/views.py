@@ -119,7 +119,8 @@ def get_outcome(output):
 def align(request, kelurahan, tps, filename):
     try:
         config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
-        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file))
+        matcher = request.GET.get('x', 'akaze').lower()
+        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
         output = {**a}
 
     except Exception as e:
@@ -129,7 +130,7 @@ def align(request, kelurahan, tps, filename):
     return JsonResponse(output)
 
 
-def __do_alignment(filename, kelurahan, request, tps, reference_form):
+def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher):
     store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
     base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
     if not store_files:
@@ -142,8 +143,16 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form):
     output_path = path.join(settings.STATIC_DIR, 'transformed')
     from datetime import datetime
     lap = datetime.now()
+    func = registration.register_image_akaze
+    if matcher == "akaze":
+        func = registration.register_image_akaze
+    if matcher == "brisk":
+        func = registration.register_image_brisk
+    if matcher == "sift":
+        func = registration.register_image_brisk
+
     a = json.loads(
-        registration.register_image(url, reference_form, output_path, None, f'{kelurahan}/{tps}'))
+        func(url, reference_form, output_path, None, f'{kelurahan}/{tps}'))
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
     return a
 
@@ -219,7 +228,7 @@ def transform(request):
             config_file = request.POST.get("configFile", "")
             output = json.loads(
                 registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                          config_file))
+                                          config_file, "sift"))
             output["configFile"] = config_file
         except Exception as e:
             logging.exception("this is not good!")
