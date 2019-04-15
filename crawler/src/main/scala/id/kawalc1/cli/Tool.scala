@@ -1,4 +1,4 @@
-`package id.kawalc1.cli
+package id.kawalc1.cli
 
 import org.rogach.scallop.ScallopConf
 

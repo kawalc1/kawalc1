@@ -10,11 +10,7 @@ import org.json4s.native.Serialization
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-case class Transform(
-  transformedUrl: Option[String],
-  transformedUri: Option[String],
-  success: Boolean,
-  hash: String)
+case class Transform(transformedUrl: Option[String], transformedUri: Option[String], similarity: Double, success: Boolean, hash: String)
 
 case class Extracted(probabilities: Seq[Double], filename: String)
 
@@ -33,32 +29,16 @@ class KawalC1Client(baseUrl: String)(implicit
   extends HttpClientSupport
   with JsonSupport {
 
-  def alignPhoto(
-    kelurahan: Int,
-    tps: Int,
-    photoUrl: String,
-    quality: Int,
-    formConfig: String): Future[Either[Response, Transform]] = {
+  def alignPhoto(kelurahan: Int, tps: Int, photoUrl: String, quality: Int, formConfig: String): Future[Either[Response, Transform]] = {
     val url = Uri(s"$baseUrl/align/$kelurahan/$tps/$photoUrl=s$quality")
-      .withQuery(
-        Query(
-          "storeFiles" -> "true",
-          "baseUrl" -> "http://lh3.googleusercontent.com",
-          "configFile" -> formConfig))
+      .withQuery(Query("storeFiles" -> "true", "baseUrl" -> "http://lh3.googleusercontent.com", "configFile" -> formConfig))
     execute[Transform](Get(url))
   }
 
-  def extractNumbers(
-    kelurahan: Int,
-    tps: Int,
-    photoUrl: String,
-    formConfig: String): Future[Either[Response, Extraction]] = {
+  def extractNumbers(kelurahan: Int, tps: Int, photoUrl: String, formConfig: String): Future[Either[Response, Extraction]] = {
 
     val url = Uri(s"$baseUrl/extract/$kelurahan/$tps/$photoUrl")
-      .withQuery(
-        Query(
-          "baseUrl" -> "https://storage.googleapis.com/kawalc1/static/transformed",
-          "configFile" -> formConfig))
+      .withQuery(Query("baseUrl" -> "https://storage.googleapis.com/kawalc1/static/transformed", "configFile" -> formConfig))
     execute[Extraction](Get(url))
   }
 

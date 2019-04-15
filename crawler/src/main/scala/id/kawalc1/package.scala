@@ -9,7 +9,7 @@ import scala.collection.immutable
 package object kawalc1 {
 
   def formTypeToConfig(formType: FormType) = formType match {
-    case FormType.PPWP => "digit_config_pilpres_2019.json"
+    case FormType.PPWP => "digit_config_pilpres_exact_2019.json"
     case FormType.DPR  => ???
     case _             => ???
   }

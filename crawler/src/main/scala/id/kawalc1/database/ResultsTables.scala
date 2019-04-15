@@ -13,7 +13,7 @@ case class AlignResult(
   responseCode: Int,
   photo: String,
   photoSize: Int,
-  alignQuality: Int,
+  alignQuality: Double,
   config: String,
   alignedUrl: Option[String],
   extracted: Option[Boolean],
@@ -54,25 +54,14 @@ object ResultsTables extends SlickValueEnumSupport {
     def responseCode = column[Int]("response_code")
     def photo = column[String]("photo", O.PrimaryKey)
     def photoSize = column[Int]("photo_size")
-    def alignQuality = column[Int]("align_quality")
+    def alignQuality = column[Double]("align_quality")
     def config = column[String]("config")
     def alignedUrl = column[Option[String]]("aligned_url")
     def extracted = column[Option[Boolean]]("extracted")
     def hash = column[Option[String]]("hash")
 
     override def * =
-      (
-        id,
-        tps,
-        response,
-        responseCode,
-        photo,
-        photoSize,
-        alignQuality,
-        config,
-        alignedUrl,
-        extracted,
-        hash) <> (AlignResult.tupled, AlignResult.unapply)
+      (id, tps, response, responseCode, photo, photoSize, alignQuality, config, alignedUrl, extracted, hash) <> (AlignResult.tupled, AlignResult.unapply)
   }
 
   val alignResultsQuery = TableQuery[AlignResults]
@@ -94,8 +83,7 @@ object ResultsTables extends SlickValueEnumSupport {
 
   val extractResultsQuery = TableQuery[ExtractResults]
 
-  class PresidentialResults(tag: Tag)
-    extends Table[PresidentialResult](tag, "presidential_results") {
+  class PresidentialResults(tag: Tag) extends Table[PresidentialResult](tag, "presidential_results") {
     def id = column[Int]("kelurahan")
     def tps = column[Int]("tps")
     def photo = column[String]("photo", O.PrimaryKey)
@@ -137,13 +125,11 @@ object ResultsTables extends SlickValueEnumSupport {
     results.map(alignResultsQuery.insertOrUpdate)
   }
 
-  def upsertExtract(
-    results: Seq[ExtractResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+  def upsertExtract(results: Seq[ExtractResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     results.map(extractResultsQuery.insertOrUpdate)
   }
 
-  def upsertPresidential(
-    results: Seq[PresidentialResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+  def upsertPresidential(results: Seq[PresidentialResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     results.map(presidentialResultsQuery.insertOrUpdate)
   }
 }

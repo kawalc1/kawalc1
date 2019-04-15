@@ -8,7 +8,7 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
   val Process = new Subcommand("process") {
     val phase = choice(Phases :+ "fetch")
     val offset = opt[Int](required = false)
-    val limit = opt[Int](required = false)
+    val batch = opt[Int](required = false)
   }
 
   val CreateDb = new Subcommand("create-db") {
