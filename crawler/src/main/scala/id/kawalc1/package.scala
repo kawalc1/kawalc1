@@ -72,12 +72,12 @@ package object kawalc1 {
   )
 
   object Kelurahan {
-    def toTps(kelurahan: Kelurahan) = {
+    def toTps(kelurahan: Kelurahan): Seq[SingleTps] = {
       for {
         tps   <- kelurahan.data
         photo <- tps._2.photos
       } yield SingleTps(kelurahan.name, photo._1, kelurahan.id, tps._1, photo._2)
-    }
+    }.toSeq
   }
 
   trait Summary
@@ -176,6 +176,7 @@ package object kawalc1 {
     "pda",
     "pna",
     "pbb",
-    "pkp"
+    "pkp",
+    "pJum"
   )
 }

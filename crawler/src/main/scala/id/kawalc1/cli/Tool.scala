@@ -18,13 +18,13 @@ class Tool[C <: ScallopConf](conf: C) {
 
   def run(): Unit = {
     conf.subcommand match {
-      case None => conf.printHelp()
       case Some(cmd: ScallopConf) =>
         if (subcmdHandlers.keySet.contains(cmd)) {
           subcmdHandlers(cmd).apply(conf)
         } else {
           println(s"No Handler registered for ${cmd.printedName}!")
         }
+      case _ => conf.printHelp()
     }
   }
 }

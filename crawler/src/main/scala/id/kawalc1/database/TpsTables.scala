@@ -5,8 +5,10 @@ import java.sql.Timestamp
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
 import id.kawalc1._
+import slick.dbio.Effect
 import slick.jdbc.SQLiteProfile.api._
 import slick.lifted.Tag
+import slick.sql.FixedSqlAction
 
 object TpsTables extends SlickValueEnumSupport {
   val profile = slick.jdbc.SQLiteProfile
@@ -65,26 +67,7 @@ object TpsTables extends SlickValueEnumSupport {
     def pkp  = column[Option[Int]]("pkp")
 
     def parties =
-      (pkb,
-       ger,
-       pdi,
-       gol,
-       nas,
-       gar,
-       ber,
-       sej,
-       per,
-       ppp,
-       psi,
-       pan,
-       han,
-       dem,
-       pa,
-       ps,
-       pda,
-       pna,
-       pbb,
-       pkp)
+      (pkb, ger, pdi, gol, nas, gar, ber, sej, per, ppp, psi, pan, han, dem, pa, ps, pda, pna, pbb, pkp)
 
     private def upackPresidential(sum: Option[Summary]) = {
       sum.flatMap {
@@ -115,11 +98,7 @@ object TpsTables extends SlickValueEnumSupport {
             case Some(FormType.PPWP.value) =>
               presLembar2._1 match {
                 case Some(_) =>
-                  Some(
-                    (PresidentialLembar2.apply _).tupled(presLembar2._1.get,
-                                                         presLembar2._2.get,
-                                                         presLembar2._3.get,
-                                                         presLembar2._4.get))
+                  Some((PresidentialLembar2.apply _).tupled(presLembar2._1.get, presLembar2._2.get, presLembar2._3.get, presLembar2._4.get))
                 case None => None
               }
             case Some(FormType.DPR.value) =>
@@ -130,15 +109,14 @@ object TpsTables extends SlickValueEnumSupport {
               Some(Dpr(votes = partyColumns))
             case _ => None
           }
-          SingleTps(
-            nama,
-            photo,
-            id,
-            tps,
-            Verification(timestamp,
-                         plano.map(x => C1(Plano.withValue(x), FormType.withValue(formType.get))),
-                         sum,
-                         (Common.apply _).tupled(common)))
+          SingleTps(nama,
+                    photo,
+                    id,
+                    tps,
+                    Verification(timestamp,
+                                 plano.map(x => C1(Plano.withValue(x), FormType.withValue(formType.get))),
+                                 sum,
+                                 (Common.apply _).tupled(common)))
       }, { v: SingleTps =>
         val plano                       = v.verification.c1.map(_.plano.value)
         val formType                    = v.verification.c1.map(_.`type`.value)
@@ -147,46 +125,8 @@ object TpsTables extends SlickValueEnumSupport {
         val dprFields: Seq[Option[Int]] = upackDpr(v.verification.sum)
         val common                      = v.verification.common
         val dprFieldsTypled = dprFields match {
-          case Seq(pkb,
-                   ger,
-                   pdi,
-                   gol,
-                   nas,
-                   gar,
-                   ber,
-                   sej,
-                   per,
-                   ppp,
-                   psi,
-                   pan,
-                   han,
-                   dem,
-                   pa,
-                   ps,
-                   pda,
-                   pna,
-                   pbb,
-                   pkp) =>
-            (pkb,
-             ger,
-             pdi,
-             gol,
-             nas,
-             gar,
-             ber,
-             sej,
-             per,
-             ppp,
-             psi,
-             pan,
-             han,
-             dem,
-             pa,
-             ps,
-             pda,
-             pna,
-             pbb,
-             pkp)
+          case Seq(pkb, ger, pdi, gol, nas, gar, ber, sej, per, ppp, psi, pan, han, dem, pa, ps, pda, pna, pbb, pkp) =>
+            (pkb, ger, pdi, gol, nas, gar, ber, sej, per, ppp, psi, pan, han, dem, pa, ps, pda, pna, pbb, pkp)
 
         }
 
@@ -205,5 +145,9 @@ object TpsTables extends SlickValueEnumSupport {
   }
 
   val tpsQuery = TableQuery[Tps]
+
+  def upsertTps(results: Seq[Seq[SingleTps]]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+    results.flatten.map(tpsQuery.insertOrUpdate)
+  }
 
 }

@@ -29,9 +29,20 @@ class KawalC1Client(baseUrl: String)(implicit
   extends HttpClientSupport
   with JsonSupport {
 
-  def alignPhoto(kelurahan: Int, tps: Int, photoUrl: String, quality: Int, formConfig: String): Future[Either[Response, Transform]] = {
+  def alignPhoto(
+    kelurahan: Int,
+    tps: Int,
+    photoUrl: String,
+    quality: Int,
+    formConfig: String,
+    featureAlgorithm: String): Future[Either[Response, Transform]] = {
     val url = Uri(s"$baseUrl/align/$kelurahan/$tps/$photoUrl=s$quality")
-      .withQuery(Query("storeFiles" -> "true", "baseUrl" -> "http://lh3.googleusercontent.com", "configFile" -> formConfig))
+      .withQuery(
+        Query(
+          "storeFiles" -> "true",
+          "baseUrl" -> "http://lh3.googleusercontent.com",
+          "configFile" -> formConfig,
+          "featureAlgorithm" -> featureAlgorithm))
     execute[Transform](Get(url))
   }
 
@@ -52,7 +63,6 @@ class KawalC1Client(baseUrl: String)(implicit
       Probabilities(n.id, n.extracted.map(_.probabilities))
     }
     val request = ProbabilitiesRequest(configFile = formConfig, probabilities = probs)
-    logger.error(s"\n${Serialization.writePretty(request)}")
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
   }
 

@@ -6,12 +6,12 @@ import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.cli.{ CrawlerConf, Tool }
 import id.kawalc1.clients.{ KawalC1Client, KawalPemiluClient }
 import id.kawalc1.database.ResultsTables
-import id.kawalc1.services.{ BlockingSupport, PhotoProcessor, TpsFetcher }
+import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import slick.jdbc
 import slick.jdbc.SQLiteProfile
 import slick.jdbc.SQLiteProfile.api._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.language.reflectiveCalls
 
@@ -25,7 +25,8 @@ object Crawler extends App with LazyLogging with BlockingSupport {
   val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  val processor = new PhotoProcessor(new KawalC1Client("http://localhost:8000"))
+  val processor =
+    new PhotoProcessor(new KawalC1Client("https://kawalc1.appspot.com"), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
   val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
   val resultsDatabase = Database.forConfig("verificationResults")
@@ -79,9 +80,7 @@ object Crawler extends App with LazyLogging with BlockingSupport {
       logger.info(s"Starting $phase at offset $offset, with batch size $batchSize")
       phase match {
         case "fetch" =>
-          new TpsFetcher(new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"), kelurahanDatabase, tpsDb)
-            .ingestAllTps()
-            .futureValue
+          process("fetch", processor.fetch, kelurahanDatabase, tpsDb, offset, batchSize)
         case "align" =>
           process("align", processor.align, tpsDb, resultsDatabase, offset, batchSize)
         case "extract" =>

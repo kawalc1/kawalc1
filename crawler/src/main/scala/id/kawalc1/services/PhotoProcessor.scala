@@ -4,11 +4,11 @@ import akka.NotUsed
 import akka.stream.Materializer
 import akka.stream.scaladsl.{ Source => StreamSource }
 import id.kawalc1
-import id.kawalc1.clients.{ Extraction, JsonSupport, KawalC1Client }
+import id.kawalc1.clients.{ Extraction, JsonSupport, KawalC1Client, KawalPemiluClient, Response }
 import id.kawalc1.database.ResultsTables.{ AlignResults, ExtractResults }
-import id.kawalc1.database.TpsTables.Tps
+import id.kawalc1.database.TpsTables.{ Kelurahan => KelurahanTable, Tps }
 import id.kawalc1.database._
-import id.kawalc1.{ FormType, ProbabilitiesResponse, SingleTps }
+import id.kawalc1.{ FormType, Kelurahan, KelurahanId, ProbabilitiesResponse, SingleTps }
 import org.json4s.native.Serialization
 import slick.dbio.Effect
 import slick.jdbc.SQLiteProfile
@@ -20,11 +20,14 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 case class AlignedPicture(url: String, imageSize: Int)
 
-class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, mat: Materializer) extends JsonSupport with BlockingSupport {
+class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient)(implicit val ex: ExecutionContext, mat: Materializer)
+  extends JsonSupport
+  with BlockingSupport {
   override def duration: FiniteDuration = 1.hour
 
   val ImageSize = 1280
   val FeatureAlgorithm = "akaze"
+  val url = "http://lh3.googleusercontent.com/HZ6AJF6YYqA2M5MXxH99XedoaE1Rk3-IelJEsnosBVPLdMb73X0w7T5_mWvExCsIZlI-cud3kSU9Lk7c700"
 
   private def transform[A, B](
     sourceDb: SQLiteProfile.backend.Database,
@@ -65,18 +68,43 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
     batchTransform[SingleTps, AlignResult, Tps](
       sourceDb,
       targetDb,
-      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value),
+      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value), //.filter(_.photo === url),
       alignPhoto,
       ResultsTables.upsertAlign,
       offset,
       batchSize)
   }
 
+  def fetch(sourceDb: SQLiteProfile.backend.Database, targetDb: SQLiteProfile.backend.Database, offset: Long, batchSize: Long): Long = {
+
+    batchTransform[KelurahanId, Seq[SingleTps], KelurahanTable](
+      sourceDb,
+      targetDb,
+      TpsTables.kelurahanQuery,
+      fetchTps,
+      TpsTables.upsertTps,
+      offset,
+      batchSize)
+  }
+
+  def fetchTps(kelurahan: Seq[KelurahanId]) = {
+    streamResults(kelurahan.map(_.idKel.toLong), getSingleLurah)
+  }
+
+  def getSingleLurah(number: Long) = {
+    kawalPemiluClient
+      .getKelurahan(number)
+      .map {
+        case Right(kel) => Kelurahan.toTps(kel)
+        case Left(_) => Seq.empty
+      }
+  }
+
   def extract(sourceDb: SQLiteProfile.backend.Database, targetDb: SQLiteProfile.backend.Database, offset: Long, batchSize: Long): Long =
     batchTransform[AlignResult, ExtractResult, AlignResults](
       sourceDb,
       targetDb,
-      ResultsTables.alignResultsQuery,
+      ResultsTables.alignResultsQuery.filter(_.photo === url),
       extractNumbers,
       ResultsTables.upsertExtract,
       offset,
@@ -189,7 +217,6 @@ class PhotoProcessor(client: KawalC1Client)(implicit val ex: ExecutionContext, m
     for {
       extracted <- {
         val extraction = Serialization.read[Extraction](res.response)
-        println(s"${res.config} - $res")
         client.processProbabilities(res.id, res.tps, extraction.numbers, res.config)
       }
     } yield {
