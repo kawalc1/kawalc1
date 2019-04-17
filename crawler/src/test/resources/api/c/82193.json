@@ -1,0 +1,158 @@
+{
+  "id": 82193,
+  "name": "UDAPI HILIR",
+  "depth": 4,
+  "parentIds": [
+    0,
+    81877,
+    82154,
+    82188
+  ],
+  "parentNames": [
+    "IDN",
+    "PAPUA BARAT",
+    "MANOKWARI",
+    "PRAFI"
+  ],
+  "children": [
+    [
+      1,
+      129,
+      127
+    ],
+    [
+      2,
+      147,
+      128
+    ],
+    [
+      3,
+      131,
+      121
+    ],
+    [
+      4,
+      135,
+      128
+    ],
+    [
+      5,
+      96,
+      107
+    ],
+    [
+      6,
+      97,
+      91
+    ],
+    [
+      7,
+      144,
+      132
+    ],
+    [
+      8,
+      118,
+      124
+    ],
+    [
+      9,
+      91,
+      84
+    ],
+    [
+      10,
+      107,
+      86
+    ],
+    [
+      11,
+      135,
+      140
+    ],
+    [
+      12,
+      140,
+      135
+    ]
+  ],
+  "data": {
+    "1": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1
+      },
+      "ts": 1555480063342,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/afg-VzBZnraxLIkgNZawA4eJTCd9VHmaKTl2atnxBgWG5JZIZa7m9K6oPIjh7Og9IdGMyBnSwswotuq8T_k": {
+          "c1": {
+            "halaman": "0",
+            "type": 11,
+            "plano": null
+          },
+          "sum": {
+            "pending": 0
+          },
+          "ts": 1555480063342
+        }
+      }
+    },
+    "3": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "pas2": 76,
+        "tSah": 0,
+        "sah": 244,
+        "pas1": 168
+      },
+      "ts": 1555477424267,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/9FM6PKUOteCfvMwu-MD-8-g5oAc_YI2xUwgx2bofXdGDapgGw7y0xQgC0E3ubsY9m4GCtQOGy1VfrsksYA": {
+          "c1": {
+            "plano": 1,
+            "halaman": "2",
+            "type": 1
+          },
+          "sum": {
+            "tSah": 0,
+            "sah": 244,
+            "pending": 0,
+            "pas2": 76,
+            "pas1": 168
+          },
+          "ts": 1555477424267
+        }
+      }
+    },
+    "6": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 215,
+        "error": 1
+      },
+      "ts": 1555478857371,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/Vj9DeqFwc3Mr_vbb5yo5edMnxpsIvWRLxNEbYJHz0G0JDM-8UgbgLQtLQqogqbPY9rTzClHd5DTcxJ5soA": {
+          "c1": {
+            "type": 1,
+            "plano": 1,
+            "halaman": "1"
+          },
+          "sum": {
+            "error": 1,
+            "jum": 215
+          },
+          "ts": 1555478857371
+        }
+      }
+    }
+  }
+}

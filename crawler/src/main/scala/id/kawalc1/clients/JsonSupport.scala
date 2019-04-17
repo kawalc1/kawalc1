@@ -17,8 +17,8 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
 
   private def parseSummary(c1: Option[C1], summary: JObject): Option[Summary] = {
     c1 match {
-      case Some(C1(Plano.YES, FormType.PPWP)) => Some(summary.extract[PresidentialLembar2])
-      case Some(C1(Plano.YES, FormType.DPR)) =>
+      case Some(C1(Some(Plano.YES), FormType.PPWP)) => Some(summary.extract[PresidentialLembar2])
+      case Some(C1(Some(Plano.YES), FormType.DPR)) =>
         val map = summary.extract[Map[String, Int]].head
         Some(Dpr(map._1, map._2))
       case None => Some(summary.extract[Pending])

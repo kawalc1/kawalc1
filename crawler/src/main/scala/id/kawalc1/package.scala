@@ -31,7 +31,7 @@ package object kawalc1 {
   )
 
   case class C1(
-      plano: Plano,
+      plano: Option[Plano],
       `type`: FormType
   )
 

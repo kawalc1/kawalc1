@@ -90,16 +90,15 @@ object TpsTables extends SlickValueEnumSupport {
               tps,
               Verification(
                 timestamp,
-                plano.map(x => C1(Plano.withValue(x), FormType.withValue(formType.get))),
+                plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get))),
                 sum,
                 (Common.apply _).tupled(common)))
         }
       }, { v: SingleTps =>
-        val plano = v.verification.c1.map(_.plano.value)
+        val plano = v.verification.c1.flatMap(_.plano.map(_.value))
         val formType = v.verification.c1.map(_.`type`.value)
         val maybeTyple = upackPresidential(v.verification.sum)
         val summaryFields = maybeTyple.getOrElse((None, None, None, None))
-        println(s"SHITTTT ! ${v.verification.sum}")
         val maybeDpr = upackDpr(v.verification.sum)
         val partai = maybeDpr.map(_.partai)
         val partaiVotes = maybeDpr.map(_.votes)

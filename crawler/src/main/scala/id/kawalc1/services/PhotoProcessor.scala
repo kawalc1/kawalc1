@@ -4,9 +4,10 @@ import akka.NotUsed
 import akka.stream.Materializer
 import akka.stream.scaladsl.{ Source => StreamSource }
 import id.kawalc1
+import id.kawalc1.Config.Application
 import id.kawalc1.clients.{ Extraction, JsonSupport, KawalC1Client, KawalPemiluClient, Response }
 import id.kawalc1.database.ResultsTables.{ AlignResults, ExtractResults }
-import id.kawalc1.database.TpsTables.{ Kelurahan => KelurahanTable, Tps }
+import id.kawalc1.database.TpsTables.{ Tps, Kelurahan => KelurahanTable }
 import id.kawalc1.database._
 import id.kawalc1.{ FormType, Kelurahan, KelurahanId, ProbabilitiesResponse, SingleTps }
 import org.json4s.native.Serialization
@@ -68,7 +69,7 @@ class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient
     batchTransform[SingleTps, AlignResult, Tps](
       sourceDb,
       targetDb,
-      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value).filter(_.photo === url),
+      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value),
       alignPhoto,
       ResultsTables.upsertAlign,
       offset,
@@ -80,7 +81,7 @@ class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient
     batchTransform[KelurahanId, Seq[SingleTps], KelurahanTable](
       sourceDb,
       targetDb,
-      TpsTables.kelurahanQuery,
+      TpsTables.kelurahanQuery, //.filter(_.idKel === 82193),
       fetchTps,
       TpsTables.upsertTps,
       offset,
@@ -104,7 +105,7 @@ class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient
     batchTransform[AlignResult, ExtractResult, AlignResults](
       sourceDb,
       targetDb,
-      ResultsTables.alignResultsQuery.filter(_.photo === url),
+      ResultsTables.alignResultsQuery,
       extractNumbers,
       ResultsTables.upsertExtract,
       offset,
@@ -201,10 +202,9 @@ class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient
   }
 
   private def streamResults[A: Manifest, B](toProcess: Seq[A], func: A => Future[B]): Future[Seq[B]] = {
-    val Parallelism = 10
     val futures: StreamSource[B, NotUsed] =
       StreamSource[A](toProcess.toList)
-        .mapAsync(Parallelism)(func)
+        .mapAsync(Application.Parallelism)(func)
 
     futures.runFold(Seq.empty[B])(_ :+ _)
   }

@@ -3,9 +3,10 @@ package id.kawalc1
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
+import id.kawalc1.Config.Application
 import id.kawalc1.cli.{ CrawlerConf, Tool }
 import id.kawalc1.clients.{ KawalC1Client, KawalPemiluClient }
-import id.kawalc1.database.ResultsTables
+import id.kawalc1.database.{ ResultsTables, TpsTables }
 import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import slick.jdbc
 import slick.jdbc.SQLiteProfile
@@ -25,11 +26,8 @@ object Crawler extends App with LazyLogging with BlockingSupport {
   val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val remote = "https://kawalc1.appspot.com"
-  private val local = "http://localhost:8000"
-
   val processor =
-    new PhotoProcessor(new KawalC1Client(local), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
+    new PhotoProcessor(new KawalC1Client(Application.kawalC1Url), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
   val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
   val resultsDatabase = Database.forConfig("verificationResults")
@@ -65,6 +63,8 @@ object Crawler extends App with LazyLogging with BlockingSupport {
       val phase = c.CreateDb.name
       val drop = c.CreateDb.drop()
       phase() match {
+        case "fetch" =>
+          createDb(TpsTables.tpsQuery.schema, tpsDb, drop)
         case "align" =>
           createDb(ResultsTables.alignResultsQuery.schema, resultsDatabase, drop)
         case "extract" =>
