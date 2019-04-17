@@ -67,6 +67,16 @@
       "total": "4"
     }
   ],
-  "roi": [],
+  "roi": [
+    {
+      "name": "tandaTanangSaksi",
+      "coordinates": [ 1122, 1462, 10, 1096 ]
+    },
+    {
+      "name": "nomorTPS",
+      "coordinates": [4, 34, 258, 550]
+    }
+
+  ],
   "referenceForm": "PPWP-2019-plano-smaller.jpg"
 }

@@ -53,6 +53,8 @@ def read_file(file_path):
         except Exception as e:
             logging.error("Could not open %s \n %s", os.path.abspath(file_path), e)
 
+def open_file(path, flags):
+    return storage.open(path, flags)
 
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)

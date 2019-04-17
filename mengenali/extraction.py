@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 import cv2
 import os.path
@@ -6,10 +8,9 @@ from PIL import Image
 from scipy import ndimage
 from os.path import join
 import json
-import io
 
 from kawalc1 import settings
-from mengenali import imageclassifier
+from mengenali import imageclassifier, io
 from skimage.morphology import skeletonize
 import sys
 import logging
@@ -402,7 +403,21 @@ def extract_biggest_box(digit):
     return digit[y1 - padding:y2 + padding, x1 - padding:x2 + padding]
 
 
-def extract2(file_name, source_path, target_path, dataset_path, config, store_files=True):
+def convert_key_points(keypoints, descriptors):
+    key_point_array = []
+    for i, point in enumerate(keypoints):
+        temp = (point.pt, point.size, point.angle, point.response, point.octave, point.class_id, descriptors[i])
+        key_point_array.append(temp)
+    return key_point_array
+
+
+def pickle_roi_features(img, image_name, ref_kp, ref_descriptors):
+    keypoint_array = convert_key_points(ref_kp, ref_descriptors)
+    h, w = img.shape
+    pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, io.open_file(image_name + '.akaze.p', "wb"))
+
+
+def extract_rois(file_name, source_path, target_path, dataset_path, config, store_files=True):
     original_image = read_image(file_name)
     unsharpened_image = unsharp_image(original_image)
 
@@ -426,6 +441,10 @@ def extract2(file_name, source_path, target_path, dataset_path, config, store_fi
         roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
         write_image(roi_file, roi_image)
+
+        akaze = cv2.AKAZE_create()
+        ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
+        pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
         if name == "namaPartai":
             most_similar_form, most_similar = detect_party(roi_image)
             party_name = {"party": most_similar_form, "confidence": most_similar}

@@ -10,5 +10,5 @@ class AuthenticationMiddleware(object):
 
     def __call__(self, request):
         auth = request.META.get('HTTP_AUTHORIZATION')
-        return self.get_response(request) if settings.SECRET == auth else HttpResponse('Unauthorized', status=401)
+        return self.get_response(request) if (settings.SECRET == auth or not settings.AUTHENTICATION_ENABLED) else HttpResponse('Unauthorized', status=401)
 

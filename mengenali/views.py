@@ -37,9 +37,9 @@ def download_file(uri, target_path):
 @csrf_exempt
 def extract(request):
     filename = request.GET.get("filename", "")
-    output = extraction.extract2(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                settings.STATIC_DIR,
-                                load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
+    output = extraction.extract_rois(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+                                     settings.STATIC_DIR,
+                                     load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
     return JsonResponse(output)
 
 
@@ -51,10 +51,10 @@ def extract_tps(request, kelurahan, tps, filename):
                                f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/')
     file_path = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/{filename}')
 
-    output = extraction.extract2(file_path, settings.STATIC_DIR,
-                                 path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/extracted'),
-                                 settings.STATIC_DIR,
-                                 load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
+    output = extraction.extract_rois(file_path, settings.STATIC_DIR,
+                                     path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/extracted'),
+                                     settings.STATIC_DIR,
+                                     load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
     return JsonResponse(output)
 
 
@@ -228,7 +228,7 @@ def transform(request):
             config_file = request.POST.get("configFile", "")
             output = json.loads(
                 registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                          config_file, "sift"))
+                                          config_file, "akaze"))
             output["configFile"] = config_file
         except Exception as e:
             logging.exception("this is not good!")
@@ -313,7 +313,7 @@ def process_form(config_name, posted_config, scan_url):
                                                     config_name)
         transform_output = json.loads(registered_file)
     transformed_url = transform_output["transformedUrl"]
-    extracted = json.loads(extraction.extract("transformed/" + transformed_url, settings.STATIC_DIR,
+    extracted = json.loads(extraction.extract_rois("transformed/" + transformed_url, settings.STATIC_DIR,
                                               path.join(settings.STATIC_DIR, 'extracted'),
                                               settings.STATIC_DIR, posted_config))
     digit_area = extracted["digitArea"]

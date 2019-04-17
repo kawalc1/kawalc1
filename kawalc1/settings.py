@@ -28,6 +28,7 @@ import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 # BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
 SECRET = os.environ.get('KAWALC1_SECRET', 'test')
+AUTHENTICATION_ENABLED = SECRET is not 'test'
 BASE_DIR = "."
 TARGET_EXTENSION = ".webp"
 PADDING_INNER = 2
