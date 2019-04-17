@@ -6,7 +6,6 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Query
 import akka.stream.Materializer
 import id.kawalc1.ProbabilitiesResponse
-import org.json4s.native.Serialization
 
 import scala.concurrent.{ ExecutionContext, Future }
 

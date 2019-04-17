@@ -25,8 +25,11 @@ object Crawler extends App with LazyLogging with BlockingSupport {
   val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
+  private val remote = "https://kawalc1.appspot.com"
+  private val local = "http://localhost:8000"
+
   val processor =
-    new PhotoProcessor(new KawalC1Client("https://kawalc1.appspot.com"), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
+    new PhotoProcessor(new KawalC1Client(local), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
   val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
   val resultsDatabase = Database.forConfig("verificationResults")

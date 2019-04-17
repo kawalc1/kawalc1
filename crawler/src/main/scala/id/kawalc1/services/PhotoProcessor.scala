@@ -68,7 +68,7 @@ class PhotoProcessor(client: KawalC1Client, kawalPemiluClient: KawalPemiluClient
     batchTransform[SingleTps, AlignResult, Tps](
       sourceDb,
       targetDb,
-      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value), //.filter(_.photo === url),
+      TpsTables.tpsQuery.filter(_.formType === FormType.PPWP.value).filter(_.photo === url),
       alignPhoto,
       ResultsTables.upsertAlign,
       offset,

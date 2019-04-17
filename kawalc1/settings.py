@@ -27,6 +27,7 @@ LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 # BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
+SECRET = os.environ.get('KAWALC1_SECRET', 'test')
 BASE_DIR = "."
 TARGET_EXTENSION = ".webp"
 PADDING_INNER = 2
@@ -88,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'kawalc1.authentication_middleware.AuthenticationMiddleware',
     # 'kawalc1.memory_usage.MemoryUsageMiddleware'
 ]
 
