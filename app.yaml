@@ -17,4 +17,4 @@ handlers:
 # [END django_app]
 
 automatic_scaling:
-  max_concurrent_requests: 6
+  max_concurrent_requests: 3

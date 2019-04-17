@@ -6,3 +6,10 @@ ENV_DIR/
 static/extracted
 static/transformed
 static/upload
+static/contoh
+static/temp
+temp/
+gatling/
+crawler/
+static/contoh-pilgub
+static/contoh-pilpres-2019

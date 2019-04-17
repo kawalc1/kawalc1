@@ -119,7 +119,7 @@ def get_outcome(output):
 def align(request, kelurahan, tps, filename):
     try:
         config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
-        matcher = request.GET.get('x', 'akaze').lower()
+        matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
         a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
         output = {**a}
 

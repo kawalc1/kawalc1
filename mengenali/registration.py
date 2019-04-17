@@ -68,8 +68,8 @@ def unpickle_keypoints(array):
     return keypoints, np.array(descriptors)
 
 
-def read_descriptors(reference_form_path):
-    with open(reference_form_path.replace('.jpg', '.p'), "rb") as pickled:
+def read_descriptors(reference_form_path, algorithm):
+    with open(reference_form_path.replace('.jpg', f'.{algorithm}.p'), "rb") as pickled:
         return pickle.load(pickled)
 
 
@@ -159,12 +159,12 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
     from datetime import datetime
     lap = datetime.now()
 
-    reference = read_image(reference_form_path)
-    logging.info("read reference %s", reference_form_path)
-    sift = cv2.AKAZE_create()
-    ref_kp, ref_descriptors = sift.detectAndCompute(reference, None)
+    key_points = read_descriptors(reference_form_path, "akaze")
+    ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
+    h = key_points['h']
+    w = key_points['w']
 
-
+    akaze = cv2.AKAZE_create()
 
     logging.info("AKAZE reference %s", (datetime.now() - lap).total_seconds())
     lap = datetime.now()
@@ -176,7 +176,7 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
     difference_hash = dhash(image)
     similarity = 0.0
     try:
-        im_kp, im_descriptors = sift.detectAndCompute(image, None)
+        im_kp, im_descriptors = akaze.detectAndCompute(image, None)
         logging.info("AKAZE image %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
@@ -204,12 +204,11 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
         # good_enough_match = check_match(homography, transform)
         good_enough_match = True
 
-        h, w = reference.shape
         image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
         logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
-        tr_kp, tr_descriptors = sift.detectAndCompute(image_transformed, None)
+        tr_kp, tr_descriptors = akaze.detectAndCompute(image_transformed, None)
         tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
         tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
         trkp1, trkp2 = zip(*tr_matches_filtered)
@@ -233,7 +232,7 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
 def register_image_brisk(file_path, reference_form_path, output_path, result_writer, target_path=""):
     from datetime import datetime
     lap = datetime.now()
-    key_points = read_descriptors(reference_form_path)
+    key_points = read_descriptors(reference_form_path, "brisk")
     ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
     h = key_points['h']
     w = key_points['w']

@@ -28,7 +28,7 @@ import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 # BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
 BASE_DIR = "."
-TARGET_EXTENSION = ".jpg"
+TARGET_EXTENSION = ".webp"
 PADDING_INNER = 2
 PADDING_OUTER = 8
 
@@ -88,6 +88,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'kawalc1.memory_usage.MemoryUsageMiddleware'
 ]
 
 ROOT_URLCONF = 'kawalc1.urls'

@@ -13,18 +13,18 @@ def convert_key_points(keypoints, descriptors):
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2019-plano.jpg")
+ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2019-plano-smaller.jpg")
 args = vars(ap.parse_args())
 
 image_path = args["image"]
 img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 scale = 1.0
 img = cv2.resize(img, None, fx=scale, fy=scale)
-brisk = cv2.BRISK_create()
+brisk = cv2.AKAZE_create()
 ref_kp, ref_descriptors = brisk.detectAndCompute(img, None)
 
 keypoint_array = convert_key_points(ref_kp, ref_descriptors)
 print(img.shape)
 h, w = img.shape
 
-pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, open(image_path.replace('.jpg', '.p'), "wb"))
+pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, open(image_path.replace('.jpg', '.akaze.p'), "wb"))
