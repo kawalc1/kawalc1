@@ -19,8 +19,8 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
     c1 match {
       case Some(C1(Plano.YES, FormType.PPWP)) => Some(summary.extract[PresidentialLembar2])
       case Some(C1(Plano.YES, FormType.DPR)) =>
-        val map = summary.extract[Map[String, Option[Int]]]
-        Some(Dpr(map))
+        val map = summary.extract[Map[String, Int]].head
+        Some(Dpr(map._1, map._2))
       case None => Some(summary.extract[Pending])
       case _ => None
     }
@@ -58,9 +58,7 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
 
   import org.json4s.DefaultFormats
 
-  val standardFormats: Formats = DefaultFormats + SummarySerialize ++ Seq(
-    Json4s.serializer(FormType),
-    Json4s.serializer(Plano))
+  val standardFormats: Formats = DefaultFormats + SummarySerialize ++ Seq(Json4s.serializer(FormType), Json4s.serializer(Plano))
 
   implicit val formats: Formats = standardFormats
 }

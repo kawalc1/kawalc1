@@ -94,6 +94,11 @@ package object kawalc1 {
       tSah: Int,
   ) extends Summary
 
+  case class Partai(
+      name: String,
+      amount: Int
+  )
+
   case class SingleSum(
       jum: Int,
   ) extends Summary
@@ -103,7 +108,8 @@ package object kawalc1 {
   ) extends Summary
 
   case class Dpr(
-      votes: Map[String, Option[Int]],
+      partai: String,
+      votes: Int
   ) extends Summary
 
   case class Pending(
