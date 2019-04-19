@@ -26,9 +26,12 @@ def __is_local():
 FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
 STORAGE_CLASS = 'django.core.files.storage.FileSystemStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
+
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
-# BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
+
+CREDS_FROM_FILE = os.environ.get('CREDS_FROM_FILE', False)
+if CREDS_FROM_FILE:
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 SECRET = os.environ.get('KAWALC1_SECRET', 'test')
 AUTHENTICATION_ENABLED = SECRET is not 'test'
 BASE_DIR = "."
