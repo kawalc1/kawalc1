@@ -63,14 +63,7 @@ SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 DEBUG = __is_local()
 
 ALLOWED_HOSTS = [
-    '159.203.92.77',
-    '138.197.58.54',
-    '0.0.0.0',
-    '127.0.0.1',
-    'localhost',
-    'kawalc1.org',
-    'www.kawalc1.org',
-    'kawalc1.appspot.com'
+    '*'
 ]
 
 # Application definition
