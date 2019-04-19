@@ -1,6 +1,8 @@
 package id.kawalc1.database
 
 import enumeratum.values.SlickValueEnumSupport
+import id.kawalc1.FormType
+import id.kawalc1.database.TpsTables.tpsQuery
 import slick.dbio.Effect
 import slick.jdbc.SQLiteProfile.api._
 import slick.lifted.Tag
@@ -122,6 +124,43 @@ object ResultsTables extends SlickValueEnumSupport {
   }
 
   val presidentialResultsQuery = TableQuery[PresidentialResults]
+
+  def singleTpsQuery(url: String) = {
+    TpsTables.tpsQuery.filter(_.photo === url)
+  }
+
+  def alignErrorQuery = {
+    val joined = for {
+      (a, b) <- TpsTables.tpsQuery join alignResultsQuery on (_.photo === _.photo)
+    } yield (a, b)
+    joined.filter(_._2.responseCode === 500).map(_._1)
+    //    joined.filter { case (a, b: AlignResults) => b.responseCode === 200 }.map(_._1).filter(_.formType === FormType.PPWP.value)
+  }
+
+  def extractErrorQuery = {
+    val joined = for {
+      (a, b) <- alignResultsQuery join extractResultsQuery on (_.photo === _.photo)
+    } yield (a, b)
+    joined
+      .filter(_._2.responseCode === 500)
+      .map(_._1)
+  }
+
+  def tpsToAlignQuery = {
+    val joined = for {
+      (a: TpsTables.Tps, b: Rep[Option[AlignResults]]) <- TpsTables.tpsQuery joinLeft alignResultsQuery on (_.photo === _.photo)
+    } yield (a, b)
+    joined.filter { case (a, b) => b.isEmpty }.map(_._1).filter(_.formType === FormType.PPWP.value)
+  }
+
+  def tpsToExtractQuery = {
+    val joined = for {
+      (a, b) <- alignResultsQuery.filter(_.alignQuality > 1.0) joinLeft extractResultsQuery on (_.photo === _.photo)
+    } yield (a, b)
+    joined
+      .filter { case (a, b) => b.isEmpty }
+      .map(_._1)
+  }
 
   def upsertAlign(results: Seq[AlignResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     results.map(alignResultsQuery.insertOrUpdate)

@@ -65,35 +65,30 @@ object TpsTables extends SlickValueEnumSupport {
     }
 
     override def * =
-      (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum).shaped <> ({ x =>
-        println(s"KAAAK !$x")
+      (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum).shaped <> ({
 
-        x match {
-
-          case (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum) =>
-            val sum = formType match {
-              case Some(FormType.PPWP.value) =>
-                presLembar2._1 match {
-                  case Some(_) =>
-                    Some(
-                      (PresidentialLembar2.apply _).tupled(presLembar2._1.get, presLembar2._2.get, presLembar2._3.get, presLembar2._4.get))
-                  case None => None
-                }
-              case Some(FormType.DPR.value) =>
-                Some(Dpr(partai.get, partaiJum.get))
-              case _ => None
-            }
-            SingleTps(
-              nama,
-              photo,
-              id,
-              tps,
-              Verification(
-                timestamp,
-                plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get))),
-                sum,
-                (Common.apply _).tupled(common)))
-        }
+        case (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum) =>
+          val sum = formType match {
+            case Some(FormType.PPWP.value) =>
+              presLembar2._1 match {
+                case Some(_) =>
+                  Some((PresidentialLembar2.apply _).tupled(presLembar2._1.get, presLembar2._2.get, presLembar2._3.get, presLembar2._4.get))
+                case None => None
+              }
+            case Some(FormType.DPR.value) =>
+              partai.map(x => Dpr(x, partaiJum.get))
+            case _ => None
+          }
+          SingleTps(
+            nama,
+            photo,
+            id,
+            tps,
+            Verification(
+              timestamp,
+              plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get))),
+              sum,
+              (Common.apply _).tupled(common)))
       }, { v: SingleTps =>
         val plano = v.verification.c1.flatMap(_.plano.map(_.value))
         val formType = v.verification.c1.map(_.`type`.value)

@@ -25,7 +25,7 @@ class RegistrationTest(unittest.TestCase):
             found_files = fnmatch.filter(file_names, '*' + c1_form + '.jpg')
         self.assertEqual(1, len(found_files), msg="only one file should match pattern")
         output_path = tempfile.gettempdir()
-        probability_map = extraction.extract(found_files[0], transformed_path, output_path, settings.STATIC_DIR, config)
+        probability_map = extraction.extract_deprecated(found_files[0], transformed_path, output_path, settings.STATIC_DIR, config)
         expected_json_file_path = './resources/probabilities/' + c1_form + '.json'
         with io.open(expected_json_file_path, 'r') as expected_json_file:
             expected = expected_json_file.read()

@@ -16,7 +16,6 @@ class MemoryUsageMiddleware(object):
 
         mem_after = psutil.Process(os.getpid()).memory_info().rss
         diff = mem_after - mem_before
-        if diff > THRESHOLD:
-            print('MEMORY USAGE', diff / 1024 / 1024, request.path)
+        print('MEMORY USAGE', diff / 1024 / 1024, request.path)
         return response
 

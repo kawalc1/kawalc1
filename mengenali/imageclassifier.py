@@ -17,7 +17,6 @@ def classify_number(input_file, order, layers):
 
 
 def classify_number_in_memory(cv_image, order, layers):
-
     input_image = Image.fromarray(cv_image)
     input_image = np.array(input_image.getdata()).reshape(input_image.size[0], input_image.size[1])
     input_image = input_image.astype(np.float32)

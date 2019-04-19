@@ -50,6 +50,7 @@ def extract_tps(request, kelurahan, tps, filename):
     base_url = request.GET.get('baseUrl',
                                f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/')
     file_path = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/{filename}')
+    # file_path = f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/{filename}'
 
     output = extraction.extract_rois(file_path, settings.STATIC_DIR,
                                      path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/extracted'),
@@ -133,12 +134,12 @@ def align(request, kelurahan, tps, filename):
 def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher):
     store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
     base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
-    if not store_files:
-        io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
-    else:
-        io.storage = get_storage_class(
-            'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
-            'storages.backends.gcloud.GoogleCloudStorage')()
+    # if not store_files:
+    #     io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
+    # else:
+    #     io.storage = get_storage_class(
+    #         'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
+    #         'storages.backends.gcloud.GoogleCloudStorage')()
     url = f'{base_url}/{filename}'
     output_path = path.join(settings.STATIC_DIR, 'transformed')
     from datetime import datetime
@@ -170,8 +171,8 @@ def download(request, kelurahan, tps, filename):
         start_lap = datetime.now()
 
         lap = datetime.now()
-        b = extraction.extract(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                               settings.STATIC_DIR, loaded_config, store_files) if extract_digits else {"numbers": []}
+        b = extraction.extract_deprecated(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
+                                          settings.STATIC_DIR, loaded_config, store_files) if extract_digits else {"numbers": []}
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
@@ -298,7 +299,7 @@ def process_form(config_name, posted_config, scan_url):
             registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
                                                         path.basename(url_to_download),
                                                         ref_form,
-                                                        config_name)
+                                                        config_name, "akaze")
         except Exception as err:
             logging.warning(Exception, err)
             continue
@@ -310,7 +311,7 @@ def process_form(config_name, posted_config, scan_url):
         registered_file = registration.process_file(None, 1, settings.STATIC_DIR,
                                                     path.basename(scan_url),
                                                     ref_form,
-                                                    config_name)
+                                                    config_name, "akaze")
         transform_output = json.loads(registered_file)
     transformed_url = transform_output["transformedUrl"]
     extracted = json.loads(extraction.extract_rois("transformed/" + transformed_url, settings.STATIC_DIR,

@@ -18,12 +18,14 @@ def __is_local():
     import socket
     host_name = socket.gethostname()
     print("local hostname: ", host_name)
-    return host_name.endswith(".local")
+    return False
+    # return host_name.endswith(".local")
 
 
 
 FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
+STORAGE_CLASS = 'django.core.files.storage.FileSystemStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 # BASE_DIR = pathlib.Path(os.getenv('BASEDIR', '..'))
@@ -58,7 +60,7 @@ VERSION = 'v0.9.1-alpha'
 SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = __is_local()
 
 ALLOWED_HOSTS = [
     '159.203.92.77',
@@ -91,7 +93,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'kawalc1.authentication_middleware.AuthenticationMiddleware',
-    # 'kawalc1.memory_usage.MemoryUsageMiddleware'
+    'kawalc1.memory_usage.MemoryUsageMiddleware'
 ]
 
 ROOT_URLCONF = 'kawalc1.urls'

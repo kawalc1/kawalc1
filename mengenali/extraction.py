@@ -286,7 +286,7 @@ def extract_digit_area(base_file_name, digit_image, numbers, target_path):
     return digit_area_file
 
 
-def extract(file_name, source_path, target_path, dataset_path, config, store_files=True):
+def extract_deprecated(file_name, source_path, target_path, dataset_path, config, store_files=True):
     original_image = read_image(file_name)
     unsharpened_image = unsharp_image(original_image)
 
@@ -332,14 +332,14 @@ def extract(file_name, source_path, target_path, dataset_path, config, store_fil
 
                 probability_matrix = imageclassifier.classify_number_in_memory(thresholded_tif, order, layers)
                 extracted_struct = {"probabilities": probability_matrix[0].tolist(),
-                                    "filename": image_url('extracted/' + digit_file)}
+                                    "filename": image_url(join(target_path, digit_file))}
 
                 numbers[number_id]["extracted"].append(extracted_struct)
             else:
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "signatures": signature_result}
+    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "signatures": signature_result}
     logging.info(result)
 
     return result
@@ -383,10 +383,15 @@ def extract_biggest_box(digit):
         w = slice_y.stop - slice_y.start
         h = slice_x.stop - slice_x.start
         surface = w * h
-        # print(i,"-", surface, "-", w, h, " x: (", slice_y.start, ",", slice_y.stop, ") y: (", slice_x.start, ",", slice_x.stop, ")")
         if surface > biggest_surface:
             biggest_surface = surface
             biggest_feature = i
+
+    if biggest_feature == -1:
+        logging.info("no biggest feature found, cropping based on configured coordinates")
+        padding = settings.PADDING_OUTER + settings.PADDING_INNER
+        return digit[0 + padding:height - padding, 0 + padding:width - padding]
+
     slice_y, slice_x = blobs[biggest_feature]
 
     y1 = slice_y.start
@@ -418,23 +423,13 @@ def pickle_roi_features(img, image_name, ref_kp, ref_descriptors):
 
 
 def extract_rois(file_name, source_path, target_path, dataset_path, config, store_files=True):
-    original_image = read_image(file_name)
-    unsharpened_image = unsharp_image(original_image)
-
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
-    # create structuring element for the connected component analysis
-
-    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
-    numbers = config["numbers"]
-    if store_files:
-        digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path)
-    else:
-        digit_area_file = ""
+    original_image = read_image(file_name)
 
     roi = config["roi"]
-    party_name  = {}
+    party_name = {}
     for region in roi:
         name = region["name"]
         digit = region["coordinates"]
@@ -449,7 +444,17 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
             most_similar_form, most_similar = detect_party(roi_image)
             party_name = {"party": most_similar_form, "confidence": most_similar}
 
+    unsharpened_image = unsharp_image(original_image)
+    del original_image
+
+
+    # create structuring element for the connected component analysis
+    structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    numbers = config["numbers"]
+    digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path)
     cut_numbers = cut_digits(unsharpened_image, numbers)
+    del unsharpened_image
+
     pre_process_digits(cut_numbers, structuring_element)
 
     order, layers = imageclassifier.parse_network(join(dataset_path, "datasets/C1TrainedNet.xml"))
@@ -462,9 +467,9 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
             if digit is not None:
                 extracted_file_name = f'{base_file_name}~{str(number_id)}~{str(i)}'
                 digit_file = extracted_file_name + settings.TARGET_EXTENSION
-                extracted = join(target_path, digit_file)
-                if store_files:
-                    write_image(extracted, digit)
+                # extracted = join(target_path, digit_file)
+                # if store_files:
+                #     write_image(extracted, digit)
 
                 ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
@@ -474,14 +479,14 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
 
                 probability_matrix = imageclassifier.classify_number_in_memory(thresholded_tif, order, layers)
                 extracted_struct = {"probabilities": probability_matrix[0].tolist(),
-                                    "filename": image_url('extracted/' + digit_file)}
+                                    "filename": image_url(join(target_path, digit_file))}
 
                 numbers[number_id]["extracted"].append(extracted_struct)
             else:
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": image_url('extracted/' + digit_area_file), "party": party_name }
+    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name }
     logging.info(result)
 
     return result

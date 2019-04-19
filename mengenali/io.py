@@ -16,7 +16,7 @@ from django.core.files.storage import get_storage_class
 
 from kawalc1 import settings
 
-storage = get_storage_class('django.core.files.storage.FileSystemStorage')()
+storage = get_storage_class(settings.STORAGE_CLASS)()
 
 
 def is_url(file_path):
@@ -45,6 +45,7 @@ def read_image(file_path):
 
 def read_file(file_path):
     if is_url(file_path):
+        logging.warning("downloading from %s", file_path)
         return urllib.request.urlopen(file_path, cafile=certifi.where())
     else:
         logging.info("reading %s", os.path.abspath(file_path))
@@ -71,4 +72,4 @@ def write_image(file_path, image):
         storage.save(file_path, ContentFile(image))
 
 def image_url(file_path):
-    return file_path if settings.LOCAL else storage.url(path.join(settings.STATIC_DIR, file_path))
+    return file_path if settings.LOCAL else storage.url(file_path)

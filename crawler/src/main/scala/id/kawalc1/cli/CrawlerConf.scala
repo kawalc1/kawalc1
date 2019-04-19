@@ -6,9 +6,15 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
   import CrawlerConf._
 
   val Process = new Subcommand("process") {
-    val phase = choice(Phases :+ "fetch")
+    val phase = choice(Phases)
     val offset = opt[Int](required = false)
+    val limit = opt[Int](required = false)
     val batch = opt[Int](required = false)
+    val threads = opt[Int](required = false)
+  }
+
+  val Stats = new Subcommand("stats") {
+    val on = choice(Seq("duplicates"))
   }
 
   val CreateDb = new Subcommand("create-db") {
@@ -18,10 +24,11 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
 
   addSubcommand(Process)
   addSubcommand(CreateDb)
+  addSubcommand(Stats)
   verify()
 }
 
 object CrawlerConf {
-  val Phases: Seq[String] = Seq("fetch", "align", "extract", "presidential")
+  val Phases: Seq[String] = Seq("test", "fetch", "align", "extract", "presidential")
 
 }

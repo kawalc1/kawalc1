@@ -5,9 +5,10 @@ import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
 import id.kawalc1.cli.{ CrawlerConf, Tool }
-import id.kawalc1.clients.{ KawalC1Client, KawalPemiluClient }
-import id.kawalc1.database.{ ResultsTables, TpsTables }
+import id.kawalc1.clients.{ JsonSupport, KawalC1Client, KawalPemiluClient }
+import id.kawalc1.database.{ AlignResult, ResultsTables, TpsTables }
 import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
+import org.json4s.native.Serialization
 import slick.jdbc
 import slick.jdbc.SQLiteProfile
 import slick.jdbc.SQLiteProfile.api._
@@ -16,7 +17,9 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.language.reflectiveCalls
 
-object Crawler extends App with LazyLogging with BlockingSupport {
+case class BatchParams(start: Long, batchSize: Long, threads: Int, limit: Option[Int])
+
+object Crawler extends App with LazyLogging with BlockingSupport with JsonSupport {
   override def duration: FiniteDuration = 1.hour
 
   implicit val system: ActorSystem = ActorSystem("crawler")
@@ -26,20 +29,23 @@ object Crawler extends App with LazyLogging with BlockingSupport {
   val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
+  private val localKawalC1 = new KawalC1Client(Application.kawalC1UrlLocal)
+  private val remoteKawalC1 = new KawalC1Client(Application.kawalC1Url)
+  private val kawalPemiluClient = new KawalPemiluClient("https://kawal-c1.appspot.com/api/c")
   val processor =
-    new PhotoProcessor(new KawalC1Client(Application.kawalC1Url), new KawalPemiluClient("https://kawal-c1.appspot.com/api/c"))
+    new PhotoProcessor(kawalPemiluClient)
   val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
   val resultsDatabase = Database.forConfig("verificationResults")
 
   def process(
     phase: String,
-    func: (SQLiteProfile.backend.Database, SQLiteProfile.backend.Database, Long, Long) => Long,
+    func: (SQLiteProfile.backend.Database, SQLiteProfile.backend.Database, KawalC1Client, BatchParams) => Long,
     sourceDb: SQLiteProfile.backend.Database,
     targetDb: SQLiteProfile.backend.Database,
-    start: Long,
-    batchSize: Long): Unit = {
-    val amount = func(sourceDb, targetDb, start, batchSize)
+    client: KawalC1Client,
+    params: BatchParams): Unit = {
+    val amount = func(sourceDb, targetDb, client, params)
     logger.info(s"Processed $amount in phase $phase")
   }
 
@@ -58,13 +64,31 @@ object Crawler extends App with LazyLogging with BlockingSupport {
   }
 
   myTool.registerSubcmdHandler(
+    conf.Stats,
+    (c: CrawlerConf) => {
+      val on = c.Stats.on()
+      on match {
+        case "duplicates" =>
+          val aligned = resultsDatabase.run(ResultsTables.alignResultsQuery.result).futureValue
+          val grouped: Map[String, Seq[AlignResult]] = aligned.groupBy((x: AlignResult) => s"${x.id},${x.tps},${x.hash}")
+          val duplicates: Map[String, Seq[AlignResult]] = grouped.filter {
+            case (hash, group) =>
+              val details = group.map(x => s"${x.id},${x.tps}").toSet
+              if (details.size > 1) println("HUHHHHH!!!")
+              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${}")
+              group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
+          }
+          println(s"Size ${duplicates.size}")
+      }
+    })
+  myTool.registerSubcmdHandler(
     conf.CreateDb,
     (c: CrawlerConf) => {
       val phase = c.CreateDb.name
       val drop = c.CreateDb.drop()
       phase() match {
         case "fetch" =>
-          createDb(TpsTables.tpsQuery.schema, tpsDb, drop)
+          createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
         case "align" =>
           createDb(ResultsTables.alignResultsQuery.schema, resultsDatabase, drop)
         case "extract" =>
@@ -74,22 +98,33 @@ object Crawler extends App with LazyLogging with BlockingSupport {
       }
     })
 
+  val urlie = "http://lh3.googleusercontent.com/6TSO9UKWsCHekURjdjoWOEKwYbUjUUsWUJqYVB_3VWVmm9TLvfoaXbPXLmgE8p0PbQtsEQ1OFaDC0FRSMbw"
   myTool.registerSubcmdHandler(
     conf.Process,
     (c: CrawlerConf) => {
       val phase = c.Process.phase()
       val offset = c.Process.offset.toOption.getOrElse(0)
       val batchSize = c.Process.batch.toOption.getOrElse(50)
-      logger.info(s"Starting $phase at offset $offset, with batch size $batchSize")
+      val threads = c.Process.threads.toOption.getOrElse(10)
+      val limit = c.Process.limit.toOption
+      val batchParams = BatchParams(offset, batchSize, threads, limit)
+      logger.info(s"Starting $phase with ${Serialization.write(batchParams)}")
       phase match {
+        case "test" =>
+          val howMany = resultsDatabase.run(ResultsTables.alignErrorQuery.result).futureValue.length
+          println(s"This much: $howMany")
         case "fetch" =>
-          process("fetch", processor.fetch, kelurahanDatabase, tpsDb, offset, batchSize)
+          process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, localKawalC1, batchParams)
         case "align" =>
-          process("align", processor.align, tpsDb, resultsDatabase, offset, batchSize)
+          val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery.result).futureValue.length
+          logger.info(s"Will align $howMany forms")
+          process("align", processor.align, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
         case "extract" =>
-          process("extract", processor.extract, resultsDatabase, resultsDatabase, offset, batchSize)
+          val howMany = resultsDatabase.run(ResultsTables.tpsToExtractQuery.result).futureValue.length
+          logger.info(s"Will extract $howMany forms with $batchParams")
+          process("extract", processor.extract, resultsDatabase, resultsDatabase, remoteKawalC1, batchParams)
         case "presidential" =>
-          process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, offset, batchSize)
+          process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
       }
     })
   myTool.run()

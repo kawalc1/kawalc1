@@ -48,7 +48,9 @@ trait HttpClientSupport extends LazyLogging {
     } yield {
       resp.status match {
         case code: StatusCode if code.isSuccess() => parseJson[A](str)
-        case errorCode => Left(Response(errorCode.intValue(), str))
+        case errorCode =>
+          logger.info(s"Error response: $errorCode")
+          Left(Response(errorCode.intValue(), str))
       }
     }
   }
