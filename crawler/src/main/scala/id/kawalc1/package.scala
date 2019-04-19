@@ -32,7 +32,8 @@ package object kawalc1 {
 
   case class C1(
       plano: Option[Plano],
-      `type`: FormType
+      `type`: FormType,
+      halaman: Option[String]
   )
 
   case class Verification(
@@ -91,7 +92,7 @@ package object kawalc1 {
       pas1: Int,
       pas2: Int,
       sah: Int,
-      tSah: Int,
+      tSah: Int
   ) extends Summary
 
   case class Partai(

@@ -74,8 +74,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           val duplicates: Map[String, Seq[AlignResult]] = grouped.filter {
             case (hash, group) =>
               val details = group.map(x => s"${x.id},${x.tps}").toSet
-              if (details.size > 1) println("HUHHHHH!!!")
-              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${}")
+              if (details.size > 1) throw new Exception(s"HUHHHHH!!! ${details}")
+              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${group.head.id}")
               group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
           }
           println(s"Size ${duplicates.size}")
@@ -118,11 +118,11 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "align" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery.result).futureValue.length
           logger.info(s"Will align $howMany forms")
-          process("align", processor.align, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
+          process("align", processor.align, resultsDatabase, resultsDatabase, remoteKawalC1, batchParams)
         case "extract" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToExtractQuery.result).futureValue.length
           logger.info(s"Will extract $howMany forms with $batchParams")
-          process("extract", processor.extract, resultsDatabase, resultsDatabase, remoteKawalC1, batchParams)
+          process("extract", processor.extract, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
         case "presidential" =>
           process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
       }

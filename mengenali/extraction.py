@@ -467,9 +467,9 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
             if digit is not None:
                 extracted_file_name = f'{base_file_name}~{str(number_id)}~{str(i)}'
                 digit_file = extracted_file_name + settings.TARGET_EXTENSION
-                # extracted = join(target_path, digit_file)
-                # if store_files:
-                #     write_image(extracted, digit)
+                extracted = join(target_path, digit_file)
+                if store_files:
+                    write_image(extracted, digit)
 
                 ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"

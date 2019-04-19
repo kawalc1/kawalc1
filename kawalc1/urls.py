@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from mengenali.views import download, transform, extract, get_probabilities_result, custom, align, extract_tps, \
+from mengenali.views import download, transform, extract_upload, get_probabilities_result, custom, align, extract_tps, \
     get_probabilities_result_parsable
 from django.http import HttpResponseRedirect
 
@@ -30,5 +30,5 @@ urlpatterns = [
     path('custom.wsgi', custom),
     path('processprobs', get_probabilities_result_parsable),
     path('processprobs.wsgi', get_probabilities_result),
-    path('extract.wsgi', extract)
+    path('extract.wsgi', extract_upload)
 ]

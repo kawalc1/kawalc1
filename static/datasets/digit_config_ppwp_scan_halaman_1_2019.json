@@ -1,0 +1,83 @@
+{
+  "numbers": [
+    {
+      "id": "0",
+      "shortName": "jokowi",
+      "displayName": "Ir. H. Jokowidodo",
+      "digitCoordinates": [
+[220,294, 884,928],
+[218,294, 928,972],
+[218,294, 972,1016]
+      ]
+    },
+    {
+      "id": "1",
+      "shortName": "prabowo",
+      "displayName": "H. Prabowo Subianto",
+      "digitCoordinates": [
+[347,425, 884,928],
+[347,425, 928,972],
+[347,425, 972,1016]
+      ]
+    },
+    {
+      "id": "2",
+      "shortName": "jumlah",
+      "displayName": "Jumlah Sah",
+      "digitCoordinates": [
+[560,598, 884,928],
+[560,598, 928,972],
+[560,598, 972,1016]
+
+      ]
+    },
+    {
+      "id": "3",
+      "shortName": "tidakSah",
+      "displayName": "Jumlah Tidak Sah",
+      "digitCoordinates": [
+[662,700, 884,928],
+[662,700, 928,972],
+[662,700, 972,1016]
+      ]
+    },
+    {
+      "id": "4",
+      "shortName": "jumlahSeluruh",
+      "displayName": "Jumlah Seluruh",
+      "digitCoordinates": [
+[762,802, 884,928],
+[762,802, 928,972],
+[762,802, 972,1016]
+      ]
+    }
+  ],
+  "checkSums": [
+    {
+      "sigma": [
+        "0",
+        "1"
+      ],
+      "total": "2"
+    },
+    {
+      "sigma": [
+        "2",
+        "3"
+      ],
+      "total": "4"
+    }
+  ],
+  "roi": [
+    {
+      "name": "tandaTanangSaksi",
+      "coordinates": [ 1122, 1462, 10, 1096 ]
+    },
+    {
+      "name": "nomorTPS",
+      "coordinates": [4, 34, 258, 550]
+    }
+
+  ],
+  "referenceForm": "PPWP-2019-scan-halaman2.jpg"
+}

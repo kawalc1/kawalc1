@@ -6,3 +6,9 @@ ENV_DIR/
 static/extracted
 static/transformed
 static/upload
+gatling/
+crawler/
+project/
+target/
+temp/
+tests/

@@ -18,8 +18,7 @@ def __is_local():
     import socket
     host_name = socket.gethostname()
     print("local hostname: ", host_name)
-    return False
-    # return host_name.endswith(".local")
+    return host_name.endswith(".local")
 
 def patch_https_connection_pool(**constructor_kwargs):
     """
@@ -39,7 +38,8 @@ def patch_https_connection_pool(**constructor_kwargs):
 
     poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
 
-patch_https_connection_pool(maxsize=256)
+POOL_SIZE=int(os.environ.get('POOL_SIZE', '64'))
+patch_https_connection_pool(maxsize=POOL_SIZE)
 
 
 FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)

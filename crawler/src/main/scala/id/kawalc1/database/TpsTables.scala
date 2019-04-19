@@ -31,6 +31,7 @@ object TpsTables extends SlickValueEnumSupport {
     def photo = column[String]("photo", O.PrimaryKey)
     def plano = column[Option[Short]]("plano")
     def formType = column[Option[Short]]("form_type")
+    def halaman = column[Option[String]]("halaman")
 
     def common = (cakupan, pending, error, janggal)
 
@@ -65,9 +66,9 @@ object TpsTables extends SlickValueEnumSupport {
     }
 
     override def * =
-      (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum).shaped <> ({
+      (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum).shaped <> ({
 
-        case (id, nama, tps, timestamp, photo, plano, formType, common, presLembar2, partai, partaiJum) =>
+        case (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum) =>
           val sum = formType match {
             case Some(FormType.PPWP.value) =>
               presLembar2._1 match {
@@ -86,14 +87,15 @@ object TpsTables extends SlickValueEnumSupport {
             tps,
             Verification(
               timestamp,
-              plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get))),
+              plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
               sum,
               (Common.apply _).tupled(common)))
       }, { v: SingleTps =>
         val plano = v.verification.c1.flatMap(_.plano.map(_.value))
         val formType = v.verification.c1.map(_.`type`.value)
-        val maybeTyple = upackPresidential(v.verification.sum)
-        val summaryFields = maybeTyple.getOrElse((None, None, None, None))
+        val halaman = v.verification.c1.flatMap(_.halaman)
+        val maybePresidential = upackPresidential(v.verification.sum)
+        val summaryFields = maybePresidential.getOrElse((None, None, None, None))
         val maybeDpr = upackDpr(v.verification.sum)
         val partai = maybeDpr.map(_.partai)
         val partaiVotes = maybeDpr.map(_.votes)
@@ -108,6 +110,7 @@ object TpsTables extends SlickValueEnumSupport {
           v.photo,
           plano,
           formType,
+          halaman,
           Common.unapply(common).get,
           summaryFields,
           partai,

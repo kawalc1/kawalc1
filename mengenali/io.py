@@ -72,4 +72,4 @@ def write_image(file_path, image):
         storage.save(file_path, ContentFile(image))
 
 def image_url(file_path):
-    return file_path if settings.LOCAL else storage.url(file_path)
+    return file_path.replace("./static/", "") if settings.LOCAL else storage.url(file_path)

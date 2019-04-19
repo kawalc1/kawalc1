@@ -1,0 +1,820 @@
+{
+  "id": 20780,
+  "name": "SUNGAI MEDANG",
+  "depth": 4,
+  "parentIds": [
+    0,
+    17404,
+    20758,
+    20775
+  ],
+  "parentNames": [
+    "IDN",
+    "SUMATERA SELATAN",
+    "KOTA PRABUMULIH",
+    "CAMBAI"
+  ],
+  "children": [
+    [
+      1,
+      125,
+      125
+    ],
+    [
+      2,
+      109,
+      128
+    ],
+    [
+      3,
+      131,
+      133
+    ],
+    [
+      4,
+      120,
+      124
+    ],
+    [
+      5,
+      114,
+      145
+    ],
+    [
+      6,
+      120,
+      123
+    ],
+    [
+      7,
+      123,
+      130
+    ],
+    [
+      8,
+      123,
+      116
+    ],
+    [
+      9,
+      126,
+      118
+    ],
+    [
+      10,
+      120,
+      130
+    ],
+    [
+      11,
+      117,
+      129
+    ],
+    [
+      12,
+      128,
+      137
+    ],
+    [
+      13,
+      117,
+      113
+    ],
+    [
+      14,
+      122,
+      125
+    ],
+    [
+      15,
+      102,
+      113
+    ],
+    [
+      16,
+      114,
+      97
+    ],
+    [
+      17,
+      132,
+      109
+    ]
+  ],
+  "data": {
+    "1": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 199,
+        "pas2": 121,
+        "tSah": 19,
+        "sah": 180,
+        "pas1": 59
+      },
+      "ts": 1555537504533,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/hkVxUgPWGjdBFJcj4hsqXSv59N_eRmV4Gypt0CQN6EQqC_LnLCnqjlukAnGZ2OaNo6OKhpLnF505rLJYqcVl": {
+          "ts": 1555537355171,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 199
+          }
+        },
+        "http://lh3.googleusercontent.com/5eK-IPhDCKsOEPGNVrFrN6hYn_XKlX12x7wBTbGIqAz3mM3txHbh9A-Tx6ktaFLKbXcNYIw87R2p0WkZSjQ": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "tSah": 19,
+            "sah": 180,
+            "pending": 0,
+            "pas2": 121,
+            "pas1": 59
+          },
+          "ts": 1555537504533
+        }
+      }
+    },
+    "2": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 177,
+        "pas2": 113,
+        "tSah": 12,
+        "sah": 165,
+        "pas1": 52
+      },
+      "ts": 1555537542846,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/tQOk7wJTf1GzluHig6VK5szXXZ3HowbA5qwnC6xT2Chs8UZlArZ_M5IlFU83WYGjk8Wm24xoNwJjP4JcD_4": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 177
+          },
+          "ts": 1555537523895
+        },
+        "http://lh3.googleusercontent.com/tz_4guI0BRboFgp3nkusMOmzXKoFAmpXuiM1ZvSFphB-Ke7KtcwruLw-rFeVZgjsf2yGGyXYLx2E6TL_Mpae": {
+          "sum": {
+            "pas1": 52,
+            "tSah": 12,
+            "sah": 165,
+            "pending": 0,
+            "pas2": 113
+          },
+          "ts": 1555537542846,
+          "c1": {
+            "plano": 2,
+            "halaman": "2",
+            "type": 1
+          }
+        }
+      }
+    },
+    "3": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 200,
+        "pas2": 141,
+        "tSah": 9,
+        "sah": 191,
+        "pas1": 50
+      },
+      "ts": 1555537586077,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/ucwVXbh3w4Scda6ffwHt3znOPDJi80qvJHSPcEUks86GXUCSRF71-7_vzHtzA5rCB82uQvNOWRV_EoUnHw": {
+          "c1": {
+            "plano": 2,
+            "halaman": "1",
+            "type": 1
+          },
+          "sum": {
+            "jum": 200
+          },
+          "ts": 1555537570147
+        },
+        "http://lh3.googleusercontent.com/UbVKK9VGB5QQ27bf8U1bb9kH9DEgTv_HS50kaAsphUuXIkHCWRovnIfJHi6r0NvVp5ctIj2mgjSNn9tVYcA": {
+          "sum": {
+            "tSah": 9,
+            "sah": 191,
+            "pending": 0,
+            "pas2": 141,
+            "pas1": 50
+          },
+          "ts": 1555537586077,
+          "c1": {
+            "halaman": "2",
+            "type": 1,
+            "plano": 2
+          }
+        }
+      }
+    },
+    "4": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 149,
+        "pas2": 111,
+        "tSah": 8,
+        "sah": 141,
+        "pas1": 30
+      },
+      "ts": 1555537681695,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/bjOeC2Cf9jP1GsuHhBBSbut-f6rUbuQ0Cmi7UEPQuWu2s0L9_3gzmorjO5WMLfeV4Jr68ELEm1K8DaIIhw": {
+          "ts": 1555537599318,
+          "c1": {
+            "plano": 2,
+            "halaman": "1",
+            "type": 1
+          },
+          "sum": {
+            "jum": 149
+          }
+        },
+        "http://lh3.googleusercontent.com/W9JxSAr6EDv5obnVjaDfSWN4TxC3cLvofsCmM5EDkBEYN7hCOcsUBqF-qPRdMqd6J15WyHBc_pVCB6tctKA": {
+          "c1": {
+            "plano": 2,
+            "halaman": "2",
+            "type": 1
+          },
+          "sum": {
+            "pas1": 30,
+            "tSah": 8,
+            "sah": 141,
+            "pending": 0,
+            "pas2": 111
+          },
+          "ts": 1555537681695
+        }
+      }
+    },
+    "5": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 192,
+        "pas2": 128,
+        "tSah": 12,
+        "sah": 180,
+        "pas1": 52
+      },
+      "ts": 1555537714895,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/ARdZm4shX2YN3THIreTVom9QnDQHbhiq4f9oZI6FB3z_wWmJf4cs00cgZqh5A8Z4f-ZoL4Kec57DZ5kC1KY": {
+          "c1": {
+            "halaman": "1",
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "jum": 192
+          },
+          "ts": 1555537695379
+        },
+        "http://lh3.googleusercontent.com/8StJSKwo-nGJumK1z6HS59NUTWxtHxsgQlCUqokH1AT9ydkLT5JZ2WSXdyCFMxXjNTeTZmNU0zj4_9mTsns": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "pas2": 128,
+            "pas1": 52,
+            "tSah": 12,
+            "sah": 180,
+            "pending": 0
+          },
+          "ts": 1555537714895
+        }
+      }
+    },
+    "6": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 193,
+        "tSah": 3,
+        "sah": 190,
+        "pas1": 53,
+        "pas2": 137
+      },
+      "ts": 1555537769996,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/QKCrTF-wAdMmErt2bBSiFToSjWHhh4-RAyX2PT5c4I35QINUSEiUQGzZOilpBK82lEbg57CgG7MZCJ4snQ": {
+          "sum": {
+            "jum": 193
+          },
+          "ts": 1555537734730,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          }
+        },
+        "http://lh3.googleusercontent.com/QhqzZ8f-MRkrG21xDC2kxvH_pZX7QakstR5lwOsI0yWV2aFxT1swJAnrcG2OUBk7LSSe_b9LfToeURZIQA": {
+          "ts": 1555537769996,
+          "c1": {
+            "plano": 2,
+            "halaman": "2",
+            "type": 1
+          },
+          "sum": {
+            "pas2": 137,
+            "pas1": 53,
+            "tSah": 3,
+            "sah": 190,
+            "pending": 0
+          }
+        }
+      }
+    },
+    "7": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 190,
+        "pas1": 51,
+        "pas2": 131,
+        "tSah": 8,
+        "sah": 182
+      },
+      "ts": 1555537804722,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/tpX3SQuGOH7YnlskQ-GLOTEFJ3O-UyRrhK2_4mRZ7X0kVCT_5lKP2kGBcQ4G5AxV83520XI720lbXR4Na2N4": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 190
+          },
+          "ts": 1555537789401
+        },
+        "http://lh3.googleusercontent.com/zdiv0S3w4WU7PldzWdB06cI8C7wmi1yG5R2KfJMOZpdJA_trU40jLp4RGVJYOluZgeGc2qYfChbNvZhM-ts": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "pas2": 131,
+            "pas1": 51,
+            "tSah": 8,
+            "sah": 182,
+            "pending": 0
+          },
+          "ts": 1555537804722
+        }
+      }
+    },
+    "8": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 173,
+        "tSah": 8,
+        "sah": 165,
+        "pas1": 46,
+        "pas2": 119
+      },
+      "ts": 1555537840104,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/fZKfzvrORxBPxiqxsgWW-cz3Nx-1tHbO0H3W4CMuAvgfX56B8QF_neXKMM7kIe3OKQbVn7LLKfGaAQKlIlE": {
+          "sum": {
+            "jum": 173
+          },
+          "ts": 1555537824558,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          }
+        },
+        "http://lh3.googleusercontent.com/b-Mjhwv0TbIFi7m64jYWu_2ZeDYPnTKA1ztrBlfBnW_Rq49izAx3v3Kug0dKeKDWFQpt-wgO1IoQW3T9crQ": {
+          "ts": 1555537840104,
+          "c1": {
+            "halaman": "2",
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "pas1": 46,
+            "tSah": 8,
+            "sah": 165,
+            "pending": 0,
+            "pas2": 119
+          }
+        }
+      }
+    },
+    "9": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 262,
+        "pas1": 50,
+        "pas2": 139,
+        "tSah": 8,
+        "sah": 189
+      },
+      "ts": 1555537865036,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/pF0STVsg1TW08IL9_nTOYZGz6wnrD3QxJoEvxOwyoCO4DCg7XLz52vqGB-rpH0LdvSq8TynOV3SWB3JRJQ": {
+          "ts": 1555537851119,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 262
+          }
+        },
+        "http://lh3.googleusercontent.com/_nKavzZI3JdCqgVcjK_WBGffP4S_SaO9gnx6uFDXTwhQnJXMPm01GGUtuU4HolPdO0nA7bSwSMDyApw52Ag": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "tSah": 8,
+            "sah": 189,
+            "pending": 0,
+            "pas2": 139,
+            "pas1": 50
+          },
+          "ts": 1555537865036
+        }
+      }
+    },
+    "10": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 187,
+        "tSah": 8,
+        "sah": 179,
+        "pas1": 38,
+        "pas2": 141
+      },
+      "ts": 1555537892015,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/dqzqbWehWu549US3mpziPsM7RNm24puPqv8jsW58CXaTRXI26hsCmln5V-WBZvRkAoMJeye8gx6ykfmiuQ": {
+          "sum": {
+            "jum": 187
+          },
+          "ts": 1555537879194,
+          "c1": {
+            "plano": 2,
+            "halaman": "1",
+            "type": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/wUgeJWVXoSO1ACf3Bl1WbuQLY-yGFLgK6xjc4EC9-3NUzSRVKUZ8d6fvr3hWN3xipUW9OiaToRHySfq5h5AF": {
+          "sum": {
+            "pas2": 141,
+            "pas1": 38,
+            "tSah": 8,
+            "sah": 179,
+            "pending": 0
+          },
+          "ts": 1555537892015,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          }
+        }
+      }
+    },
+    "11": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 171,
+        "tSah": 4,
+        "sah": 167,
+        "pas1": 46,
+        "pas2": 121
+      },
+      "ts": 1555537916396,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/mP8R8bHJHWQebR6MthLFIBM2UAKGVjVKbo3GFHZS2IkV7kfnQq7eg6KSYR1_sdBGnVkMX9ekhuEbZ7V5_A": {
+          "ts": 1555537904604,
+          "c1": {
+            "halaman": "1",
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "jum": 171
+          }
+        },
+        "http://lh3.googleusercontent.com/FPwmBYB1vnKrMzuRj_6D0w4QVkLBF3y41RglBN5EsjgaAgfGAtCKDlIyQYg8c329Q4A_tnWld1NxckR3mfAN": {
+          "ts": 1555537916396,
+          "c1": {
+            "halaman": "2",
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "pas1": 46,
+            "tSah": 4,
+            "sah": 167,
+            "pending": 0,
+            "pas2": 121
+          }
+        }
+      }
+    },
+    "12": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 164,
+        "tSah": 9,
+        "sah": 155,
+        "pas1": 30,
+        "pas2": 125
+      },
+      "ts": 1555537974154,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/Qk2CA_RK80sUX0uCmGXK_rOMB2t7C9DxtHy_j-qqpzXF0aeGwSWm8E_P_tKTNPpIfIIVaZ58YO7oWewjzK4": {
+          "sum": {
+            "jum": 164
+          },
+          "ts": 1555537927692,
+          "c1": {
+            "type": 1,
+            "plano": 1,
+            "halaman": "1"
+          }
+        },
+        "http://lh3.googleusercontent.com/-vpm-hJqILFgbmn-pWqN3iv6ficx_p02wJeyy1oJlZPGPd8gawf8rnQ7ixvUVdPmvGDj31L0S4miAyKBoCk": {
+          "ts": 1555537974154,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "pas2": 125,
+            "pas1": 30,
+            "tSah": 9,
+            "sah": 155,
+            "pending": 0
+          }
+        }
+      }
+    },
+    "13": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 180,
+        "pas1": 52,
+        "pas2": 121,
+        "tSah": 7,
+        "sah": 173
+      },
+      "ts": 1555537999923,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/DmX-xHSzYwWHXGcI7e6CF6gGtEouUeQOAWZMcNR8gugFmoiU7X1m1EZbcfye0gTwvSzV-Ajj3JdzmF-vZQ": {
+          "sum": {
+            "jum": 180
+          },
+          "ts": 1555537988302,
+          "c1": {
+            "plano": 2,
+            "halaman": "1",
+            "type": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/LjVvgbOwECJcnudQgXYZlgX0V1fnTQZiXz8mHHaPjn15hVEIKKzHhIVNKngPSOZ216CGelDa4RIhGJiNaflk": {
+          "ts": 1555537999923,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "tSah": 7,
+            "sah": 173,
+            "pending": 0,
+            "pas2": 121,
+            "pas1": 52
+          }
+        }
+      }
+    },
+    "14": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 192,
+        "tSah": 4,
+        "sah": 188,
+        "pas1": 51,
+        "pas2": 137
+      },
+      "ts": 1555538052089,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/EI-VjfVjiTBsuuONJgkb-mhrfSuX5l0A2Ehr9eKREnjWV5gQSA0BW2utZgF7qZWAGnIAfbQPq1Q8pb20I08": {
+          "ts": 1555538036232,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 192
+          }
+        },
+        "http://lh3.googleusercontent.com/9CBphHakmhzFTBGLK5nmjyHbSumW_swnrUpcY2fi-KFN7An9OUohSagJvjDAKTvyvDvIpxCiSiigecofPw": {
+          "sum": {
+            "pas1": 51,
+            "tSah": 4,
+            "sah": 188,
+            "pending": 0,
+            "pas2": 137
+          },
+          "ts": 1555538052089,
+          "c1": {
+            "plano": 2,
+            "halaman": "2",
+            "type": 1
+          }
+        }
+      }
+    },
+    "15": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 166,
+        "pas1": 61,
+        "pas2": 98,
+        "tSah": 7,
+        "sah": 159
+      },
+      "ts": 1555536615448,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/jHjseImuXPCu-xwbl1leaHhE4jrK5acUnjtNCkrZof1uO_NmQTDxvwx9jdPbDGs_c7v9OUaBEdzZbUAjUw": {
+          "c1": {
+            "halaman": "1",
+            "type": 1,
+            "plano": 2
+          },
+          "sum": {
+            "jum": 166
+          },
+          "ts": 1555536595953
+        },
+        "http://lh3.googleusercontent.com/dLYnHrs2x1SYykYEAUPm7CBoVVRW6petoMgg1gEQkojmwtmf1DXWLlh5-9e731eEWUJq3YGipLxzCzi6Cds": {
+          "sum": {
+            "tSah": 7,
+            "sah": 159,
+            "pending": 0,
+            "pas2": 98,
+            "pas1": 61
+          },
+          "ts": 1555536615448,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          }
+        }
+      }
+    },
+    "16": {
+      "sum": {
+        "janggal": 0,
+        "cakupan": 1,
+        "pending": 0,
+        "jum": 188,
+        "pas1": 83,
+        "pas2": 102,
+        "tSah": 3,
+        "sah": 185
+      },
+      "ts": 1555538158637,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/1SdPc7sSI3-LhnctiLSoI0YNDoT7XqY4LmkgMQ-eQKAAGW-PwEohcLWC-uffV9ABVR4KvJ4taa5QGK2Tpw": {
+          "sum": {
+            "jum": 188
+          },
+          "ts": 1555538085057,
+          "c1": {
+            "plano": 2,
+            "halaman": "1",
+            "type": 1
+          }
+        },
+        "http://lh3.googleusercontent.com/eVH6gPPfa7oAsdN7XJyNtol37awQQpCiX7TnT-1tU23KVz-mRedry1V28WpAlRN8ocoJk3PecjX_BI8PWg": {
+          "ts": 1555538158637,
+          "c1": {
+            "plano": 2,
+            "halaman": "2",
+            "type": 1
+          },
+          "sum": {
+            "tSah": 3,
+            "sah": 185,
+            "pending": 0,
+            "pas2": 102,
+            "pas1": 83
+          }
+        }
+      }
+    },
+    "17": {
+      "sum": {
+        "pending": 0,
+        "janggal": 0,
+        "cakupan": 1,
+        "jum": 184,
+        "pas1": 87,
+        "pas2": 96,
+        "tSah": 1,
+        "sah": 183
+      },
+      "ts": 1555538191251,
+      "c1": null,
+      "photos": {
+        "http://lh3.googleusercontent.com/Cv1y5st7gkRfkj1WSfIuQ1_sI2TBmiLnYq0i-K99tZ-J3gIYSJ1quHxLzsFBv1tOWbanIGNfwmmOkX8p3A": {
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "1"
+          },
+          "sum": {
+            "jum": 184
+          },
+          "ts": 1555538174284
+        },
+        "http://lh3.googleusercontent.com/MVbEckgHpX78p5kjGvRQ4HAtXVqWDQNja7OSksyRvTeJ5Iz7Db6kHtHr2jFWq9yuBZBqCyhmP3l8fLRl1PM": {
+          "ts": 1555538191251,
+          "c1": {
+            "type": 1,
+            "plano": 2,
+            "halaman": "2"
+          },
+          "sum": {
+            "tSah": 1,
+            "sah": 183,
+            "pending": 0,
+            "pas2": 96,
+            "pas1": 87
+          }
+        }
+      }
+    }
+  }
+}

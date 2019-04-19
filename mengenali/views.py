@@ -35,11 +35,12 @@ def download_file(uri, target_path):
 
 
 @csrf_exempt
-def extract(request):
+def extract_upload(request):
     filename = request.GET.get("filename", "")
+    config_file = request.GET.get("configFile", 'digit_config_pilpres_2019.json') if request.GET else json.loads(request.body.decode('utf-8'))["configFile"]
     output = extraction.extract_rois(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                      settings.STATIC_DIR,
-                                     load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
+                                     load_config(config_file))
     return JsonResponse(output)
 
 
@@ -55,7 +56,7 @@ def extract_tps(request, kelurahan, tps, filename):
     output = extraction.extract_rois(file_path, settings.STATIC_DIR,
                                      path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/extracted'),
                                      settings.STATIC_DIR,
-                                     load_config(request.GET.get("configFile", 'digit_config_pilpres_2019.json')))
+                                     config)
     return JsonResponse(output)
 
 

@@ -25,7 +25,7 @@ def print_result(result_writer, iteration, homography, transform, result):
 def create_response(image_path, success, hash, similarity):
     transformed_path = path.join('static/transformed', image_path)
     return json.dumps(
-        {'transformedUrl': image_url(transformed_path), 'transformedUri': path.join('.', 'static', transformed_path),
+        {'transformedUrl': image_url(transformed_path), 'transformedUri': transformed_path,
          'similarity': similarity, 'hash': str(hash), 'success': success},
         separators=(',', ':'))
 
