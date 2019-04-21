@@ -2,53 +2,62 @@
   "numbers": [
     {
       "id": "0",
-      "shortName": "jokowi",
-      "displayName": "Ir. H. Jokowidodo",
+      "shortName": "dataLL",
+      "displayName": "Data Laki-Laki",
       "digitCoordinates": [
-[220,294, 884,928],
-[218,294, 928,972],
-[218,294, 972,1016]
+[464,506, 620,664],
+[464,506, 664,708],
+[464,506, 708,752]
       ]
     },
     {
       "id": "1",
-      "shortName": "prabowo",
-      "displayName": "H. Prabowo Subianto",
+      "shortName": "dataP",
+      "displayName": "Data Perempuan",
       "digitCoordinates": [
-[347,425, 884,928],
-[347,425, 928,972],
-[347,425, 972,1016]
+[464,506, 754,796],
+[464,506, 796,840],
+[464,506, 842,886]
       ]
     },
     {
       "id": "2",
-      "shortName": "jumlah",
-      "displayName": "Jumlah Sah",
+      "shortName": "dataJumlah",
+      "displayName": "Data Jumlah",
       "digitCoordinates": [
-[560,598, 884,928],
-[560,598, 928,972],
-[560,598, 972,1016]
-
+[464,506, 886,928],
+[464,506, 928,974],
+[464,506, 974,1018]
       ]
     },
     {
       "id": "3",
-      "shortName": "tidakSah",
-      "displayName": "Jumlah Tidak Sah",
+      "shortName": "phpLL",
+      "displayName": "Pengguna Hak Pilih Laki-Laki",
       "digitCoordinates": [
-[662,700, 884,928],
-[662,700, 928,972],
-[662,700, 972,1016]
+[672,714, 620,664],
+[672,714, 664,708],
+[672,714, 708,752]
       ]
     },
     {
       "id": "4",
-      "shortName": "jumlahSeluruh",
-      "displayName": "Jumlah Seluruh",
+      "shortName": "phpPerempuan",
+      "displayName": "Pengguna Hak Pilih Perempuan",
       "digitCoordinates": [
-[762,802, 884,928],
-[762,802, 928,972],
-[762,802, 972,1016]
+[674,714, 752,796],
+[672,714, 796,842],
+[672,714, 842,886]
+      ]
+    },
+    {
+      "id": "5",
+      "shortName": "phpJumlah",
+      "displayName": "Pengguna Hak Pilih Jumlah",
+      "digitCoordinates": [
+[672,714, 884,930],
+[672,714, 930,974],
+[672,714, 974,1018]
       ]
     }
   ],
@@ -62,22 +71,22 @@
     },
     {
       "sigma": [
-        "2",
-        "3"
+        "3",
+        "4"
       ],
-      "total": "4"
+      "total": "5"
     }
   ],
   "roi": [
     {
       "name": "tandaTanangSaksi",
-      "coordinates": [ 1122, 1462, 10, 1096 ]
+      "coordinates": [1216,1472, 30,1018]
     },
     {
       "name": "nomorTPS",
-      "coordinates": [4, 34, 258, 550]
+      "coordinates": [102,146, 270,526]
     }
 
   ],
-  "referenceForm": "PPWP-2019-scan-halaman2.jpg"
+  "referenceForm": "PPWP-2019-scan-halaman1.jpg"
 }

@@ -60,7 +60,7 @@ class ProcessProbabilitiesTest(unittest.TestCase):
         json_data_yosua = json.load(json_file_yosua)
         json_file_yosua.close()
 
-        config_file = open('../static/datasets/digit_config_ppwp_scan_halaman_1_2019.json')
+        config_file = open('../static/datasets/digit_config_ppwp_scan_halaman_2_2019.json')
         config = json.load(config_file)
         outcomes = pp.get_possible_outcomes_for_config(config, json_data_yosua["probabilities"], 11, print_outcome_parsable)
         presidential = outcomes[0][0]['numbers']

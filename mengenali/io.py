@@ -57,6 +57,9 @@ def read_file(file_path):
 def open_file(path, flags):
     return storage.open(path, flags)
 
+def write_string(file_path, string):
+    storage.save(file_path, ContentFile(string))
+
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)
     if extension.lower() == ".webp":
@@ -72,4 +75,4 @@ def write_image(file_path, image):
         storage.save(file_path, ContentFile(image))
 
 def image_url(file_path):
-    return file_path.replace("./static/", "") if settings.LOCAL else storage.url(file_path)
+    return file_path.replace("static/transformed", "https://storage.googleapis.com/kawalc1/static/transformed") if settings.LOCAL else storage.url(file_path)

@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from datetime import datetime
 
+from mengenali.io import write_string
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 
 
@@ -108,13 +109,19 @@ def find_number(output, name):
                     return v['number']
 
 
-def get_outcome(output):
+def get_outcome(output, config_file):
+    print(config_file)
+    if config_file == "digit_config_ppwp_scan_halaman_2_2019.json":
+        return {
+            'prabowo': find_number(output, 'prabowo'),
+            'jokowi': find_number(output, 'jokowi'),
+            'jumlah': find_number(output, 'jumlah'),
+            'tidakSah': find_number(output, 'tidakSah'),
+            'confidence': output['probabilityMatrix'][0][0]['confidence']
+        }
     return {
-        'prabowo': find_number(output, 'prabowo'),
-        'jokowi': find_number(output, 'jokowi'),
-        'jumlah': find_number(output, 'jumlah'),
-        'tidakSah': find_number(output, 'tidakSah'),
-        'confidence': output['probabilityMatrix'][0][0]['confidence']
+        'phpJumlah': find_number(output, 'phpJumlah'),
+        'confidence': output['probabilityMatrix'][1][0]['confidence']
     }
 
 
@@ -156,24 +163,40 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
 def download(request, kelurahan, tps, filename):
     config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
     matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
-    loaded_config = load_config(config_file)
+
     try:
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
         calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'true').lower())
         store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
 
+        config_files = config_file.split(',')
+        config_file = config_files[0]
+
         start_lap = datetime.now()
         a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
-        logging.error("1: Align  %s", (datetime.now() - start_lap).total_seconds())
+        print("Sim1", a["similarity"])
+        if a["similarity"] < 100:
+            config_file = config_files[1]
+            second = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+            print("Sim2", second["similarity"])
+            if second["similarity"] > a["similarity"]:
+                a = second
+                print("second", config_file)
+            else:
+                config_file = config_files[0]
+                print("first", config_file)
+
+        logging.info("1: Align  %s", (datetime.now() - start_lap).total_seconds())
 
         lap = datetime.now()
         tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
         file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
 
+        loaded_config = load_config(config_file)
         b = extraction.extract_rois(file_path, settings.TRANSFORMED_DIR, path.join(tps_dir, 'extracted'),
                                     settings.STATIC_DIR, loaded_config, store_files)
 
-        logging.error("2: Extract  %s", (datetime.now() - lap).total_seconds())
+        logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
         probabilities = []
@@ -188,29 +211,30 @@ def download(request, kelurahan, tps, filename):
 
         c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
                                                           settings.CATEGORIES_COUNT, print_outcome) if calculate_numbers else {}
-        logging.error("3: Probs  %s", (datetime.now() - lap).total_seconds())
+        logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
-            del b['numbers']
+            # del b['numbers']
             # del b['signatures']
             b['probabilityMatrix'] = c
 
         output = {**a, **b}
 
-        outcome = get_outcome(output)
+        outcome = get_outcome(output, config_file)
         output['outcome'] = outcome
 
-        # if not store_files:
-            # io.storage.delete("static")
-            # del output['configFile']
-            # del output['probabilityMatrix']
-            # del output['digitArea']
-            # del output['transformedUri']
-            # del output['transformedUrl']
         output['success'] = bool(outcome['confidence'] > 0.8)
 
         output['duration'] = (datetime.now() - start_lap).total_seconds()
         output['configFile'] = config_file
+        response_dir = path.join(settings.TRANSFORMED_DIR, f'response/{kelurahan}/{tps}/{filename}.json')
+        write_string(response_dir, json.dumps(output, indent=4))
+        del output["numbers"]
+        del output["transformedUri"]
+        del output["probabilityMatrix"]
+        del output["duration"]
+        del output["party"]
+        del output["success"]
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")

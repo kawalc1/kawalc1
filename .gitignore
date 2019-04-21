@@ -44,3 +44,4 @@ kawalc1-google-credentials.json
 temp/
 pycharm.env
 app_prod.yaml
+output/

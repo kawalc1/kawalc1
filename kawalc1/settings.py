@@ -45,7 +45,7 @@ patch_https_connection_pool(maxsize=POOL_SIZE)
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
 LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
-STORAGE_CLASS = 'django.core.files.storage.FileSystemStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
+STORAGE_CLASS = 'kawalc1.storage.OverwriteStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
 print("Storing in", STORAGE_CLASS)
 
 import os

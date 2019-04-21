@@ -16,3 +16,4 @@ project/
 target/
 temp/
 tests/
+output/

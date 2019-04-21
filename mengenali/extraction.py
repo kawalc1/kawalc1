@@ -488,7 +488,8 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name }
+    digit_path = head.replace("output/", "")
+    result = {"numbers": numbers, "digitArea": f'https://storage.googleapis.com/kawalc1/static/{digit_path}/extracted/{digit_area_file}', "party": party_name }
     logging.info(result)
 
     return result
