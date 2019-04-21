@@ -47,16 +47,18 @@ def possible_numbers_for_digit_confidence_matrix(digit_confidence_matrix, thresh
                     new_possible_numbers.append((new_number, new_confidence))
 
             possible_numbers = new_possible_numbers
-
     return possible_numbers
 
 
 def get_possible_end_results(list_of_probs):
     total_probs = []
 
+
     for probs in list_of_probs:
+        # if not total_probs:
         if not total_probs:
             total_probs = map(lambda x: ([x[0]], x[1]), probs)
+
         else:
             new_total_probs = []
 
@@ -66,7 +68,6 @@ def get_possible_end_results(list_of_probs):
                                             current_prob[1] * high_prob[1]))
 
             total_probs = new_total_probs
-
     return total_probs
 
 
@@ -238,11 +239,11 @@ def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
 
     def matrix_to_number(digit_confidence_matrix):
         possible_values = possible_numbers_for_digit_confidence_matrix(digit_confidence_matrix)
-        return map(lambda x: make_number(x[0], x[1]), possible_values)
+        return list(map(lambda x: make_number(x[0], x[1]), possible_values))
 
-    all_numbers = map(matrix_to_number, all_numbers_matrix[0:number_count])
+    all_numbers = list(map(matrix_to_number, all_numbers_matrix[0:number_count]))
+
     possibilities = get_possible_end_results(all_numbers)
-
     def reduce_probability_if_checksum_is_wrong(p):
         probabilities = p[0]
         confidence = p[1]
@@ -253,7 +254,7 @@ def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
             logging.info("numbers don't add up :-(")
             return probabilities, confidence * .005
 
-    bigger_than_zero = filter(lambda x: x[1] > 0, possibilities)
+    bigger_than_zero = list(filter(lambda x: x[1] > 0, possibilities))
     results = [reduce_probability_if_checksum_is_wrong(x) for x in bigger_than_zero]
 
     results.sort(key=lambda x: -x[1])
