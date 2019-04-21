@@ -1,7 +1,7 @@
 package id.kawalc1.database
 
 import enumeratum.values.SlickValueEnumSupport
-import id.kawalc1.FormType
+import id.kawalc1.{ FormType, Plano }
 import id.kawalc1.database.TpsTables.tpsQuery
 import slick.dbio.Effect
 import slick.jdbc.SQLiteProfile.api._
@@ -146,11 +146,14 @@ object ResultsTables extends SlickValueEnumSupport {
       .map(_._1)
   }
 
-  def tpsToAlignQuery = {
+  def tpsToAlignQuery(plano: Plano, halaman: String = "2") = {
     val joined = for {
       (a: TpsTables.Tps, b: Rep[Option[AlignResults]]) <- TpsTables.tpsQuery joinLeft alignResultsQuery on (_.photo === _.photo)
     } yield (a, b)
-    joined.filter { case (a, b) => b.isEmpty }.map(_._1).filter(_.formType === FormType.PPWP.value)
+    joined
+      .filter { case (a, b) => b.isEmpty }
+      .map(_._1)
+      .filter(x => x.formType === FormType.PPWP.value && x.halaman === halaman)
   }
 
   def tpsToExtractQuery = {

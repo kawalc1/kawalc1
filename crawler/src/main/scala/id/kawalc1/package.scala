@@ -8,10 +8,11 @@ import scala.collection.immutable
 
 package object kawalc1 {
 
-  def formTypeToConfig(formType: FormType) = formType match {
-    case FormType.PPWP => "digit_config_pilpres_exact_smaller_2019.json"
-    case FormType.DPR  => ???
-    case _             => ???
+  def formTypeToConfig(formType: FormType, plano: Option[Plano], halaman: Option[String]) = (formType, plano, halaman) match {
+    case (FormType.PPWP, Some(Plano.YES), Some("2")) => "digit_config_pilpres_exact_smaller_2019.json"
+    case (FormType.PPWP, Some(Plano.NO), Some("2"))  => "digit_config_ppwp_scan_halaman_1_2019.json"
+    case (FormType.DPR, _, _)                        => ???
+    case _                                           => ???
   }
 
   case class NumberSet(

@@ -11,5 +11,6 @@ object Config {
     //    val kawalC1Url: String = "http://43.252.136.101:8001"
     //    val kawalC1Url: String = "http://localhost:8000"
     val kawalC1UrlLocal: String = "http://localhost:8000"
+    val kawalC1AlternativeUrlLocal: String = "http://localhost:8010"
   }
 }

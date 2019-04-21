@@ -63,7 +63,6 @@ class KawalC1Client(baseUrl: String)(implicit
       Probabilities(n.id, n.extracted.map(_.probabilities))
     }
     val request = ProbabilitiesRequest(configFile = formConfig, probabilities = probs)
-    println(s"${Serialization.write(request)}")
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
   }
 

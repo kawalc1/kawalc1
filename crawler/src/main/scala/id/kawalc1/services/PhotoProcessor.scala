@@ -77,7 +77,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       sourceDb,
       targetDb,
       client,
-      ResultsTables.tpsToAlignQuery,
+      ResultsTables.tpsToAlignQuery(Plano.YES),
       //      ResultsTables.alignErrorQuery,
       //      ResultsTables.singleTpsQuery(
       //        "http://lh3.googleusercontent.com/9AcbXtQtluaHTyiBi76trcZFqsvG0OP2fw8TIMzuyASPGFcwXJKs-eijqC-CpJv07TwE3_XkSN2hkFJT0Q"),
@@ -150,8 +150,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   private def alignSinglePhoto(tps: SingleTps, client: KawalC1Client): Future[AlignResult] = {
     val photo: Array[String] = tps.photo.split("/")
     val photoUrl = photo(photo.length - 1)
-    val formType = tps.verification.c1.get.`type`
-    val formConfig = kawalc1.formTypeToConfig(formType)
+    val c1 = tps.verification.c1.get
+    val formConfig = kawalc1.formTypeToConfig(c1.`type`, c1.plano, c1.halaman)
     client.alignPhoto(tps.kelurahanId, tps.tpsId, photoUrl, ImageSize, formConfig, FeatureAlgorithm).map {
       case Right(t) =>
         t.transformedUrl match {

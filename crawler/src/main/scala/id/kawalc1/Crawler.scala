@@ -1,5 +1,7 @@
 package id.kawalc1
 
+import java.io.{ File, PrintWriter }
+
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
@@ -30,6 +32,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val myTool = new Tool(conf)
 
   private val localKawalC1 = new KawalC1Client(Application.kawalC1UrlLocal)
+  private val alternativeLocalKawalC1 = new KawalC1Client(Application.kawalC1AlternativeUrlLocal)
   private val remoteKawalC1 = new KawalC1Client(Application.kawalC1Url)
   private val kawalPemiluClient = new KawalPemiluClient("https://kawal-c1.appspot.com/api/c")
   val processor =
@@ -70,14 +73,26 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
       on match {
         case "duplicates" =>
           val aligned = resultsDatabase.run(ResultsTables.alignResultsQuery.result).futureValue
-          val grouped: Map[String, Seq[AlignResult]] = aligned.groupBy((x: AlignResult) => s"${x.id},${x.tps},${x.hash}")
+          val grouped: Map[String, Seq[AlignResult]] = aligned.groupBy((x: AlignResult) => s"${x.hash.getOrElse("")}")
+          val pw = new PrintWriter(new File("dups.csv"))
           val duplicates: Map[String, Seq[AlignResult]] = grouped.filter {
-            case (hash, group) =>
+            case (hash, group: Seq[AlignResult]) =>
               val details = group.map(x => s"${x.id},${x.tps}").toSet
-              if (details.size > 1) throw new Exception(s"HUHHHHH!!! ${details}")
-              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${group.head.id}")
-              group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
+
+              if (details.size > 1) {
+                grouped(hash).foreach { x: AlignResult =>
+                  val first = group.head
+                  val foto = first.photo
+                  pw.println(s"${x.photo},${x.id},${x.tps},${details.size},$hash")
+                }
+
+              }
+              group.size > 1
           }
+          pw.close()
+          //              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${group.head.id}")
+          //              group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
+
           println(s"Size ${duplicates.size}")
       }
     })
@@ -116,7 +131,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "fetch" =>
           process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, localKawalC1, batchParams)
         case "align" =>
-          val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery.result).futureValue.length
+          val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
           logger.info(s"Will align $howMany forms")
           process("align", processor.align, resultsDatabase, resultsDatabase, remoteKawalC1, batchParams)
         case "extract" =>
@@ -124,7 +139,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           logger.info(s"Will extract $howMany forms with $batchParams")
           process("extract", processor.extract, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
         case "presidential" =>
-          process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
+          process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, alternativeLocalKawalC1, batchParams)
       }
     })
   myTool.run()

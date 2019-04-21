@@ -8,7 +8,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
 
-class KawalRC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
+class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
   "KawalC1Client" should {
 
     "parse the `5.json` response" in {
@@ -53,11 +53,13 @@ class KawalRC1ClientSpecs extends WordSpec with Matchers with ScalaFutures with 
     "parse the `20780.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/api/c/20780.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)
-      kelurahan.data.keySet.size shouldBe 3
+      kelurahan.data.keySet.size shouldBe 17
       val tps = kelurahan.data(1)
-      tps.photos.keySet.size shouldBe 4
+      tps.photos.keySet.size shouldBe 2
       val verification = tps.photos.head._2
-      verification.sum.get shouldBe PresidentialLembar2(456, 123, 579, 2)
+      verification.sum.get shouldBe SingleSum(199)
+      val second = tps.photos.tail.head._2
+      second.sum.get shouldBe PresidentialLembar2(59, 121, 180, 19)
     }
   }
 }
