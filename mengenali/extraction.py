@@ -489,7 +489,7 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
                 numbers[number_id]["extracted"].append(empty_struct)
 
     digit_path = head.replace("output/", "")
-    result = {"numbers": numbers, "digitArea": f'https://storage.googleapis.com/kawalc1/static/{digit_path}/extracted/{digit_area_file}', "party": party_name }
+    result = {"numbers": numbers, "digitArea": f'https://storage.googleapis.com{digit_path}/extracted/{digit_area_file}', "party": party_name }
     logging.info(result)
 
     return result
