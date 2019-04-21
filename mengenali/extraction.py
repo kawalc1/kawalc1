@@ -276,13 +276,14 @@ def extract_additional_areas(numbers, digit_image, base_file_name, target_path, 
     return digit_area_file, signature_result
 
 
-def extract_digit_area(base_file_name, digit_image, numbers, target_path):
+def extract_digit_area(base_file_name, digit_image, numbers, target_path, store_files=True):
     digit_area_file = f'{base_file_name}~digit-area{settings.TARGET_EXTENSION}'
     digit_area_path = join(target_path, digit_area_file)
     logging.info("writing %s", digit_area_path)
     digit_roi = find_numbers_roi(numbers, digit_image)
     logging.info("dimensions %s", digit_roi.shape)
-    write_image(digit_area_path, digit_roi)
+    if store_files:
+        write_image(digit_area_path, digit_roi)
     return digit_area_file
 
 
@@ -435,7 +436,8 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
         digit = region["coordinates"]
         roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
-        write_image(roi_file, roi_image)
+        if store_files:
+            write_image(roi_file, roi_image)
 
         akaze = cv2.AKAZE_create()
         ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
@@ -451,7 +453,7 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
     # create structuring element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     numbers = config["numbers"]
-    digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path)
+    digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path, store_files)
     cut_numbers = cut_digits(unsharpened_image, numbers)
     del unsharpened_image
 

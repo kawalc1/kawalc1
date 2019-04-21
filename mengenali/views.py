@@ -132,15 +132,9 @@ def align(request, kelurahan, tps, filename):
     return JsonResponse(output)
 
 
-def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher):
+def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, store_files=True):
     store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
     base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
-    # if not store_files:
-    #     io.storage = get_storage_class('inmemorystorage.InMemoryStorage')()
-    # else:
-    #     io.storage = get_storage_class(
-    #         'django.core.files.storage.FileSystemStorage')() if settings.LOCAL else get_storage_class(
-    #         'storages.backends.gcloud.GoogleCloudStorage')()
     url = f'{base_url}/{filename}'
     output_path = path.join(settings.STATIC_DIR, 'transformed')
     from datetime import datetime
@@ -154,27 +148,34 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher):
         func = registration.register_image_brisk
 
     a = json.loads(
-        func(url, reference_form, output_path, None, f'{kelurahan}/{tps}'))
+        func(url, reference_form, output_path, None, f'{kelurahan}/{tps}', store_files))
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
     return a
 
 
 def download(request, kelurahan, tps, filename):
-    config_file = "digit_config_pilpres_2019.json"
+    config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
+    matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
     loaded_config = load_config(config_file)
     try:
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
         calculate_numbers = json.loads(request.GET.get('calculateNumbers', 'true').lower())
         store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
 
-        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file))
-        extract_digits = maybe_extract_digits or calculate_numbers
         start_lap = datetime.now()
+        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+        logging.error("1: Align  %s", (datetime.now() - start_lap).total_seconds())
 
         lap = datetime.now()
-        b = extraction.extract_deprecated(a['transformedUri'], settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
-                                          settings.STATIC_DIR, loaded_config, store_files) if extract_digits else {"numbers": []}
-        logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
+        tps_dir = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/')
+        file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
+
+        rois = extraction.extract_rois(file_path, settings.STATIC_DIR, path.join(tps_dir, 'extracted'),
+                                       settings.STATIC_DIR, loaded_config, store_files)
+        print(rois)
+        b = rois
+
+        logging.error("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
         probabilities = []
@@ -189,11 +190,11 @@ def download(request, kelurahan, tps, filename):
 
         c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
                                                           settings.CATEGORIES_COUNT, print_outcome) if calculate_numbers else {}
-        logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
+        logging.error("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
             del b['numbers']
-            del b['signatures']
+            # del b['signatures']
             b['probabilityMatrix'] = c
 
         output = {**a, **b}
@@ -201,13 +202,13 @@ def download(request, kelurahan, tps, filename):
         outcome = get_outcome(output)
         output['outcome'] = outcome
 
-        if not store_files:
-            io.storage.delete("static")
-            del output['configFile']
-            del output['probabilityMatrix']
-            del output['digitArea']
-            del output['transformedUri']
-            del output['transformedUrl']
+        # if not store_files:
+            # io.storage.delete("static")
+            # del output['configFile']
+            # del output['probabilityMatrix']
+            # del output['digitArea']
+            # del output['transformedUri']
+            # del output['transformedUrl']
         output['success'] = bool(outcome['confidence'] > 0.8)
 
         output['duration'] = (datetime.now() - start_lap).total_seconds()

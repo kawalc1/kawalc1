@@ -41,15 +41,14 @@ def get_target_path(file_path, target_path):
 
 
 def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path, output_path,
-                            target_path):
+                            target_path, store_files=True):
     file_prefix = "~trans" if good_enough_match else "~bad"
-    # transformed_image = file_prefix + "~hom" + str(homography) + "~warp" + str(transform) + "~" + file_name
-
     transformed_image = get_target_path(file_path, target_path)
 
     image_path = join(output_path, transformed_image)
 
-    write_image(image_path, image_transformed)
+    if store_files:
+        write_image(image_path, image_transformed)
 
     result = "good" if good_enough_match else "bad"
     logging.info("%s image", result)
@@ -155,7 +154,7 @@ def register_image_sift(file_path, reference_form_path, output_path, result_writ
             separators=(',', ':'))
 
 
-def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path=""):
+def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path="", store_files=True):
     from datetime import datetime
     lap = datetime.now()
 
@@ -216,7 +215,7 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
 
         transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
                                                     file_path,
-                                                    output_path, target_path)
+                                                    output_path, target_path, store_files)
         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
         return create_response(transformed_image, good_enough_match, difference_hash, similarity)
     except Exception as e:

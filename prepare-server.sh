@@ -10,3 +10,14 @@ sudo docker rmi sjappelodorus/kawalc1:latest
 sudo docker run --rm --name kawalc1 -p 8001:8000 -v /home/kawal:/root/creds -e GOOGLE_APPLICATION_CREDENTIALS=/root/creds/kawalc1-google-credentials.json sjappelodorus/kawalc1:latest
 
 gcloud auth application-default login
+
+
+sudo apt-get install gcc python-dev python-setuptools
+sudo apt-add-repository universe
+
+sudo apt-get install software-properties-common
+sudo apt-add-repository universe
+sudo apt-get update
+sudo apt-get install python-pip
+
+gsutil -m setmeta -h "Content-Type:image/webp" gs://kawalc1/**/*.webp

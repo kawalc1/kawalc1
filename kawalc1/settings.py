@@ -42,9 +42,11 @@ POOL_SIZE=int(os.environ.get('POOL_SIZE', '64'))
 patch_https_connection_pool(maxsize=POOL_SIZE)
 
 
-FORCE_LOCAL_FILE_SYSTEM = os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False)
-LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
+FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False))
+print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
+LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
 STORAGE_CLASS = 'django.core.files.storage.FileSystemStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
+print("Storing in", STORAGE_CLASS)
 
 import os
 
@@ -82,7 +84,7 @@ VERSION = 'v0.9.1-alpha'
 SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = __is_local()
+DEBUG = LOCAL
 
 ALLOWED_HOSTS = [
     '*'
@@ -107,8 +109,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'kawalc1.authentication_middleware.AuthenticationMiddleware',
-    'kawalc1.memory_usage.MemoryUsageMiddleware'
+    # 'kawalc1.authentication_middleware.AuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'kawalc1.urls'
