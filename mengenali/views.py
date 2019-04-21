@@ -136,7 +136,7 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
     base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
     url = f'{base_url}/{filename}'
-    output_path = path.join(settings.STATIC_DIR, 'transformed')
+    output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
     from datetime import datetime
     lap = datetime.now()
     func = registration.register_image_akaze
@@ -167,13 +167,11 @@ def download(request, kelurahan, tps, filename):
         logging.error("1: Align  %s", (datetime.now() - start_lap).total_seconds())
 
         lap = datetime.now()
-        tps_dir = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/')
+        tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
         file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
 
-        rois = extraction.extract_rois(file_path, settings.STATIC_DIR, path.join(tps_dir, 'extracted'),
-                                       settings.STATIC_DIR, loaded_config, store_files)
-        print(rois)
-        b = rois
+        b = extraction.extract_rois(file_path, settings.TRANSFORMED_DIR, path.join(tps_dir, 'extracted'),
+                                    settings.STATIC_DIR, loaded_config, store_files)
 
         logging.error("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()

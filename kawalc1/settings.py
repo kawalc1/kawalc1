@@ -67,6 +67,7 @@ mpl_logger.setLevel(logging.WARNING)
 
 INMEMORYSTORAGE_PERSIST = True
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+TRANSFORMED_DIR = os.environ.get('TRANSFORMED_DIR', STATIC_DIR)
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
 CONFIG_FILE = os.path.join(DATASET_DIR, 'gubernur-jakarta.json')

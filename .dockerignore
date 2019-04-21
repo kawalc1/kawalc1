@@ -6,6 +6,10 @@ ENV_DIR/
 static/extracted
 static/transformed
 static/upload
+static/contoh-baru-nunbaun-delha.zip
+static/contoh-formulir.zip
+static/contoh-pilgub.zip
+static/contoh-pilpres-2019.zip
 gatling/
 crawler/
 project/
