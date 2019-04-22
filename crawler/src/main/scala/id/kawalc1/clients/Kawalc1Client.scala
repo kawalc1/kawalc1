@@ -6,9 +6,8 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Query
 import akka.stream.Materializer
 import id.kawalc1.ProbabilitiesResponse
-import org.json4s.native.Serialization
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 case class Transform(transformedUrl: Option[String], transformedUri: Option[String], similarity: Double, success: Boolean, hash: String)
 
@@ -22,27 +21,34 @@ case class Probabilities(id: String, probabilitiesForNumber: Seq[Seq[Double]])
 
 case class ProbabilitiesRequest(configFile: String, probabilities: Seq[Probabilities])
 
-class KawalC1Client(baseUrl: String)(implicit
-  val system: ActorSystem,
-  val mat: Materializer,
-  val ec: ExecutionContext)
-  extends HttpClientSupport
-  with JsonSupport {
+case class CombiResponse(
+    transformedUrl: Option[String],
+    similarity: Option[Double],
+    hash: Option[String],
+    digitArea: Option[String],
+    outcome: Option[Map[String, Double]],
+    configFile: Option[String]
+)
 
-  def alignPhoto(
-    kelurahan: Int,
-    tps: Int,
-    photoUrl: String,
-    quality: Int,
-    formConfig: String,
-    featureAlgorithm: String): Future[Either[Response, Transform]] = {
+class KawalC1Client(baseUrl: String)(implicit
+                                     val system: ActorSystem,
+                                     val mat: Materializer,
+                                     val ec: ExecutionContext)
+    extends HttpClientSupport
+    with JsonSupport {
+
+  def alignPhoto(kelurahan: Int,
+                 tps: Int,
+                 photoUrl: String,
+                 quality: Int,
+                 formConfig: String,
+                 featureAlgorithm: String): Future[Either[Response, Transform]] = {
     val url = Uri(s"$baseUrl/align/$kelurahan/$tps/$photoUrl=s$quality")
       .withQuery(
-        Query(
-          "storeFiles" -> "true",
-          "baseUrl" -> "http://lh3.googleusercontent.com",
-          "configFile" -> formConfig,
-          "featureAlgorithm" -> featureAlgorithm))
+        Query("storeFiles"       -> "true",
+              "baseUrl"          -> "http://lh3.googleusercontent.com",
+              "configFile"       -> formConfig,
+              "featureAlgorithm" -> featureAlgorithm))
     execute[Transform](Get(url))
   }
 
@@ -53,17 +59,27 @@ class KawalC1Client(baseUrl: String)(implicit
     execute[Extraction](Get(url))
   }
 
-  def processProbabilities(
-    kelurahan: Int,
-    tps: Int,
-    numbers: Seq[Numbers],
-    formConfig: String): Future[Either[Response, ProbabilitiesResponse]] = {
+  def processProbabilities(kelurahan: Int,
+                           tps: Int,
+                           numbers: Seq[Numbers],
+                           formConfig: String): Future[Either[Response, ProbabilitiesResponse]] = {
 
     val probs = numbers.map { n =>
       Probabilities(n.id, n.extracted.map(_.probabilities))
     }
     val request = ProbabilitiesRequest(configFile = formConfig, probabilities = probs)
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
+  }
+
+  def detectNumbers(kelurahan: Int, tps: Int, photoName: String) = {
+    val url = Uri(s"$baseUrl/download/$kelurahan/$tps/$photoName")
+      .withQuery(
+        Query(
+          "storeFiles" -> "true",
+          "baseUrl"    -> "http://lh3.googleusercontent.com",
+          "configFile" -> "digit_config_ppwp_scan_halaman_2_2019.json,digit_config_ppwp_scan_halaman_1_2019.json",
+        ))
+    execute[CombiResponse](Get(url))
   }
 
 }

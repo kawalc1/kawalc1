@@ -29,6 +29,6 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
 }
 
 object CrawlerConf {
-  val Phases: Seq[String] = Seq("test", "fetch", "align", "extract", "presidential")
+  val Phases: Seq[String] = Seq("test", "fetch", "align", "extract", "presidential", "detect")
 
 }
