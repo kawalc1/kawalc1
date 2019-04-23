@@ -1,6 +1,7 @@
 import logging
 import os
 import urllib
+import pathlib
 
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -57,8 +58,12 @@ def read_file(file_path):
 def open_file(path, flags):
     return storage.open(path, flags)
 
-def write_string(file_path, string):
-    storage.save(file_path, ContentFile(string))
+def write_string(file_path, file_name, string):
+    pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
+    full_path = f'{file_path}/{file_name}'
+    print(file_path)
+    with open(full_path, "w") as text_file:
+        text_file.write(string)
 
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)

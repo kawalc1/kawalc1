@@ -48,6 +48,7 @@ object TpsTables extends SlickValueEnumSupport {
     def tSah = column[Option[Int]]("tSah")
     def partai = column[Option[String]]("partai")
     def partaiJum = column[Option[Int]]("partai_jum")
+    def jum = column[Option[Int]]("jum")
 
     private def upackPresidential(sum: Option[Summary]) = {
       sum.flatMap {
@@ -66,9 +67,9 @@ object TpsTables extends SlickValueEnumSupport {
     }
 
     override def * =
-      (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum).shaped <> ({
+      (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum, jum).shaped <> ({
 
-        case (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum) =>
+        case (id, nama, tps, timestamp, photo, plano, formType, halaman, common, presLembar2, partai, partaiJum, jum) =>
           val sum = formType match {
             case Some(FormType.PPWP.value) =>
               presLembar2._1 match {
@@ -97,6 +98,10 @@ object TpsTables extends SlickValueEnumSupport {
         val maybePresidential = upackPresidential(v.verification.sum)
         val summaryFields = maybePresidential.getOrElse((None, None, None, None))
         val maybeDpr = upackDpr(v.verification.sum)
+        val maybeJum = v.verification.sum match {
+          case Some(SingleSum(x)) => Some(x)
+          case _ => None
+        }
         val partai = maybeDpr.map(_.partai)
         val partaiVotes = maybeDpr.map(_.votes)
 
@@ -114,7 +119,8 @@ object TpsTables extends SlickValueEnumSupport {
           Common.unapply(common).get,
           summaryFields,
           partai,
-          partaiVotes)
+          partaiVotes,
+          maybeJum)
       })
   }
 

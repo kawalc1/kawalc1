@@ -217,7 +217,7 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
                                                     file_path,
                                                     output_path, target_path, store_files)
         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity), image_transformed
     except Exception as e:
         logging.exception("Registration failed")
         return json.dumps(

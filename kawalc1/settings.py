@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import mimetypes
 import os
 import pathlib
 
@@ -40,6 +40,7 @@ def patch_https_connection_pool(**constructor_kwargs):
 
 POOL_SIZE=int(os.environ.get('POOL_SIZE', '64'))
 patch_https_connection_pool(maxsize=POOL_SIZE)
+mimetypes.add_type('image/webp', '.webp')
 
 
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False))
@@ -68,6 +69,7 @@ mpl_logger.setLevel(logging.WARNING)
 INMEMORYSTORAGE_PERSIST = True
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 TRANSFORMED_DIR = os.environ.get('TRANSFORMED_DIR', STATIC_DIR)
+LOGS_PATH = os.environ.get('LOGS_PATH', BASE_DIR)
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')
 CONFIG_FILE = os.path.join(DATASET_DIR, 'gubernur-jakarta.json')

@@ -1,9 +1,9 @@
 # Create your views here.
+import json
 import logging
 from os import path
-import json
 
-from django.core.files.storage import default_storage, get_storage_class
+from django.core.files.storage import default_storage
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
 
 from kawalc1 import settings
@@ -117,7 +117,8 @@ def get_outcome(output, config_file):
             'jokowi': find_number(output, 'jokowi'),
             'jumlah': find_number(output, 'jumlah'),
             'tidakSah': find_number(output, 'tidakSah'),
-            'confidence': output['probabilityMatrix'][0][0]['confidence']
+            'confidence': output['probabilityMatrix'][0][0]['confidence'],
+            'confidenceTidakSah': output['probabilityMatrix'][1][0]['confidence']
         }
     return {
         'phpJumlah': find_number(output, 'phpJumlah'),
@@ -154,10 +155,10 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     if matcher == "sift":
         func = registration.register_image_brisk
 
-    a = json.loads(
-        func(url, reference_form, output_path, None, f'{kelurahan}/{tps}', store_files))
+    resp, image = func(url, reference_form, output_path, None, f'{kelurahan}/{tps}', store_files)
+    a = json.loads(resp)
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
-    return a
+    return a, image
 
 
 def download(request, kelurahan, tps, filename):
@@ -173,14 +174,15 @@ def download(request, kelurahan, tps, filename):
         config_file = config_files[0]
 
         start_lap = datetime.now()
-        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+        a, aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
         print("Sim1", a["similarity"])
         if a["similarity"] < 100:
             config_file = config_files[1]
-            second = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+            second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
             print("Sim2", second["similarity"])
             if second["similarity"] > a["similarity"]:
                 a = second
+                aligned_image = second_aligned_image
                 print("second", config_file)
             else:
                 config_file = config_files[0]
@@ -193,8 +195,8 @@ def download(request, kelurahan, tps, filename):
         file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
 
         loaded_config = load_config(config_file)
-        b = extraction.extract_rois(file_path, settings.TRANSFORMED_DIR, path.join(tps_dir, 'extracted'),
-                                    settings.STATIC_DIR, loaded_config, store_files)
+        b = extraction.extract_rois_in_memory(file_path, path.join(tps_dir, 'extracted'),
+                                    settings.STATIC_DIR, loaded_config, aligned_image, False, True)
 
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
@@ -227,8 +229,8 @@ def download(request, kelurahan, tps, filename):
 
         output['duration'] = (datetime.now() - start_lap).total_seconds()
         output['configFile'] = config_file
-        response_dir = path.join(settings.TRANSFORMED_DIR, f'response/{kelurahan}/{tps}/{filename}.json')
-        write_string(response_dir, json.dumps(output, indent=4))
+        response_dir = path.join(settings.LOGS_PATH, f'response/{kelurahan}/{tps}/')
+        write_string(response_dir, f'{filename}.json', json.dumps(output, indent=4))
         del output["numbers"]
         del output["transformedUri"]
         del output["probabilityMatrix"]
@@ -251,9 +253,9 @@ def transform(request):
 
         try:
             config_file = request.POST.get("configFile", "")
-            output = json.loads(
-                registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                          config_file, "akaze"))
+            res, image = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
+                                             config_file, "akaze")
+            output = json.loads(res)
             output["configFile"] = config_file
         except Exception as e:
             logging.exception("this is not good!")

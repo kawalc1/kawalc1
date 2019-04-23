@@ -422,12 +422,17 @@ def pickle_roi_features(img, image_name, ref_kp, ref_descriptors):
     h, w = img.shape
     pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, io.open_file(image_name + '.akaze.p', "wb"))
 
-
 def extract_rois(file_name, source_path, target_path, dataset_path, config, store_files=True):
+
+    original_image = read_image(file_name)
+    return extract_rois_in_memory(file_name, target_path, dataset_path, config, original_image, store_files, store_files)
+
+
+def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned_image, store_digits=True, store_rois=True):
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
-    original_image = read_image(file_name)
+    original_image = aligned_image
 
     roi = config["roi"]
     party_name = {}
@@ -436,7 +441,7 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
         digit = region["coordinates"]
         roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
-        if store_files:
+        if store_rois:
             write_image(roi_file, roi_image)
 
         akaze = cv2.AKAZE_create()
@@ -453,7 +458,7 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
     # create structuring element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     numbers = config["numbers"]
-    digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path, store_files)
+    digit_area_file = extract_digit_area(base_file_name, unsharpened_image, numbers, target_path, store_rois)
     cut_numbers = cut_digits(unsharpened_image, numbers)
     del unsharpened_image
 
@@ -470,13 +475,13 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
                 extracted_file_name = f'{base_file_name}~{str(number_id)}~{str(i)}'
                 digit_file = extracted_file_name + settings.TARGET_EXTENSION
                 extracted = join(target_path, digit_file)
-                if store_files:
+                if store_digits:
                     write_image(extracted, digit)
 
                 ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
-                if store_files:
+                if store_digits:
                     write_image(extracted_tif, thresholded_tif)
 
                 probability_matrix = imageclassifier.classify_number_in_memory(thresholded_tif, order, layers)
@@ -489,7 +494,7 @@ def extract_rois(file_name, source_path, target_path, dataset_path, config, stor
                 numbers[number_id]["extracted"].append(empty_struct)
 
     digit_path = head.replace("output/", "")
-    result = {"numbers": numbers, "digitArea": f'https://storage.googleapis.com{digit_path}/extracted/{digit_area_file}', "party": party_name }
+    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name }
     logging.info(result)
 
     return result

@@ -1,18 +1,18 @@
 package id.kawalc1
 
-import java.io.{File, PrintWriter}
+import java.io.{ File, PrintWriter }
 import java.time.LocalDateTime
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
-import id.kawalc1.cli.{CrawlerConf, Tool}
-import id.kawalc1.clients.{JsonSupport, KawalC1Client, KawalPemiluClient}
-import id.kawalc1.database.{AlignResult, ResultsTables, TpsTables}
-import id.kawalc1.services.{BlockingSupport, PhotoProcessor}
+import id.kawalc1.cli.{ CrawlerConf, Tool }
+import id.kawalc1.clients.{ JsonSupport, KawalC1Client, KawalPemiluClient }
+import id.kawalc1.database.{ AlignResult, ResultsTables, TpsTables }
+import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import org.json4s.native.Serialization
-import slick.{backend, jdbc}
+import slick.{ backend, jdbc }
 import slick.jdbc.SQLiteProfile
 import slick.jdbc.SQLiteProfile.api._
 
@@ -25,29 +25,30 @@ case class BatchParams(start: Long, batchSize: Long, threads: Int, limit: Option
 object Crawler extends App with LazyLogging with BlockingSupport with JsonSupport {
   override def duration: FiniteDuration = 1.hour
 
-  implicit val system: ActorSystem                = ActorSystem("crawler")
-  implicit val materializer: ActorMaterializer    = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem("crawler")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContext = system.dispatcher
 
-  val conf   = new CrawlerConf(args.toSeq)
+  val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val localKawalC1            = new KawalC1Client(Application.kawalC1UrlLocal)
+  private val localKawalC1 = new KawalC1Client(Application.kawalC1UrlLocal)
   private val alternativeLocalKawalC1 = new KawalC1Client(Application.kawalC1AlternativeUrlLocal)
-  private val remoteKawalC1           = new KawalC1Client(Application.kawalC1Url)
-  private val kawalPemiluClient       = new KawalPemiluClient("https://kawal-c1.appspot.com/api/c")
+  private val remoteKawalC1 = new KawalC1Client(Application.kawalC1Url)
+  private val kawalPemiluClient = new KawalPemiluClient("https://kawal-c1.appspot.com/api/c")
   val processor =
     new PhotoProcessor(kawalPemiluClient)
-  val tpsDb             = Database.forConfig("tpsDatabase")
+  val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
-  val resultsDatabase   = Database.forConfig("verificationResults")
+  val resultsDatabase = Database.forConfig("verificationResults")
 
-  def process(phase: String,
-              func: (SQLiteProfile.backend.Database, SQLiteProfile.backend.Database, KawalC1Client, BatchParams) => Long,
-              sourceDb: SQLiteProfile.backend.Database,
-              targetDb: SQLiteProfile.backend.Database,
-              client: KawalC1Client,
-              params: BatchParams): Unit = {
+  def process(
+    phase: String,
+    func: (SQLiteProfile.backend.Database, SQLiteProfile.backend.Database, KawalC1Client, BatchParams) => Long,
+    sourceDb: SQLiteProfile.backend.Database,
+    targetDb: SQLiteProfile.backend.Database,
+    client: KawalC1Client,
+    params: BatchParams): Unit = {
     val amount = func(sourceDb, targetDb, client, params)
     logger.info(s"Processed $amount in phase $phase")
   }
@@ -72,9 +73,9 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
       val on = c.Stats.on()
       on match {
         case "duplicates" =>
-          val aligned                                = resultsDatabase.run(ResultsTables.alignResultsQuery.result).futureValue
+          val aligned = resultsDatabase.run(ResultsTables.alignResultsQuery.result).futureValue
           val grouped: Map[String, Seq[AlignResult]] = aligned.groupBy((x: AlignResult) => s"${x.hash.getOrElse("")}")
-          val pw                                     = new PrintWriter(new File("dups.csv"))
+          val pw = new PrintWriter(new File("dups.csv"))
           val duplicates: Map[String, Seq[AlignResult]] = grouped.filter {
             case (hash, group: Seq[AlignResult]) =>
               val details = group.map(x => s"${x.id},${x.tps}").toSet
@@ -82,7 +83,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
               if (details.size > 1) {
                 grouped(hash).foreach { x: AlignResult =>
                   val first = group.head
-                  val foto  = first.photo
+                  val foto = first.photo
                   pw.println(s"${x.photo},${x.id},${x.tps},${details.size},$hash")
                 }
 
@@ -95,13 +96,12 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
 
           println(s"Size ${duplicates.size}")
       }
-    }
-  )
+    })
   myTool.registerSubcmdHandler(
     conf.CreateDb,
     (c: CrawlerConf) => {
       val phase = c.CreateDb.name
-      val drop  = c.CreateDb.drop()
+      val drop = c.CreateDb.drop()
       phase() match {
         case "fetch" =>
           createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
@@ -112,18 +112,17 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "presidential" =>
           createDb(ResultsTables.presidentialResultsQuery.schema, resultsDatabase, drop)
       }
-    }
-  )
+    })
 
   val urlie = "http://lh3.googleusercontent.com/6TSO9UKWsCHekURjdjoWOEKwYbUjUUsWUJqYVB_3VWVmm9TLvfoaXbPXLmgE8p0PbQtsEQ1OFaDC0FRSMbw"
   myTool.registerSubcmdHandler(
     conf.Process,
     (c: CrawlerConf) => {
-      val phase       = c.Process.phase()
-      val offset      = c.Process.offset.toOption.getOrElse(0)
-      val batchSize   = c.Process.batch.toOption.getOrElse(50)
-      val threads     = c.Process.threads.toOption.getOrElse(10)
-      val limit       = c.Process.limit.toOption
+      val phase = c.Process.phase()
+      val offset = c.Process.offset.toOption.getOrElse(0)
+      val batchSize = c.Process.batch.toOption.getOrElse(50)
+      val threads = c.Process.threads.toOption.getOrElse(10)
+      val limit = c.Process.limit.toOption
       val batchParams = BatchParams(offset, batchSize, threads, limit)
       logger.info(s"Starting $phase with ${Serialization.write(batchParams)}")
       phase match {
@@ -144,10 +143,9 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, alternativeLocalKawalC1, batchParams)
         case "detect" =>
           implicit val pw = new PrintWriter(new File(s"batches/detections-${LocalDateTime.now()}.csv"))
-          process("presidential", processor.processDetections, resultsDatabase, resultsDatabase, remoteKawalC1, batchParams)
+          process("presidential", processor.processDetections, resultsDatabase, resultsDatabase, localKawalC1, batchParams)
       }
-    }
-  )
+    })
   myTool.run()
   system.terminate()
 }
