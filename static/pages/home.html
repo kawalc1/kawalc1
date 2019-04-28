@@ -17,7 +17,7 @@
     <div class="result">
         <img ng-src="{{uploadUrl}}" class="thumbnail"
              ng-hide="(hasUploadFinished() && hasRegistrationFailed()) || isAreaSelected()"/>
-        <img ng-src="{{digitArea}}" class="uploadedImage"
+        <img ng-src="../{{digitArea}}" class="uploadedImage"
              ng-show="isAreaSelected()"/>
         <img ng-class="{uploadedImage: true}" flow-img="$flow.files[0]"
              ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
@@ -43,7 +43,7 @@
          ng-show="(hasUploadFinished() && hasExtractionSucceeded() && !hasRegistrationFailed())">
         <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
              ng-show="$flow.files.length">
-            <img src="{{extractedImage.filename}}" tooltip-html-unsafe="{{getConfidenceTooltip(extractedImage)}}"/>
+            <img src="../{{extractedImage.filename}}" tooltip-html-unsafe="{{getConfidenceTooltip(extractedImage)}}"/>
         </div>
     </div>
     <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
@@ -104,7 +104,7 @@
                     {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
                 <td>
-                  {{ totals[0].number}}
+                  {{ totals[1].number}}
                 </td>
             </tr>
 

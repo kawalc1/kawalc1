@@ -18,6 +18,7 @@ from datetime import datetime
 
 from mengenali.io import write_string
 from mengenali.processprobs import print_outcome, print_outcome_parsable
+from mengenali.registration import write_transformed_image
 
 
 def index(request):
@@ -185,6 +186,10 @@ def download(request, kelurahan, tps, filename):
                 aligned_image = second_aligned_image
                 print("second", config_file)
             else:
+                output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
+                target_path = f'{kelurahan}/{tps}'
+                write_transformed_image(aligned_image, 0, 0, True, filename,
+                                        output_path, target_path, store_files)
                 config_file = config_files[0]
                 print("first", config_file)
 
