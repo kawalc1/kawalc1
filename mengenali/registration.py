@@ -286,7 +286,7 @@ def register_image_brisk(file_path, reference_form_path, output_path, result_wri
         trkp1, trkp2 = zip(*tr_matches_filtered)
         similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
 
-        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+        transformed_image = write_transformed_image(image_transformed, similarity, transform, good_enough_match,
                                                     file_path,
                                                     output_path, target_path)
         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
