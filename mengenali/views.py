@@ -111,8 +111,7 @@ def find_number(output, name):
 
 
 def get_outcome(output, config_file):
-    print(config_file)
-    if config_file == "digit_config_ppwp_scan_halaman_2_2019.json" or "digit_config_pilpres_exact_smaller_2019.json":
+    if config_file == "digit_config_ppwp_scan_halaman_2_2019.json" or config_file == "digit_config_pilpres_exact_smaller_2019.json":
         return {
             'prabowo': find_number(output, 'prabowo'),
             'jokowi': find_number(output, 'jokowi'),
