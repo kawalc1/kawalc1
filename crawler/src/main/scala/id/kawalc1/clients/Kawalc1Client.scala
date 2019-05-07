@@ -4,8 +4,10 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Query
+import akka.http.scaladsl.model.headers.HttpCredentials
 import akka.stream.Materializer
-import id.kawalc1.ProbabilitiesResponse
+import id.kawalc1
+import id.kawalc1.{FormType, Plano, ProbabilitiesResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,6 +38,7 @@ class KawalC1Client(baseUrl: String)(implicit
                                      val ec: ExecutionContext)
     extends HttpClientSupport
     with JsonSupport {
+  implicit val authorization = None
 
   def alignPhoto(kelurahan: Int,
                  tps: Int,
@@ -71,15 +74,20 @@ class KawalC1Client(baseUrl: String)(implicit
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
   }
 
-  def detectNumbers(kelurahan: Int, tps: Int, photoName: String) = {
+  def detectNumbers(kelurahan: Int, tps: Int, photoName: String, halaman: Option[String], plano: Option[Plano]) = {
     val url = Uri(s"$baseUrl/download/$kelurahan/$tps/$photoName")
       .withQuery(
         Query(
           "storeFiles" -> "true",
           "baseUrl"    -> "http://lh3.googleusercontent.com",
-          "configFile" -> "digit_config_ppwp_scan_halaman_2_2019.json,digit_config_ppwp_scan_halaman_1_2019.json",
+          "configFile" -> kawalc1.formTypeToConfig(FormType.PPWP, plano, halaman),
         ))
     execute[CombiResponse](Get(url))
+  }
+
+  def extractRoi(kelurahan: Int, tps: Int, photoName: String) = {
+    val url = Uri(s"$baseUrl/roi/$kelurahan/$tps/$photoName")
+    execute[Object](Get(url))
   }
 
 }

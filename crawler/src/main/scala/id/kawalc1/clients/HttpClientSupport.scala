@@ -2,7 +2,7 @@ package id.kawalc1.clients
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{ Authorization, BasicHttpCredentials, GenericHttpCredentials }
+import akka.http.scaladsl.model.headers.{ Authorization, BasicHttpCredentials, GenericHttpCredentials, HttpCredentials }
 import akka.http.scaladsl.{ Http, HttpExt, HttpsConnectionContext }
 import akka.stream.Materializer
 import akka.util.ByteString
@@ -39,11 +39,13 @@ trait HttpClientSupport extends LazyLogging {
     }
   }
 
-  def execute[A: Manifest](request: HttpRequest)(implicit formats: Formats): Future[Either[Response, A]] = {
+  def execute[A: Manifest](request: HttpRequest)(implicit
+    formats: Formats,
+    authorization: Option[Authorization]): Future[Either[Response, A]] = {
     logger.info(s"Request ${request.method.value} ${request.uri}")
-    val authorization = headers.Authorization(GenericHttpCredentials("", Application.secret))
+    val defaultAuth = headers.Authorization(GenericHttpCredentials("", Application.secret))
     for {
-      resp: HttpResponse <- http.singleRequest(request.withHeaders(List(authorization)), SecurityContext)
+      resp: HttpResponse <- http.singleRequest(request.withHeaders(List(authorization.getOrElse(defaultAuth))), SecurityContext)
       str: String <- consumeEntity(resp.entity)
     } yield {
       resp.status match {

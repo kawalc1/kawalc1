@@ -50,6 +50,7 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val verification = tps.photos.head._2
       verification.sum.get shouldBe PresidentialLembar2(456, 123, 579, 2)
     }
+
     "parse the `20780.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/api/c/20780.json")).mkString
       val kelurahan = Serialization.read[Kelurahan](response)

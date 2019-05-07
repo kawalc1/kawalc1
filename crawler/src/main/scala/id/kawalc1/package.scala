@@ -2,18 +2,49 @@ package id
 
 import java.sql.Timestamp
 
+import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.{ShortEnum, ShortEnumEntry}
 
 import scala.collection.immutable
 
-package object kawalc1 {
+package object kawalc1 extends LazyLogging {
 
-  def formTypeToConfig(formType: FormType, plano: Option[Plano], halaman: Option[String]) = (formType, plano, halaman) match {
-    case (FormType.PPWP, Some(Plano.YES), Some("2")) => "digit_config_pilpres_exact_smaller_2019.json"
-    case (FormType.PPWP, Some(Plano.NO), Some("2"))  => "digit_config_ppwp_scan_halaman_2_2019.json"
-    case (FormType.DPR, _, _)                        => ???
-    case _                                           => ???
+  def formTypeToConfig(formType: FormType, plano: Option[Plano], halaman: Option[String]): String = (formType, plano, halaman) match {
+    case (FormType.PPWP, Some(Plano.YES), Some("1")) =>
+      "digit_config_ppwp_plano_halaman_1_2019.json,digit_config_pilpres_exact_smaller_2019.json"
+    case (FormType.PPWP, Some(Plano.YES), Some("2")) =>
+      "digit_config_pilpres_exact_smaller_2019.json,digit_config_ppwp_scan_halaman_2_2019.json"
+    case (FormType.PPWP, Some(Plano.NO), Some("2")) =>
+      "digit_config_ppwp_scan_halaman_2_2019.json,digit_config_ppwp_scan_halaman_1_2019.json"
+    case (FormType.PPWP, Some(Plano.NO), Some("1")) =>
+      "digit_config_ppwp_scan_halaman_1_2019.json,digit_config_ppwp_scan_halaman_2_2019.json"
+    case _ =>
+      logger.error(s"Config not defined for $formType, $plano, $halaman")
+      ""
   }
+  case class Problem(
+      kelId: Int,
+      kelName: String,
+      tpsNo: Int,
+      url: String,
+      reason: String,
+      ts: Int,
+      response_code: Option[Int]
+  )
+
+  case class ProblemReported(
+      kelId: Int,
+      kelName: String,
+      tpsNo: Int,
+      url: String,
+      reason: String,
+  )
+
+  case class FormProcessed(
+      kelId: Int,
+      tpsNo: Int,
+      url: String
+  )
 
   case class NumberSet(
       numbers: Seq[Numbers],
@@ -187,4 +218,42 @@ package object kawalc1 {
     "pkp",
     "pJum"
   )
+
+  case class StringField(
+      stringValue: String
+  )
+
+  case class IntField(
+      integerValue: String
+  )
+
+  case class Fields(
+      tpsNo: IntField,
+      kelId: IntField,
+      ts: IntField,
+      kelName: StringField,
+      url: StringField,
+      reason: StringField
+  )
+
+  case class MapValue(
+      fields: Fields
+  )
+
+  case class Report(
+      mapValue: MapValue
+  )
+
+  object Report {
+    def toProblemReported(report: Report): ProblemReported = {
+      val f = report.mapValue.fields
+      ProblemReported(
+        f.kelId.integerValue.toInt,
+        f.kelName.stringValue,
+        f.tpsNo.integerValue.toInt,
+        f.url.stringValue,
+        f.reason.stringValue
+      )
+    }
+  }
 }
