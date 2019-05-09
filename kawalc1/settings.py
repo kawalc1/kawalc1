@@ -18,7 +18,8 @@ def __is_local():
     import socket
     host_name = socket.gethostname()
     print("local hostname: ", host_name)
-    return host_name.endswith(".local")
+    return False
+    # return host_name.endswith(".local")
 
 def patch_https_connection_pool(**constructor_kwargs):
     """

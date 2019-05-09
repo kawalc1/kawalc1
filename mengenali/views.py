@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from datetime import datetime
 
-from mengenali.io import write_string
+from mengenali.io import write_string, read_image, write_image
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
@@ -159,6 +159,19 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     a = json.loads(resp)
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
     return a, image
+
+def extract_roi(request, kelurahan, tps, filename):
+    file_path = f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/{filename}.webp'
+
+    tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
+    image = read_image(file_path)
+    tps_roi = image[18:66, 272:520]
+    target_path = path.join(tps_dir, 'extracted')
+    target_file = f'{filename}~nomorTPS.webp'
+    target_image = path.join(target_path, target_file)
+
+    write_image(target_image, tps_roi)
+    return JsonResponse({})
 
 
 def download(request, kelurahan, tps, filename):

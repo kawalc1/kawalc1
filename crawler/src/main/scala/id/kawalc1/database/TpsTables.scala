@@ -6,12 +6,12 @@ import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
 import id.kawalc1._
 import slick.dbio.Effect
-import slick.jdbc.SQLiteProfile.api._
+import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
 object TpsTables extends SlickValueEnumSupport {
-  val profile = slick.jdbc.SQLiteProfile
+  val profile = slick.jdbc.PostgresProfile
 
   class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
     def idKel = column[Int]("idKel", O.PrimaryKey)

@@ -7,7 +7,7 @@ import id.kawalc1.database.ResultsTables
 import id.kawalc1.services.BlockingSupport
 import org.json4s.native.Serialization
 import org.scalatest.{Matchers, WordSpec}
-import slick.jdbc.SQLiteProfile.api._
+import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration

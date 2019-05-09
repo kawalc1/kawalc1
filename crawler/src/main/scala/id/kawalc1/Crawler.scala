@@ -14,8 +14,8 @@ import id.kawalc1.database.{ AlignResult, DetectionResult, ResultsTables, TpsTab
 import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import org.json4s.native.Serialization
 import slick.{ backend, jdbc }
-import slick.jdbc.SQLiteProfile
-import slick.jdbc.SQLiteProfile.api._
+import slick.jdbc.PostgresProfile
+import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -42,16 +42,16 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
 
   def process(
     phase: String,
-    func: (SQLiteProfile.backend.Database, SQLiteProfile.backend.Database, KawalC1Client, BatchParams) => Long,
-    sourceDb: SQLiteProfile.backend.Database,
-    targetDb: SQLiteProfile.backend.Database,
+    func: (PostgresProfile.backend.Database, PostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
+    sourceDb: PostgresProfile.backend.Database,
+    targetDb: PostgresProfile.backend.Database,
     client: KawalC1Client,
     params: BatchParams): Unit = {
     val amount = func(sourceDb, targetDb, client, params)
     logger.info(s"Processed $amount in phase $phase")
   }
 
-  def createDb(schema: jdbc.SQLiteProfile.SchemaDescription, database: SQLiteProfile.backend.Database, drop: Boolean = false): Unit = {
+  def createDb(schema: jdbc.PostgresProfile.SchemaDescription, database: PostgresProfile.backend.Database, drop: Boolean = false): Unit = {
     val action = if (drop) {
       DBIO.seq(schema.drop, schema.create)
     } else {
