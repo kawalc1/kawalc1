@@ -5,6 +5,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{ Authorization, BasicHttpCredentials, GenericHttpCredentials, HttpCredentials }
 import akka.http.scaladsl.{ Http, HttpExt, HttpsConnectionContext }
 import akka.stream.Materializer
+import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application

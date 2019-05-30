@@ -30,7 +30,7 @@ lazy val root = (project in file(".")).settings(
     "com.typesafe.slick"         %% "slick"                % slickVersion,
     "com.typesafe.slick"         %% "slick-hikaricp"       % slickVersion,
     "com.h2database"             % "h2"                    % "1.4.196",
-    "org.postgresql"             % "postgresql"            % "9.4-1206-jdbc42",
+    "org.postgresql"             % "postgresql"            % "42.2.5",
     "org.xerial"                 % "sqlite-jdbc"           % "3.7.2",
     "com.beachape"               %% "enumeratum-slick"     % enumeratumSlickVersion,
     "ch.qos.logback"             % "logback-classic"       % logbackVersion,

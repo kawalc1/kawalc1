@@ -1,0 +1,646 @@
+{
+  "name": "projects/kawal-c1/databases/(default)/documents/t2/76-3",
+  "fields": {
+    "images": {
+      "mapValue": {
+        "fields": {
+          "5ZusShndFL79IVYduYrK": {
+            "mapValue": {
+              "fields": {
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "plano": {
+                        "integerValue": "1"
+                      },
+                      "halaman": {
+                        "stringValue": "1"
+                      },
+                      "type": {
+                        "integerValue": "1"
+                      }
+                    }
+                  }
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "ip": {
+                        "stringValue": "218.212.136.129"
+                      },
+                      "uid": {
+                        "stringValue": "j0kZ9MbUs5dVVzRu7Y7DREBZhQy1"
+                      },
+                      "impact": {
+                        "integerValue": "7"
+                      },
+                      "dr4": {
+                        "integerValue": "36"
+                      },
+                      "dr": {
+                        "integerValue": "3"
+                      },
+                      "role": {
+                        "integerValue": "2"
+                      },
+                      "dr2": {
+                        "integerValue": "4"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhJb0htYmowU2NhdGg3UFJDaFE3OVQ4LXBTQWpNMkxHelJVdm9VSnNCMFMwN3A0d2lfUGdYUV9WQUFlejFvQnA1NGtBUEU0SjRCSXlMRk5aaUNJeWEzNnJXRl9oSW1zOTlRS3E5MmF3/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763"
+                      },
+                      "name": {
+                        "stringValue": "Adhi Utama"
+                      },
+                      "email": {
+                        "stringValue": "adhi_utama@hotmail.com"
+                      },
+                      "ts": {
+                        "integerValue": "1555833050923"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10216707134208724&height=200&width=200&ext=1558360384&hash=AeQf46mRobw73TZx"
+                      },
+                      "loginTs": {
+                        "integerValue": "1552804867516"
+                      }
+                    }
+                  }
+                },
+                "reports": {
+                  "nullValue": null
+                },
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2593442687337124&height=200&width=200&ext=1558419273&hash=AeTvIvpthk6ll2MZ"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhDNWxObkZA0dC1wbGhOcUdKM0hXcGNzM1JHOF9mQ1daYUt5d0c4d3hmbnlQUU1DTi0ybm9xYWNNRlVQbDJvUksyUThTdW9tb3ZAIQ2s5ejlnZAUczTDZA5SHNCWjhOenI3cEJVdk1uZAllHandHTHpz/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Linux; Android 8.1.0; vivo 1808) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36"
+                      },
+                      "loginTs": {
+                        "integerValue": "1555827273300"
+                      },
+                      "name": {
+                        "stringValue": "Ogek Husaini Art"
+                      },
+                      "email": {
+                        "stringValue": "gampoeng.art@gmail.com"
+                      },
+                      "ip": {
+                        "stringValue": "114.125.6.147"
+                      },
+                      "uid": {
+                        "stringValue": "Oq0zHEEXiIWRWaOtGf3TQOL0ltO2"
+                      },
+                      "ts": {
+                        "integerValue": "1555827926348"
+                      },
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      }
+                    }
+                  }
+                },
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "jum": {
+                        "integerValue": "249"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/8I-vXLTPNgnaO4tlmqWoes1lf2RpLfovI38QE1NrTUug6RkxN8xIkkNY5ACWE7Sbefasp6zFQ-ciiH4nBg"
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "w": {
+                        "integerValue": "3120"
+                      },
+                      "h": {
+                        "integerValue": "4160"
+                      },
+                      "s": {
+                        "integerValue": "3972260"
+                      },
+                      "l": {
+                        "integerValue": "1555826161000"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "vivo\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+                            },
+                            {
+                              "stringValue": "vivo 1808\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+                            }
+                          ]
+                        }
+                      },
+                      "o": {
+                        "integerValue": "0"
+                      },
+                      "z": {
+                        "integerValue": "722546"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "jkfGWC0ORKQTOkZnm8j1": {
+            "mapValue": {
+              "fields": {
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2593442687337124&height=200&width=200&ext=1558419273&hash=AeTvIvpthk6ll2MZ"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhDNWxObkZA0dC1wbGhOcUdKM0hXcGNzM1JHOF9mQ1daYUt5d0c4d3hmbnlQUU1DTi0ybm9xYWNNRlVQbDJvUksyUThTdW9tb3ZAIQ2s5ejlnZAUczTDZA5SHNCWjhOenI3cEJVdk1uZAllHandHTHpz/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Linux; Android 8.1.0; vivo 1808) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36"
+                      },
+                      "loginTs": {
+                        "integerValue": "1555827273300"
+                      },
+                      "name": {
+                        "stringValue": "Ogek Husaini Art"
+                      },
+                      "email": {
+                        "stringValue": "gampoeng.art@gmail.com"
+                      },
+                      "ip": {
+                        "stringValue": "114.125.6.147"
+                      },
+                      "uid": {
+                        "stringValue": "Oq0zHEEXiIWRWaOtGf3TQOL0ltO2"
+                      },
+                      "ts": {
+                        "integerValue": "1555827583740"
+                      },
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      }
+                    }
+                  }
+                },
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "tSah": {
+                        "integerValue": "22"
+                      },
+                      "sah": {
+                        "integerValue": "227"
+                      },
+                      "pas2": {
+                        "integerValue": "215"
+                      },
+                      "pas1": {
+                        "integerValue": "12"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/C2uD9MPKo8oI8BkbXCSdDcrNZ9UArCe18zrcrbHYY_mC3TQJuBXkWLTnziAo0Ca7TewrFxfcDm1nNmhiMg"
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "w": {
+                        "integerValue": "3120"
+                      },
+                      "h": {
+                        "integerValue": "4160"
+                      },
+                      "s": {
+                        "integerValue": "3664355"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "vivo\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+                            },
+                            {
+                              "stringValue": "vivo 1808\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+                            }
+                          ]
+                        }
+                      },
+                      "l": {
+                        "integerValue": "1555826203000"
+                      },
+                      "o": {
+                        "integerValue": "0"
+                      },
+                      "z": {
+                        "integerValue": "644385"
+                      }
+                    }
+                  }
+                },
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "type": {
+                        "integerValue": "1"
+                      },
+                      "plano": {
+                        "integerValue": "1"
+                      },
+                      "halaman": {
+                        "stringValue": "2"
+                      }
+                    }
+                  }
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "ts": {
+                        "integerValue": "1555833024301"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10216707134208724&height=200&width=200&ext=1558360384&hash=AeQf46mRobw73TZx"
+                      },
+                      "loginTs": {
+                        "integerValue": "1552804867516"
+                      },
+                      "ip": {
+                        "stringValue": "218.212.136.129"
+                      },
+                      "uid": {
+                        "stringValue": "j0kZ9MbUs5dVVzRu7Y7DREBZhQy1"
+                      },
+                      "impact": {
+                        "integerValue": "7"
+                      },
+                      "dr4": {
+                        "integerValue": "36"
+                      },
+                      "dr": {
+                        "integerValue": "3"
+                      },
+                      "role": {
+                        "integerValue": "2"
+                      },
+                      "dr2": {
+                        "integerValue": "4"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhJb0htYmowU2NhdGg3UFJDaFE3OVQ4LXBTQWpNMkxHelJVdm9VSnNCMFMwN3A0d2lfUGdYUV9WQUFlejFvQnA1NGtBUEU0SjRCSXlMRk5aaUNJeWEzNnJXRl9oSW1zOTlRS3E5MmF3/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763"
+                      },
+                      "name": {
+                        "stringValue": "Adhi Utama"
+                      },
+                      "email": {
+                        "stringValue": "adhi_utama@hotmail.com"
+                      }
+                    }
+                  }
+                },
+                "reports": {
+                  "nullValue": null
+                }
+              }
+            }
+          },
+          "hoRTATQz2ZtepYhFjdaz": {
+            "mapValue": {
+              "fields": {
+                "reports": {
+                  "nullValue": null
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "loginTs": {
+                        "integerValue": "1554808582908"
+                      },
+                      "name": {
+                        "stringValue": "Kawal Cesatu"
+                      },
+                      "email": {
+                        "stringValue": "info.kawalc1@gmail.com"
+                      },
+                      "ip": {
+                        "stringValue": "36.85.250.46"
+                      },
+                      "uid": {
+                        "stringValue": "9PJkYzjbjCUFtO8N8wvZRoqShDB2"
+                      },
+                      "ts": {
+                        "integerValue": "1557672528971"
+                      },
+                      "dr4": {
+                        "integerValue": "1"
+                      },
+                      "role": {
+                        "integerValue": "2"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=100150294488630&height=200&width=200&ext=1559965156&hash=AeQSf5G1n-b918HQ"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhoODhSdkJMZAmRRZATZAFcnVYbmxoU0JNRU1sLVRfR3QxSndXclJmeEpOSGpkaXFzZAVJBZATdkcW0xdFJxUm9RLVhwWUlkRkNnWDVBeGNMVjlOeGI4WlBhYi0wUjBFbHR6U0dSaURDalEyR0d6Y0Vs/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+                      }
+                    }
+                  }
+                },
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "gEQFS1n5gpTzMTy5JASPPLk4yRA3"
+                      },
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "ts": {
+                        "integerValue": "1556425224074"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=107789297079539&height=200&width=200&ext=1557494451&hash=AeRiMMArbkIfd-3S"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZALR0JKRGtqaHVxazZAvQzZATTE50aE9jRHA0T0hBZATdLNjk1WWdxSlFvZAUt3SG9WOWwzUkNTa2lLWmNJVUxLbjRZAaUo2cmg4eWJ0TGs0TklqWkZATdnVOeXZA2b2V3N2M1bWplbGF4TWhObkFzeE1n/"
+                      },
+                      "ua": {
+                        "stringValue": "Go-http-client/1.1"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554902451419"
+                      },
+                      "email": {
+                        "stringValue": "kpu_yhyxlbt_scan@tfbnw.net"
+                      },
+                      "name": {
+                        "stringValue": "KPU Scan"
+                      },
+                      "ip": {
+                        "stringValue": "73.202.177.171"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/3zE7njOQP77rFZIrLRsnu8Vte0OUUpUE-b07NJDAKz7n3keECO_QUrL3A76SiegRt-80EnaTsPrI-3gDdKk"
+                },
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "tSah": {
+                        "integerValue": "22"
+                      },
+                      "sah": {
+                        "integerValue": "227"
+                      },
+                      "pas2": {
+                        "integerValue": "215"
+                      },
+                      "pas1": {
+                        "integerValue": "12"
+                      }
+                    }
+                  }
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "t": {
+                        "integerValue": "3"
+                      },
+                      "a": {
+                        "integerValue": "1556425223924"
+                      },
+                      "k": {
+                        "integerValue": "76"
+                      },
+                      "s": {
+                        "integerValue": "378713"
+                      },
+                      "l": {
+                        "integerValue": "1556411776371"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "1-76-3-C-XXX-X6.jpg"
+                            },
+                            {
+                              "stringValue": ""
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "plano": {
+                        "integerValue": "2"
+                      },
+                      "halaman": {
+                        "stringValue": "2"
+                      },
+                      "type": {
+                        "integerValue": "1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "kxBYhXsPfTT3dQqLvrVH": {
+            "mapValue": {
+              "fields": {
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "type": {
+                        "integerValue": "1"
+                      },
+                      "plano": {
+                        "integerValue": "2"
+                      },
+                      "halaman": {
+                        "stringValue": "1"
+                      }
+                    }
+                  }
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "ip": {
+                        "stringValue": "36.85.250.46"
+                      },
+                      "uid": {
+                        "stringValue": "9PJkYzjbjCUFtO8N8wvZRoqShDB2"
+                      },
+                      "ts": {
+                        "integerValue": "1557672673799"
+                      },
+                      "dr4": {
+                        "integerValue": "1"
+                      },
+                      "role": {
+                        "integerValue": "2"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=100150294488630&height=200&width=200&ext=1559965156&hash=AeQSf5G1n-b918HQ"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEhoODhSdkJMZAmRRZATZAFcnVYbmxoU0JNRU1sLVRfR3QxSndXclJmeEpOSGpkaXFzZAVJBZATdkcW0xdFJxUm9RLVhwWUlkRkNnWDVBeGNMVjlOeGI4WlBhYi0wUjBFbHR6U0dSaURDalEyR0d6Y0Vs/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554808582908"
+                      },
+                      "email": {
+                        "stringValue": "info.kawalc1@gmail.com"
+                      },
+                      "name": {
+                        "stringValue": "Kawal Cesatu"
+                      }
+                    }
+                  }
+                },
+                "reports": {
+                  "nullValue": null
+                },
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=107789297079539&height=200&width=200&ext=1557494451&hash=AeRiMMArbkIfd-3S"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZALR0JKRGtqaHVxazZAvQzZATTE50aE9jRHA0T0hBZATdLNjk1WWdxSlFvZAUt3SG9WOWwzUkNTa2lLWmNJVUxLbjRZAaUo2cmg4eWJ0TGs0TklqWkZATdnVOeXZA2b2V3N2M1bWplbGF4TWhObkFzeE1n/"
+                      },
+                      "ua": {
+                        "stringValue": "Go-http-client/1.1"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554902451419"
+                      },
+                      "name": {
+                        "stringValue": "KPU Scan"
+                      },
+                      "email": {
+                        "stringValue": "kpu_yhyxlbt_scan@tfbnw.net"
+                      },
+                      "ip": {
+                        "stringValue": "73.202.177.171"
+                      },
+                      "uid": {
+                        "stringValue": "gEQFS1n5gpTzMTy5JASPPLk4yRA3"
+                      },
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "ts": {
+                        "integerValue": "1556425257883"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      }
+                    }
+                  }
+                },
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "jum": {
+                        "integerValue": "249"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/5GTaBWXMIgdHess2U6imk3i_cmlmTYhhPaXetAsNOEml0X8NDynXiMUwH_bFSSmKTBlqmTUqaVqxDIRVxd0X"
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "t": {
+                        "integerValue": "3"
+                      },
+                      "a": {
+                        "integerValue": "1556425254321"
+                      },
+                      "k": {
+                        "integerValue": "76"
+                      },
+                      "s": {
+                        "integerValue": "442679"
+                      },
+                      "l": {
+                        "integerValue": "1556411776752"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "1-76-3-C1-PPWP-01.jpg"
+                            },
+                            {
+                              "stringValue": ""
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "imgCount": {
+      "integerValue": "4"
+    }
+  },
+  "createTime": "2019-04-21T06:19:43.856907Z",
+  "updateTime": "2019-05-12T14:51:15.109299Z"
+}

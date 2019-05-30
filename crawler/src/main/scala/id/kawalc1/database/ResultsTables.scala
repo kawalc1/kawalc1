@@ -1,11 +1,23 @@
 package id.kawalc1.database
 
 import enumeratum.values.SlickValueEnumSupport
+import id.kawalc1
 import id.kawalc1.{ FormProcessed, FormType, Plano, Problem, ProblemReported }
 import slick.dbio.Effect
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
+
+case class Terbalik(
+  kelurahan: Int,
+  tps: Int,
+  pas1: Int,
+  pas2: Int,
+  jumlah: Int,
+  tidakSah: Int,
+  hal2Photo: String,
+  php: Int,
+  hal1Photo: String)
 
 case class AlignResult(
   id: Int,
@@ -188,6 +200,21 @@ object ResultsTables extends SlickValueEnumSupport {
 
   val extractResultsQuery = TableQuery[ExtractResults]
 
+  class Terbaliks(tag: Tag) extends Table[Terbalik](tag, "terbalik") {
+    def kelurahan = column[Int]("kelurahan")
+    def tps = column[Int]("tps")
+    def pas1 = column[Int]("bot-pas1")
+    def pas2 = column[Int]("bot-pas2")
+    def jumlah = column[Int]("bot-jumlah")
+    def tidakSah = column[Int]("bot-tidak-sah")
+    def hal2Photo = column[String]("hal2photo")
+    def php = column[Int]("bot-php")
+    def hal1Photo = column[String]("hal1photo")
+    override def * = (kelurahan, tps, pas1, pas2, jumlah, tidakSah, hal2Photo, php, hal1Photo) <> (Terbalik.tupled, Terbalik.unapply)
+  }
+
+  val terbaliksQuery = TableQuery[Terbaliks]
+
   class PresidentialResults(tag: Tag) extends Table[PresidentialResult](tag, "presidential_results") {
     def id = column[Int]("kelurahan")
     def tps = column[Int]("tps")
@@ -275,7 +302,7 @@ object ResultsTables extends SlickValueEnumSupport {
       .map(_._1)
   }
 
-  def tpsToDetectQuery(plano: Plano) = {
+  def tpsToDetectQuery(plano: Plano): Query[TpsTables.Tps, kawalc1.SingleTps, Seq] = {
     val joined = for {
       (a: TpsTables.Tps, b: Rep[Option[DetectionResults]]) <- TpsTables.tpsQuery joinLeft detectionsQuery on (_.photo === _.photo)
     } yield (a, b)

@@ -8,7 +8,7 @@ import akka.stream.scaladsl.{ Source => StreamSource }
 import id.kawalc1
 import id.kawalc1.clients.{ CombiResponse, Extraction, JsonSupport, KawalC1Client, KawalPemiluClient }
 import id.kawalc1.database.ResultsTables.{ AlignResults, ExtractResults }
-import id.kawalc1.database.TpsTables.{ Tps, Kelurahan => KelurahanTable }
+import id.kawalc1.database.TpsTables.{ Tps, TpsUnverified, Kelurahan => KelurahanTable }
 import id.kawalc1.database._
 import id.kawalc1._
 import org.json4s.native.Serialization
@@ -164,6 +164,23 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       params)
   }
 
+  def processUnverifiedDetections(
+    sourceDb: PostgresProfile.backend.Database,
+    targetDb: PostgresProfile.backend.Database,
+    client: KawalC1Client,
+    params: BatchParams)(implicit pw: PrintWriter): Long = {
+    pw.println(
+      "kelurahan,tps,photo,response_code,config,pas1,pas2,jumlah,tidak_sah,php_jumlah,confidence,confidence_tidak_sah,hash,similarity,aligned,roi")
+    batchTransform[SingleTps, CombiResult, TpsUnverified](
+      sourceDb,
+      targetDb,
+      client,
+      TpsTables.tpsUnverifiedQuery,
+      streamDetections,
+      writeToCsv,
+      params)
+  }
+
   def processRois(
     sourceDb: PostgresProfile.backend.Database,
     targetDb: PostgresProfile.backend.Database,
@@ -181,9 +198,13 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     val resultFields =
       (resp.configFile, maybeMap) match {
         case (Some("digit_config_ppwp_scan_halaman_2_2019.json"), Some(o)) =>
-          s"${o("jokowi").toInt},${o("prabowo").toInt},${o("jumlah").toInt},${o("tidakSah").toInt},"
+          toPresidential(o)
+        case (Some("digit_config_pilpres_exact_smaller_2019.json"), Some(o)) =>
+          toPresidential(o)
         case (Some("digit_config_ppwp_scan_halaman_1_2019.json"), Some(o)) =>
-          s",,,,${o("phpJumlah").toInt}"
+          toPhp(o)
+        case (Some("digit_config_ppwp_plano_halaman_1_2019.json"), Some(o)) =>
+          toPhp(o)
         case _ => s",,,,"
       }
 
@@ -196,6 +217,12 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     s"$identifier,$resultFields,$common"
   }
 
+  private def toPhp(o: Map[String, Double]) = {
+    s",,,,${o("phpJumlah").toInt}"
+  }
+  private def toPresidential(o: Map[String, Double]) = {
+    s"${o("jokowi").toInt},${o("prabowo").toInt},${o("jumlah").toInt},${o("tidakSah").toInt},"
+  }
   def writeToCsv(combiResponses: Seq[CombiResult])(implicit writer: PrintWriter): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     combiResponses.foreach { x =>
       writer.println(s"${toCsv(x)}")

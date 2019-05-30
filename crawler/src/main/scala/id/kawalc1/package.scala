@@ -32,6 +32,15 @@ package object kawalc1 extends LazyLogging {
       response_code: Option[Int]
   )
 
+  case class Approval(
+      kelId: Int,
+      kelName: String,
+      tpsNo: Int,
+      sum: Summary,
+      imageId: String,
+      c1: C1
+  )
+
   case class ProblemReported(
       kelId: Int,
       kelName: String,
@@ -90,6 +99,7 @@ package object kawalc1 extends LazyLogging {
   case class SingleTps(
       nama: String,
       photo: String,
+      imageId: Option[String] = None,
       kelurahanId: Int,
       tpsId: Int,
       verification: Verification
@@ -109,7 +119,7 @@ package object kawalc1 extends LazyLogging {
       for {
         tps   <- kelurahan.data
         photo <- tps._2.photos
-      } yield SingleTps(kelurahan.name, photo._1, kelurahan.id, tps._1, photo._2)
+      } yield SingleTps(kelurahan.name, photo._1, None, kelurahan.id, tps._1, photo._2)
     }.toSeq
   }
 

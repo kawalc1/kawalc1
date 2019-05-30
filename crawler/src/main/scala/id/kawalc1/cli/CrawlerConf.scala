@@ -19,6 +19,7 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
   }
 
   val Submit = new Subcommand("submit") {
+    val name = choice(Seq("problems", "switch", "submit"), required = true)
     val token = opt[String](required = true)
     val force = opt[Boolean](default = Some(false))
   }
@@ -37,5 +38,18 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
 
 object CrawlerConf {
   val Phases: Seq[String] =
-    Seq("roi", "problems", "problems-reported", "forms-processed", "test", "fetch", "align", "extract", "presidential", "detect", "submit")
+    Seq(
+      "terbalik",
+      "roi",
+      "problems",
+      "problems-reported",
+      "forms-processed",
+      "test",
+      "fetch",
+      "align",
+      "extract",
+      "presidential",
+      "detect",
+      "submit",
+      "tps-unprocessed")
 }

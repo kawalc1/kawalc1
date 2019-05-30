@@ -4,12 +4,14 @@ import java.io.{ File, PrintWriter }
 import java.net.URL
 import java.time.LocalDateTime
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
 import id.kawalc1.cli.{ CrawlerConf, Tool }
-import id.kawalc1.clients.{ JsonSupport, KawalC1Client, KawalPemiluClient }
+import id.kawalc1.clients.{ FireStoreClient, GCloudClient, JsonSupport, KawalC1Client, KawalPemiluClient, Response, SubmitResponse }
 import id.kawalc1.database.{ AlignResult, DetectionResult, ResultsTables, TpsTables }
 import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import org.json4s.native.Serialization
@@ -70,25 +72,89 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
     (c: CrawlerConf) => {
       val token = c.Submit.token.toOption.get
       val force = c.Submit.force.toOption.getOrElse(false)
-      val problems: Seq[Problem] = resultsDatabase.run(ResultsTables.problemsToReportQuery.result).futureValue
-
-      problems.foreach {
-        x =>
-          println(s"problem $x")
-
-          val success = kawalPemiluClient.subitProblem("https://upload.kawalpemilu.org", token, x).futureValue
-          Thread.sleep(400)
-          success match {
-            case Right(submitted) =>
-              val reported = ProblemReported(x.kelId, "", x.tpsNo, x.url, x.reason)
-              resultsDatabase.run(ResultsTables.problemsReportedQuery.insertOrUpdate(reported)).futureValue
-            case Left(err) =>
-              println(s"Error: $err")
-              resultsDatabase.run(ResultsTables.problemsQuery.insertOrUpdate(x.copy(response_code = Some(err.code)))).futureValue
+      val name = c.Submit.name.toOption.get
+      name match {
+        case "submit" =>
+          val unverifieds = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.drop(14992).result).futureValue.toList
+          val futures = Source(unverifieds).mapAsync(6) {
+            t: SingleTps =>
+              val body = t.verification.c1.get.halaman match {
+                case Some("1") =>
+                  val p = t.verification.sum.get.asInstanceOf[SingleSum]
+                  Approval(t.kelurahanId, "", t.tpsId, SingleSum(p.jum), t.imageId.get, C1(Some(Plano.NO), FormType.PPWP, Some("1")))
+                case Some("2") =>
+                  val p = t.verification.sum.get.asInstanceOf[PresidentialLembar2]
+                  Approval(
+                    t.kelurahanId,
+                    "",
+                    t.tpsId,
+                    PresidentialLembar2(p.pas1, p.pas2, p.sah, p.tSah),
+                    t.imageId.get,
+                    C1(Some(Plano.NO), FormType.PPWP, Some("2")))
+              }
+              kawalPemiluClient.submitApprove("https://upload.kawalpemilu.org", token, body).map {
+                case Right(resp) =>
+                  Some(true)
+                case Left(err) =>
+                  println(s"failed $err")
+                  None
+              }
           }
-        //        println(s"$success")
-      }
+          futures.runFold(Seq.empty[Option[Boolean]])(_ :+ _).futureValue
 
+        case "switch" =>
+          val client = new FireStoreClient("https://firestore.googleapis.com/v1/projects/kawal-c1/databases/(default)/documents/t2/")
+          val terbaliks = resultsDatabase.run(ResultsTables.terbaliksQuery.drop(1).result).futureValue
+          var i = 0
+          terbaliks.foreach {
+            t =>
+              i = i + 1
+              val submit =
+                for {
+                  halaman1 <- client.getDocId(t.kelurahan, t.tps, t.hal2Photo, token)
+                  halaman2 <- client.getDocId(t.kelurahan, t.tps, t.hal1Photo, token)
+                  moved1 <- {
+                    val body = Approval(
+                      t.kelurahan,
+                      "",
+                      t.tps,
+                      PresidentialLembar2(t.pas1, t.pas2, t.jumlah, t.tidakSah),
+                      halaman1.imageId,
+                      C1(Some(Plano.NO), FormType.PPWP, Some("2")))
+                    kawalPemiluClient.submitApprove("https://upload.kawalpemilu.org", token, body)
+                  }
+                  moved2 <- {
+                    val body =
+                      Approval(t.kelurahan, "", t.tps, SingleSum(t.php), halaman2.imageId, C1(Some(Plano.NO), FormType.PPWP, Some("1")))
+                    kawalPemiluClient.submitApprove("https://upload.kawalpemilu.org", token, body)
+                  }
+                } yield { moved2 }
+              submit.futureValue
+              println(s"processed $i")
+            //            Thread.sleep(200)
+
+          }
+
+        case "problems" =>
+          val problems: Seq[Problem] = resultsDatabase.run(ResultsTables.problemsToReportQuery.result).futureValue
+
+          problems.foreach {
+            x =>
+              println(s"problem $x")
+
+              val success = kawalPemiluClient.subitProblem("https://upload.kawalpemilu.org", token, x).futureValue
+              Thread.sleep(400)
+              success match {
+                case Right(submitted) =>
+                  val reported = ProblemReported(x.kelId, "", x.tpsNo, x.url, x.reason)
+                  resultsDatabase.run(ResultsTables.problemsReportedQuery.insertOrUpdate(reported)).futureValue
+                case Left(err) =>
+                  println(s"Error: $err")
+                  resultsDatabase.run(ResultsTables.problemsQuery.insertOrUpdate(x.copy(response_code = Some(err.code)))).futureValue
+              }
+            //        println(s"$success")
+          }
+      }
     })
 
   myTool.registerSubcmdHandler(
@@ -121,29 +187,6 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           //              group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
 
           println(s"Size ${duplicates.size}")
-        case "duplicates" =>
-          val aligned = resultsDatabase.run(ResultsTables.alignResultsQuery.result).futureValue
-          val grouped: Map[String, Seq[AlignResult]] = aligned.groupBy((x: AlignResult) => s"${x.hash.getOrElse("")}")
-          val pw = new PrintWriter(new File("photo-dups.csv"))
-          val duplicates: Map[String, Seq[AlignResult]] = grouped.filter {
-            case (hash: String, group: Seq[AlignResult]) =>
-              val details = group.map(x => s"${x.id},${x.tps}").toSet
-
-              if (details.size > 1 && hash != "" && hash != "hash") {
-                grouped(hash).foreach { x: AlignResult =>
-                  val first = group.head
-                  val foto = first.photo
-                  pw.println(s"${x.photo},${x.id},${x.tps},${details.size},$hash")
-                }
-
-              }
-              group.size > 1
-          }
-          pw.close()
-          //              if (group.size > 1) println(s"${details.head},${group.size},https://upload.kawalpemilu.org/t/${group.head.id}")
-          //              group.size > 1 //&& group.map(x => s"${x.id},${x.tps}").toSet.size > 1
-
-          println(s"Size ${duplicates.size}")
       }
     })
   myTool.registerSubcmdHandler(
@@ -152,6 +195,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
       val phase = c.CreateDb.name
       val drop = c.CreateDb.drop()
       phase() match {
+        case "terbalik" =>
+          createDb(ResultsTables.terbaliksQuery.schema, resultsDatabase, drop)
         case "problems" =>
           createDb(ResultsTables.problemsQuery.schema, resultsDatabase, drop)
         case "problems-reported" =>
@@ -168,6 +213,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           createDb(ResultsTables.extractResultsQuery.schema, resultsDatabase, drop)
         case "presidential" =>
           createDb(ResultsTables.presidentialResultsQuery.schema, resultsDatabase, drop)
+        case "tps-unprocessed" =>
+          createDb(TpsTables.tpsUnverifiedQuery.schema, resultsDatabase, drop)
 
       }
     })
@@ -207,11 +254,24 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           val howMany = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
           println(s"Will detect: $howMany")
           process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+        case "tps-unprocessed" =>
+          implicit val pw = new PrintWriter(new File(s"batches/felix-${LocalDateTime.now()}-${url.getHost}.csv"))
+          val howMany = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length
+          println(s"Will detect: $howMany")
+          process("detections", processor.processUnverifiedDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "roi" =>
           implicit val pw = new PrintWriter(new File(s"batches/rois-${LocalDateTime.now()}-${url.getHost}.csv"))
           val howMany = resultsDatabase.run(ResultsTables.tpsToRoiQuery.result).futureValue.length
           println(s"Will detect: $howMany")
           process("rois", processor.processRois, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+        case "photo-dump" =>
+          val client = new GCloudClient()
+          val aligned = resultsDatabase
+            .run(ResultsTables.detectionsQuery.drop(offset).filter(_.config === "digit_config_ppwp_scan_halaman_2_2019.json").result)
+            .futureValue
+          aligned.foreach { x =>
+            client.getImage(x.kelurahan, x.tps, x.photo.replace("http://lh3.googleusercontent.com/", ""))
+          }
       }
     })
   myTool.run()

@@ -1,0 +1,319 @@
+{
+  "name": "projects/kawal-c1/databases/(default)/documents/t2/80-1",
+  "fields": {
+    "images": {
+      "mapValue": {
+        "fields": {
+          "19DVyTDveKQEPNlLrKli": {
+            "mapValue": {
+              "fields": {
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "jum": {
+                        "integerValue": "199"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/52Cv7B7sumGa3aAwFdnYssl7hAvpb47NCx6vJy26AAPTuarlvAmLV3bQyBnIfa9rhDQ0pH4iz7M8UtfjDj8p"
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "t": {
+                        "integerValue": "1"
+                      },
+                      "a": {
+                        "integerValue": "1556608180655"
+                      },
+                      "k": {
+                        "integerValue": "80"
+                      },
+                      "s": {
+                        "integerValue": "364659"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "1-80-1-C-XXX-X6.jpg"
+                            },
+                            {
+                              "stringValue": ""
+                            }
+                          ]
+                        }
+                      },
+                      "l": {
+                        "integerValue": "1556608177972"
+                      }
+                    }
+                  }
+                },
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "type": {
+                        "integerValue": "1"
+                      },
+                      "plano": {
+                        "integerValue": "2"
+                      },
+                      "halaman": {
+                        "stringValue": "1"
+                      }
+                    }
+                  }
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10216302513329341&height=200&width=200&ext=1558440182&hash=AeRwCDWPF4HLoAvj"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZAsU3FGUlU3Vm5NdDREblo2SWlmNURVeGw4NUtZANngzM3d3U1lKeGhmUWdwdnFMTUZAYN2JrOUgySUlFSUFRNm5WNllJXzdzWnVCdmotaGk0b0Y0bzhheC1henBjbDczZAzBIU0VhTmdB/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554347071994"
+                      },
+                      "name": {
+                        "stringValue": "Resti Sakuntala"
+                      },
+                      "email": {
+                        "stringValue": "butiti_s@yahoo.com"
+                      },
+                      "ip": {
+                        "stringValue": "202.153.31.149"
+                      },
+                      "uid": {
+                        "stringValue": "S1AJhCB5kUZn3iuRYf6tIErQOZJ2"
+                      },
+                      "ts": {
+                        "integerValue": "1556610601462"
+                      },
+                      "dr4": {
+                        "integerValue": "1"
+                      },
+                      "role": {
+                        "integerValue": "1"
+                      }
+                    }
+                  }
+                },
+                "reports": {
+                  "nullValue": null
+                },
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "ts": {
+                        "integerValue": "1556608180799"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=107789297079539&height=200&width=200&ext=1557494451&hash=AeRiMMArbkIfd-3S"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZALR0JKRGtqaHVxazZAvQzZATTE50aE9jRHA0T0hBZATdLNjk1WWdxSlFvZAUt3SG9WOWwzUkNTa2lLWmNJVUxLbjRZAaUo2cmg4eWJ0TGs0TklqWkZATdnVOeXZA2b2V3N2M1bWplbGF4TWhObkFzeE1n/"
+                      },
+                      "ua": {
+                        "stringValue": "Go-http-client/1.1"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554902451419"
+                      },
+                      "name": {
+                        "stringValue": "KPU Scan"
+                      },
+                      "email": {
+                        "stringValue": "kpu_yhyxlbt_scan@tfbnw.net"
+                      },
+                      "ip": {
+                        "stringValue": "73.202.177.171"
+                      },
+                      "uid": {
+                        "stringValue": "gEQFS1n5gpTzMTy5JASPPLk4yRA3"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "0y2BqwnZg8vbqMbmRvC2": {
+            "mapValue": {
+              "fields": {
+                "uploader": {
+                  "mapValue": {
+                    "fields": {
+                      "loginTs": {
+                        "integerValue": "1554902451419"
+                      },
+                      "name": {
+                        "stringValue": "KPU Scan"
+                      },
+                      "email": {
+                        "stringValue": "kpu_yhyxlbt_scan@tfbnw.net"
+                      },
+                      "ip": {
+                        "stringValue": "73.202.177.171"
+                      },
+                      "uid": {
+                        "stringValue": "gEQFS1n5gpTzMTy5JASPPLk4yRA3"
+                      },
+                      "dr4": {
+                        "integerValue": "0"
+                      },
+                      "ts": {
+                        "integerValue": "1556608167540"
+                      },
+                      "role": {
+                        "integerValue": "0"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=107789297079539&height=200&width=200&ext=1557494451&hash=AeRiMMArbkIfd-3S"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZALR0JKRGtqaHVxazZAvQzZATTE50aE9jRHA0T0hBZATdLNjk1WWdxSlFvZAUt3SG9WOWwzUkNTa2lLWmNJVUxLbjRZAaUo2cmg4eWJ0TGs0TklqWkZATdnVOeXZA2b2V3N2M1bWplbGF4TWhObkFzeE1n/"
+                      },
+                      "ua": {
+                        "stringValue": "Go-http-client/1.1"
+                      }
+                    }
+                  }
+                },
+                "sum": {
+                  "mapValue": {
+                    "fields": {
+                      "pas1": {
+                        "integerValue": "13"
+                      },
+                      "tSah": {
+                        "integerValue": "11"
+                      },
+                      "sah": {
+                        "integerValue": "188"
+                      },
+                      "pas2": {
+                        "integerValue": "175"
+                      }
+                    }
+                  }
+                },
+                "url": {
+                  "stringValue": "http://lh3.googleusercontent.com/aeLjddH2eYnOhBUk3nM2g9RiUrhGpUwuPN6EZSLslYghIB-jfJg-9lm6ZRj_L9ukXvEw9MsX0b3jq6kPx9k"
+                },
+                "meta": {
+                  "mapValue": {
+                    "fields": {
+                      "t": {
+                        "integerValue": "1"
+                      },
+                      "a": {
+                        "integerValue": "1556608167378"
+                      },
+                      "k": {
+                        "integerValue": "80"
+                      },
+                      "s": {
+                        "integerValue": "425515"
+                      },
+                      "l": {
+                        "integerValue": "1556608164819"
+                      },
+                      "m": {
+                        "arrayValue": {
+                          "values": [
+                            {
+                              "stringValue": "1-80-1-C1-PPWP-01.jpg"
+                            },
+                            {
+                              "stringValue": ""
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "c1": {
+                  "mapValue": {
+                    "fields": {
+                      "halaman": {
+                        "stringValue": "2"
+                      },
+                      "type": {
+                        "integerValue": "1"
+                      },
+                      "plano": {
+                        "integerValue": "2"
+                      }
+                    }
+                  }
+                },
+                "reviewer": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "S1AJhCB5kUZn3iuRYf6tIErQOZJ2"
+                      },
+                      "ts": {
+                        "integerValue": "1556610595272"
+                      },
+                      "dr4": {
+                        "integerValue": "1"
+                      },
+                      "role": {
+                        "integerValue": "1"
+                      },
+                      "pic": {
+                        "stringValue": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10216302513329341&height=200&width=200&ext=1558440182&hash=AeRwCDWPF4HLoAvj"
+                      },
+                      "link": {
+                        "stringValue": "YXNpZADpBWEZAsU3FGUlU3Vm5NdDREblo2SWlmNURVeGw4NUtZANngzM3d3U1lKeGhmUWdwdnFMTUZAYN2JrOUgySUlFSUFRNm5WNllJXzdzWnVCdmotaGk0b0Y0bzhheC1henBjbDczZAzBIU0VhTmdB/"
+                      },
+                      "ua": {
+                        "stringValue": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+                      },
+                      "loginTs": {
+                        "integerValue": "1554347071994"
+                      },
+                      "name": {
+                        "stringValue": "Resti Sakuntala"
+                      },
+                      "email": {
+                        "stringValue": "butiti_s@yahoo.com"
+                      },
+                      "ip": {
+                        "stringValue": "202.153.31.149"
+                      }
+                    }
+                  }
+                },
+                "reports": {
+                  "nullValue": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "imgCount": {
+      "integerValue": "2"
+    }
+  },
+  "createTime": "2019-04-30T07:09:28.840613Z",
+  "updateTime": "2019-04-30T07:50:02.104082Z"
+}
