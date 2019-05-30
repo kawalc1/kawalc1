@@ -1,0 +1,1 @@
+gsutil -m rsync -r gs://kawalc1/static/transformed static/transformed

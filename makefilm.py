@@ -9,7 +9,7 @@ frameH = 720  # images height
 
 writer = cv2.VideoWriter("video.avi", cv2.cv.CV_FOURCC('X', 'V', 'I', 'D'), fps, (frameW, frameH), True)
 
-nFrames = 7000;  # number of frames
+nFrames = 7000  # number of frames
 for i in range(nFrames):
     digit_image = "C:/temp/pilpres-recog/movie/" + "{0:0>5}".format(i) + ".png"
     print(digit_image)
