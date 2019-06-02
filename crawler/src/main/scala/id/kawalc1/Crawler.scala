@@ -4,15 +4,14 @@ import java.io.{ File, PrintWriter }
 import java.net.URL
 import java.time.LocalDateTime
 
-import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
 import id.kawalc1.cli.{ CrawlerConf, Tool }
-import id.kawalc1.clients.{ FireStoreClient, GCloudClient, JsonSupport, KawalC1Client, KawalPemiluClient, Response, SubmitResponse }
-import id.kawalc1.database.{ AlignResult, DetectionResult, ResultsTables, TpsTables }
+import id.kawalc1.clients.{ FireStoreClient, JsonSupport, KawalC1Client, KawalPemiluClient }
+import id.kawalc1.database.{ DetectionResult, ResultsTables, TpsTables }
 import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import org.json4s.native.Serialization
 import slick.{ backend, jdbc }
@@ -264,14 +263,6 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           val howMany = resultsDatabase.run(ResultsTables.tpsToRoiQuery.result).futureValue.length
           println(s"Will detect: $howMany")
           process("rois", processor.processRois, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
-        case "photo-dump" =>
-          val client = new GCloudClient()
-          val aligned = resultsDatabase
-            .run(ResultsTables.detectionsQuery.drop(offset).filter(_.config === "digit_config_ppwp_scan_halaman_2_2019.json").result)
-            .futureValue
-          aligned.foreach { x =>
-            client.getImage(x.kelurahan, x.tps, x.photo.replace("http://lh3.googleusercontent.com/", ""))
-          }
       }
     })
   myTool.run()
