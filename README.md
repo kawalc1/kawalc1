@@ -1,5 +1,10 @@
-# Verifikasi Otomatis Formulir Pemilu C1
+#Kawal C1
 ![Logo](http://kawalc1.org/static/img/logo-kotak.png)
+
+For a description of how this software was used to verify the results of the 2019
+Indonesian elections, read the information at [Kawal Pemilu](https://github.com/kawalpemilu/upload.kawalpemilu.org).
+
+# Verifikasi Otomatis Formulir Pemilu C1
 
 Deskripsi Use Case:
  1. Pengguna mengunggah formulir C1
@@ -18,9 +23,6 @@ Use Case Description:
  1. If the user agrees with what the computer has detected the process is finished. 
  1. If the user doesn't agree with the computer, he/she has the opportunity to submit the correct numbers.
  1. All this data is stored in a database and can serve to improve the accuracy of the algorithms.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SamTheisens/verifikatorc1/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 
 ## Development setup - python
