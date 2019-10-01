@@ -25,9 +25,6 @@ Use Case Description:
  1. All this data is stored in a database and can serve to improve the accuracy of the algorithms.
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SamTheisens/verifikatorc1/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-
 ## Development setup - python
 
 To run unittests
