@@ -1,5 +1,11 @@
-# Verifikasi Otomatis Formulir Pemilu C1
+#Kawal C1
 ![Logo](http://kawalc1.org/static/img/logo-kotak.png)
+
+For a description of how this software was used to verify the results of the 2019
+Indonesian elections, read the information at [Kawal Pemilu](https://github.com/kawalpemilu/upload.kawalpemilu.org)
+
+# Verifikasi Otomatis Formulir Pemilu C1
+
 
 Deskripsi Use Case:
  1. Pengguna mengunggah formulir C1
