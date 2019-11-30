@@ -1,4 +1,5 @@
-eval $(docker-machine env kawalc1-prod-1)
+#!/usr/bin/env bash
+eval $(docker-machine env kawalc1-prod-3)
 docker ps
 docker stop kawalc1
 docker rm kawalc1
