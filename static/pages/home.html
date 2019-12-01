@@ -93,18 +93,18 @@
           </tr>
             <tr>
                 <td>
-                    {{'FORM_VOTES_VALID'| translate }}
+                    {{ 'FORM_VOTES_INVALID' | translate}}
                 </td>
-                <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                  {{ mostProbableOutcome[2].number }}
+                <td>
+                  {{ totals[0].number}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ 'FORM_VOTES_INVALID' | translate}}
+                    {{'FORM_VOTES_VALID'| translate }}
                 </td>
-                <td>
-                  {{ totals[1].number}}
+                <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
+                  {{ mostProbableOutcome[2].number }}
                 </td>
             </tr>
 
@@ -197,7 +197,18 @@
                         <span ng-show="correct">{{mostProbableOutcome[1].number}}</span>
                     </td>
                 </tr>
-
+                <tr>
+                    <td>
+                        {{'FORM_VOTES_INVALID'|translate}}
+                    </td>
+                    <td>
+                        <input ng-model="correctionTotals[0].number" type="number" max="999"
+                               ng-maxlength="3"
+                               ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{correctionTotals[0].number}}</span>
+                        <span ng-show="correct">{{totals[0].number}}</span>
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         {{'FORM_VOTES_VALID'| translate}}
@@ -207,23 +218,12 @@
                         <span ng-show="correct">{{ totals[2].number }}</span>
                     </td>
                 </tr>
+
                 <tr>
-                    <td>
-                        {{'FORM_VOTES_INVALID'|translate}}
-                    </td>
-                    <td>
-                        <input ng-model="correctionTotals[1].number" type="number" max="999"
-                               ng-maxlength="3"
-                               ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correctionTotals[1].number}}</span>
-                        <span ng-show="correct">{{totals[1].number}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
+                    <td> {{ 'FORM_VOTES_TOTAL' | translate}} </td>
                     <td class="jumlah">
-                        <span ng-show="correction">{{ correction[0].number +  correction[1].number  + correctionTotals[1].number}}</span>
-                        <span ng-show="correct">{{ totals[2].number }}</span>
+                        <span ng-show="correction"><b>{{ correction[0].number +  correction[1].number  + correctionTotals[0].number}}</b></span>
+                        <span ng-show="correct"><b>{{ totals[2].number }}</b></span>
                     </td>
                 </tr>
             </table>

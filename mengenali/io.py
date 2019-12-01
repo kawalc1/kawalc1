@@ -80,4 +80,4 @@ def write_image(file_path, image):
         storage.save(file_path, ContentFile(image))
 
 def image_url(file_path):
-    return file_path.replace("static/transformed", "https://storage.googleapis.com/kawalc1/static/transformed") if settings.LOCAL else storage.url(file_path)
+    return file_path.replace("static/transformed", "../static/transformed") if settings.LOCAL else storage.url(file_path)

@@ -490,7 +490,7 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
 
                 numbers[number_id]["extracted"].append(extracted_struct)
             else:
-                empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
+                empty_struct = {"probabilities": [], "filename": 'static/img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
     digit_path = head.replace("output/", "")
