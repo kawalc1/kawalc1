@@ -88,7 +88,7 @@ VERSION = 'v0.9.1-alpha'
 SECRET_KEY = '_146et)+93n!)efakmmt4%$@3^zng1c0nf=f)3hc@gw6p@yy4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = LOCAL
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '*'
