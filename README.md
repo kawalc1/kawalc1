@@ -3,6 +3,8 @@
 
 For a description of how this software was used to verify the results of the 2019
 Indonesian elections, read the information at [Kawal Pemilu](https://github.com/kawalpemilu/upload.kawalpemilu.org).
+This video contains almost all tally forms from the 2019 presidential elections as they were digitized by our system:
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/_cgl1tMVcJ0/0.jpg)](http://www.youtube.com/watch?v=_cgl1tMVcJ0 "800.000 Formulir")
 
 # Verifikasi Otomatis Formulir Pemilu C1
 
