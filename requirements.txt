@@ -5,7 +5,7 @@ opencv-python==3.4.5.20
 dask[array]
 lxml
 psycopg2-binary
-scikit-image==0.14.2
+scikit-image==0.17.2
 django
 django-storages[google]
 dj-inmemorystorage
