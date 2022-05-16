@@ -7,6 +7,7 @@ Indonesian elections, read the information at [Kawal Pemilu](https://github.com/
 This video contains almost all tally forms from the 2019 presidential elections as they were digitized by our system:
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/_cgl1tMVcJ0/0.jpg)](http://www.youtube.com/watch?v=_cgl1tMVcJ0 "800.000 Formulir")
+Our [facebook group](https://www.facebook.com/c1kawal/) will post irregular updates.
 
 # Verifikasi Otomatis Formulir Pemilu C1
 
