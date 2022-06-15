@@ -3,7 +3,7 @@
 ![Logo](http://kawalc1.org/static/img/logo-kotak.png)
 
 For a description of how this software was used to verify the results of the 2019
-Indonesian elections, read the information at [Kawal Pemilu](https://github.com/kawalpemilu/upload.kawalpemilu.org). Current updates are be posted on our [facebook group](https://www.facebook.com/c1kawal/).
+Indonesian elections, read the information at [Kawal Pemilu](https://github.com/kawalpemilu/upload.kawalpemilu.org). Current updates are posted on our [facebook group](https://www.facebook.com/c1kawal/).
 
 This video contains almost all tally forms from the 2019 presidential elections as they were digitized by our system:
 
