@@ -14,7 +14,7 @@ def convert_key_points(keypoints, descriptors):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2024-hal2-plano.png")
+    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2024-hal3-plano.png")
     args = vars(ap.parse_args())
 
     image_path = args["image"]

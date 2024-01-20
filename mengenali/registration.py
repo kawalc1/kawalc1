@@ -247,7 +247,7 @@ def register_image_brisk(file_path, reference_form_path, output_path, result_wri
     similarity = 0.0
     try:
 
-        brisk = cv2.BRISK()
+        brisk = cv2.BRISK_create()
         im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
         logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()

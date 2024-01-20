@@ -129,7 +129,7 @@ def get_outcome(output, config_file):
 def align(request, kelurahan, tps, filename):
     try:
         config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
-        matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
+        matcher = request.GET.get('featureAlgorithm', 'brisk').lower()
         a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
         output = {**a}
 
@@ -274,9 +274,9 @@ def transform(request):
 
         try:
             config_file = request.POST.get("configFile", "")
-            res, image = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                             config_file, "akaze")
-            output = json.loads(res)
+            result = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
+                                             config_file, "brisk")
+            output = json.loads(result)
             output["configFile"] = config_file
         except Exception as e:
             logging.exception("this is not good!")
