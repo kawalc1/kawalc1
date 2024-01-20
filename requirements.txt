@@ -10,3 +10,5 @@ django
 django-storages[google]
 dj-inmemorystorage
 psutil
+urllib3==1.26.6
+matplotlib==3.8.2

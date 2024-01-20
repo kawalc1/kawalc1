@@ -48,7 +48,7 @@ def process_image(cropped):
     if h > w:
         pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = int((22.0 / h) * w), 22
-        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
+        test_im = pil_im.resize(mnist_size, Image.Resampling.LANCZOS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
         left = int((28 - mnist_size[0])) // 2
@@ -58,7 +58,7 @@ def process_image(cropped):
     else:
         pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = 22, int((22.0 / w) * h)
-        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
+        test_im = pil_im.resize(mnist_size, Image.Resampling.LANCZOS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
         top = int((28 - mnist_size[1])) // 2
