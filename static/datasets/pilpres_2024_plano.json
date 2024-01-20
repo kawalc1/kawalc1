@@ -1,0 +1,38 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "anies",
+            "displayName": "Anies",
+            "digitCoordinates": [
+                [298,340, 938,978],
+                [298,338, 990,1032],
+                [298,336, 1040,1082]
+
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "prabs",
+            "displayName": "Prabowo",
+            "digitCoordinates": [
+                [610,652, 938,980],
+                [610,652, 988,1034],
+                [610,652, 1040,1082]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "ganjar",
+            "displayName": "Ganjar",
+            "digitCoordinates": [
+                [922,964, 940,980],
+                [922,964, 990,1034],
+                [922,962, 1040,1084]
+            ]
+        }
+    ],
+    "checkSums": [],
+    "roi": [],
+    "referenceForm": "PPWP-2024-hal2-plano.jpg"
+}

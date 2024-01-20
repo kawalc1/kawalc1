@@ -1,4 +1,4 @@
-<div flow-init="{singleFile:true, query: {configFile : 'digit_config_pilpres_exact_2019.json'}}"
+<div flow-init="{singleFile:true, query: {configFile : 'pilpres_2024_plano.json'}}"
      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,webp:1}[$file.getExtension()]"
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
@@ -6,7 +6,7 @@
 <div class="introduction fader" ng-hide="$flow.files.length">
     {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank"
                                                                                 download="trial-run.JPG"
-                                                                                href="contoh-pilpres-2019/trial-run.JPG">{{
+                                                                                href="contoh-pilpres-2024/trial-run.JPG">{{
     'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
 </div>
 <div class="block column"
@@ -247,6 +247,6 @@
     </form>
 </div>
 <div class="bottomright" >
-<b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-pilpres-2019.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>.
+<!--<b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-pilpres-2019.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>.-->
     </div>
 </div>

@@ -14,7 +14,7 @@ def convert_key_points(keypoints, descriptors):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2019-plano.jpg")
+    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2024-hal2-plano.png")
     args = vars(ap.parse_args())
 
     image_path = args["image"]
@@ -28,4 +28,4 @@ if __name__ == '__main__':
     print(img.shape)
     h, w = img.shape
 
-    pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, open(image_path.replace('.jpg', '.akaze.p'), "wb"))
+    pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, open(image_path.replace('.png', '.akaze.p'), "wb"))

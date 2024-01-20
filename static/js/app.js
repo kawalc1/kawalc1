@@ -126,7 +126,7 @@ app.config(function($translateProvider) {
 		WITNESS_SIGNATURES: 'Tanda tangan saksi',
 		SIGNATURE_PRESENT: 'Ada',
 		SIGNATURE_ABSENT: 'Tidak ada',
-        NEW_ALERT: 'Baru! 2019',
+        NEW_ALERT: 'Baru!!! 2024',
         TRY_THESE: 'Cobalah dengan',
         TRY_NEW_FORMS: 'formulir plano C1',
         TRY_OLD_FORMS: 'atau yang '
