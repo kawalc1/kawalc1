@@ -216,7 +216,7 @@ def get_numbers(check_sums, all_probabilities, categories_count):
     all_numbers = []
     for j, extract in enumerate(all_probabilities):
         for i, probabilities in enumerate(extract["probabilitiesForNumber"]):
-            if len(probabilities) is 0:
+            if len(probabilities) == 0:
                 counts_as_zero = ([0.0] * categories_count)
                 counts_as_zero[0] = 1.0
                 all_numbers = all_numbers + counts_as_zero

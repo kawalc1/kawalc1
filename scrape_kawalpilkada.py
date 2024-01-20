@@ -9,7 +9,7 @@ import shutil
 # settings.configure(DEBUG=True)
 # django.setup()
 from kawalc1 import settings
-import urllib2
+import urllib3
 import json
 import psycopg2
 from mengenali import process_form, load_config
