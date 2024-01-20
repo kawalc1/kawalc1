@@ -7,7 +7,7 @@ from kawalc1 import settings
 from mengenali import imageclassifier
 from mengenali.extraction import unsharp_image, pre_process_digits, select_digits, extract_biggest_box
 from mengenali.io import read_image
-from mengenali.partyclassifier import detect_party
+from mengenali.image_classifier import detect_most_similar
 from tests import setup_django_settings
 import numpy as np
 from scipy import ndimage

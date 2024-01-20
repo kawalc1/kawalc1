@@ -1,7 +1,7 @@
 import unittest
 
 from mengenali.io import read_image
-from mengenali.partyclassifier import detect_party
+from mengenali.image_classifier import detect_most_similar
 from tests import setup_django_settings
 
 
@@ -14,7 +14,7 @@ class PartyMatchTest(unittest.TestCase):
     def assert_most_similar(self, party_file, expected_result):
         reference_form_path = f'./resources/parties/{party_file}'
         image = read_image(reference_form_path)
-        party, confidence = detect_party(image)
+        party, confidence = detect_most_similar(image, 'datasets/party_features')
         self.assertTrue(expected_result in party, f'Expected {expected_result} in {party}')
 
     def test_detect_party_pdi(self):

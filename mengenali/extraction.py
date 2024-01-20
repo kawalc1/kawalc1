@@ -17,7 +17,7 @@ import logging
 import matplotlib.pyplot as plt
 
 from mengenali.io import read_image, write_image, image_url
-from mengenali.partyclassifier import detect_party
+from mengenali.image_classifier import detect_most_similar
 
 image_threshold = 128
 
@@ -448,7 +448,7 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
         ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
         pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
         if name == "namaPartai":
-            most_similar_form, most_similar = detect_party(roi_image)
+            most_similar_form, most_similar = detect_most_similar(roi_image, 'datasets/party_features')
             party_name = {"party": most_similar_form, "confidence": most_similar}
 
     unsharpened_image = unsharp_image(original_image)
