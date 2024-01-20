@@ -92,7 +92,7 @@ app.config(function($translateProvider) {
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi Formulir Secara Otomatis',
-		VERSION: 'Versi 1.2 - 16 Feb, 2019',
+		VERSION: 'Versi 1.3 - 20 Jan, 2024',
 		INTRODUCTION: 'Aplikasi ini dapat menghitung otomatis hasil formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK : 'formulir ini',
