@@ -1,0 +1,252 @@
+<div flow-init="{singleFile:true, query: {configFile : 'digit_config_pilpres_exact_smaller_2019.json'}}"
+     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,webp:1}[$file.getExtension()]"
+     flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
+     flow-file-added="setImage(null)"
+     flow-file-success="setImage($message)">
+    <div class="introduction fader" ng-hide="$flow.files.length">
+        {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank"
+                                                                                    download="trial-run.JPG"
+                                                                                    href="contoh-pilpres-2019/trial-run.JPG">{{
+        'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
+    </div>
+    <div class="block column"
+         ng-class="{success : hasUploadFinished(), done: isAreaSelected()}">
+
+        <h3>{{ 'UPLOAD_TITLE' | translate }}</h3>
+
+        <div class="result">
+            <img ng-src="{{uploadUrl}}" class="thumbnail"
+                 ng-hide="(hasUploadFinished() && hasRegistrationFailed()) || isAreaSelected()"/>
+            <img ng-src="../{{digitArea}}" class="uploadedImage"
+                 ng-show="isAreaSelected()"/>
+            <img ng-class="{uploadedImage: true}" flow-img="$flow.files[0]"
+                 ng-show="(hasUploadFinished() && hasRegistrationFailed())"/>
+        </div>
+        <div>
+            <div class="progress progress-striped"
+                 ng-class="{active: $flow.file.isUploading()}"
+                 ng-show="$flow.files.length && !hasUploadFinished()">
+                <div class="progress-bar" role="progressbar"
+                     ng-style="{width: (progress * 100) + '%'}">
+                    <span class="sr-only">{{Math.round(progress * 100) }}% Lengkap</span>
+                </div>
+            </div>
+            <span class="btn btn-primary" ng-hide="$flow.files.length" flow-btn
+                  flow-attrs="{accept:'image/*'}">{{ 'UPLOAD_BUTTON' | translate }}</span>
+        </div>
+    </div>
+    <div class="block column"
+         ng-class="{success : hasExtractionSucceeded(), failure : hasExtractionFailed(), done: hasExtractionFinished()}">
+        <h3>{{ 'DETECTION_TITLE' | translate }}</h3>
+
+        <div class="result numbers"
+             ng-show="(hasUploadFinished() && hasExtractionSucceeded() && !hasRegistrationFailed())">
+            <div ng-repeat="extractedImage in extractedImages" style="padding: 2px; float: left"
+                 ng-show="$flow.files.length">
+                <img src="../{{extractedImage.filename}}" tooltip-html-unsafe="{{getConfidenceTooltip(extractedImage)}}"/>
+            </div>
+        </div>
+        <div class="result" ng-show="(hasUploadFinished() && hasRegistrationFailed())">
+            <p>
+                {{ 'UPLOAD_ERROR_EXCUSE' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_DIAGNOSIS' | translate }} <br/>
+                {{ 'UPLOAD_ERROR_SUGGESTION' | translate }}
+            </p>
+
+        </div>
+        <div>
+            <a href="#" class="btn btn-danger"
+               ng-show="(hasUploadFinished() && hasRegistrationFailed())" ng-click="abort()">
+                {{ 'UPLOAD_CANCEL' | translate }}
+            </a>
+        </div>
+    </div>
+    <div class="block column"
+         ng-class="{success : (mostProbableOutcome && (!useKeyboardNavigation ||stage > 3)) , failure : ((correction && !submitted) || (!numbersAddUp() && !submitted) && (!useKeyboardNavigation || stage > 3)), done: ((correction || correct) && (!useKeyboardNavigation || stage > 3))}">
+        <h3>{{ 'VERIFICATION_TITLE' | translate }}</h3>
+
+        <div ng-show="(mostProbableOutcome && (!useKeyboardNavigation || stage > 3))" class="result">
+            <table class="hasil">
+                <tr>
+                    <th>
+                        {{'FORM_CANDIDATE'| translate }}
+                    </th>
+                    <th>
+                        {{'FORM_TOTAL'| translate }}
+                    </th>
+
+                <tr>
+                    <td>
+                        {{ mostProbableOutcome[0].displayName }}
+                    </td>
+                    <td>
+                        {{ mostProbableOutcome[0].number }}
+                    </td>
+                </tr>
+                </tr>
+                <td>
+                    {{ mostProbableOutcome[1].displayName }}
+                </td>
+                <td>
+                    {{ mostProbableOutcome[1].number }}
+                </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ 'FORM_VOTES_INVALID' | translate}}
+                    </td>
+                    <td>
+                        {{ totals[0].number}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{'FORM_VOTES_VALID'| translate }}
+                    </td>
+                    <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
+                        {{ mostProbableOutcome[2].number }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        {{ 'FORM_VOTES_TOTAL' | translate}}
+                    </td>
+                    <td class="jumlah">
+                        <b>{{ totals[2].number}}</b>
+                    </td>
+                </tr>
+            </table>
+            <!--<table class="hasil tandaTangan">-->
+            <!--<tr>-->
+            <!--<th colspan="2">-->
+            <!--{{ 'WITNESS_SIGNATURES' | translate }}-->
+            <!--</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td>-->
+            <!--H. Prabowo Subianto-->
+            <!--</td>-->
+            <!--<td>-->
+            <!--<span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"-->
+            <!--ng-show="signatures[0].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>-->
+            <!--<span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[0])}}"-->
+            <!--ng-show="!signatures[0].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>-->
+            <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td>-->
+            <!--Ir. H. Joko Widodo-->
+            <!--</td>-->
+            <!--<td>-->
+            <!--<span class="okay" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"-->
+            <!--ng-show="signatures[1].isValid">{{'SIGNATURE_PRESENT' | translate}}</span>-->
+            <!--<span class="warning" tooltip-html-unsafe="{{getToolTip(signatures[1])}}"-->
+            <!--ng-show="!signatures[1].isValid">{{'SIGNATURE_ABSENT' | translate}}</span>-->
+            <!--</td>-->
+            <!--</tr>-->
+            <!--</table>-->
+        </div>
+        <div>
+            <span class="btn btn-success"
+                  ng-show="mostProbableOutcome && !correction && !correct && numbersAddUp() &&  (!useKeyboardNavigation || stage > 3)"
+                  ng-click="agree()">
+                {{ 'BUTTON_CORRECT' | translate }}
+            </span>
+            <span class="btn btn-danger"
+                  ng-show="(mostProbableOutcome && (!useKeyboardNavigation || stage > 3)) && !correction && !correct"
+                  ng-click="disagree()">
+                {{ 'BUTTON_NOT_CORRECT' | translate }}
+            </span>
+        </div>
+    </div>
+    <div class="block column" ng-class="{success : submitted}">
+        <form name="submitForm">
+            <h3>{{ 'CORRECTION_TITLE' | translate }}</h3>
+
+            <div ng-show="correction || correct" class="result">
+                <table class="hasil">
+                    <tr>
+                        <th>
+                            {{'FORM_CANDIDATE'| translate}}
+                        </th>
+                        <th>
+                            {{'FORM_TOTAL'| translate}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ mostProbableOutcome[0].displayName }}
+                        </td>
+                        <td>
+                            <input ng-model="correction[0].number" type="number" max="999" ng-maxlength="3"
+                                   ng-show="correction && !submitted"/>
+                            <span ng-show="correction && submitted">{{correction[0].number}}</span>
+                            <span ng-show="correct">{{mostProbableOutcome[0].number}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ mostProbableOutcome[1].displayName }}
+                        </td>
+
+                        <td>
+                            <input ng-model="correction[1].number" type="number" max="999"
+                                   ng-maxlength="3" ng-show="correction && !submitted"/>
+                            <span ng-show="correction && submitted">{{ correction[1].number }}</span>
+                            <span ng-show="correct">{{mostProbableOutcome[1].number}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{'FORM_VOTES_INVALID'|translate}}
+                        </td>
+                        <td>
+                            <input ng-model="correctionTotals[0].number" type="number" max="999"
+                                   ng-maxlength="3"
+                                   ng-show="correction && !submitted"/>
+                            <span ng-show="correction && submitted">{{correctionTotals[0].number}}</span>
+                            <span ng-show="correct">{{totals[0].number}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{'FORM_VOTES_VALID'| translate}}
+                        </td>
+                        <td class="jumlah">
+                            <span ng-show="correction">{{ correction[0].number +  correction[1].number}}</span>
+                            <span ng-show="correct">{{ totals[2].number }}</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td> {{ 'FORM_VOTES_TOTAL' | translate}} </td>
+                        <td class="jumlah">
+                            <span ng-show="correction"><b>{{ correction[0].number +  correction[1].number  + correctionTotals[0].number}}</b></span>
+                            <span ng-show="correct"><b>{{ totals[2].number }}</b></span>
+                        </td>
+                    </tr>
+                </table>
+                <div ng-show="submitted" class="beritaBerhasil">
+                    <b>{{ 'SUBMITTED_THANKS' | translate }}</b> {{ 'SUBMITTED_MESSAGE' | translate }}
+                </div>
+            </div>
+            <div>
+            <span class="btn btn-success" ng-disabled="submitForm.$invalid"
+                  ng-show="(correction && !submitted) || (correct && !submitted)"
+                  ng-click="submit()">
+                {{ 'BUTTON_SEND' | translate }}
+            </span>
+
+                <div>
+                    <a href="#" class="btn btn-success" ng-show="submitted" ng-click="abort()">
+                        {{ 'BUTTON_RESTART' | translate }}
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="bottomright" >
+        <b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-pilpres-2019.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>.
+    </div>
+</div>

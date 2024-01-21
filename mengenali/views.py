@@ -41,7 +41,7 @@ def download_file(uri, target_path):
 def extract_upload(request):
     filename = request.GET.get("filename", "")
     config_file = request.GET.get("configFile", 'digit_config_pilpres_2019.json') if request.GET else \
-    json.loads(request.body.decode('utf-8'))["configFile"]
+        json.loads(request.body.decode('utf-8'))["configFile"]
     output = extraction.extract_rois(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                      settings.STATIC_DIR,
                                      load_config(config_file))
@@ -281,12 +281,15 @@ def transform(request):
         handle_uploaded_file(request.FILES['file'], filename)
 
         try:
-            #TODO: make config files configurable from the outside.
+
             config_file = request.POST.get("configFile", "")
 
-            matching_config_file, reference_form = get_correct_config_file_and_reference_form(filename)
+            detect_matching_config = False
 
-            result = registration.process_file(None, 1, settings.STATIC_DIR, filename, f"{settings.STATIC_DIR}/datasets/{reference_form}",
+            matching_config_file, reference_form = detect_matching_config_file_from_image(
+                filename) if detect_matching_config else config_file, get_reference_form(config_file)
+
+            result = registration.process_file(None, 1, settings.STATIC_DIR, filename, reference_form,
                                                matching_config_file, "brisk")
             output = json.loads(result)
             output["configFile"] = matching_config_file
@@ -298,7 +301,7 @@ def transform(request):
         return HttpResponseNotFound('Method not supported')
 
 
-def get_correct_config_file_and_reference_form(filename):
+def detect_matching_config_file_from_image(filename):
     image_path = path.join(settings.STATIC_DIR + '/upload', filename)
     image = read_image(image_path)
     most_similar, confidence = detect_most_similar(image, f'datasets/form_features')
@@ -307,7 +310,7 @@ def get_correct_config_file_and_reference_form(filename):
     config_files = ["pilpres_2024_plano_halaman2.json", "pilpres_2024_plano_halaman3.json"]
     reference_forms = {f"{get_reference_form(config_file)}": config_file for config_file in config_files}
     matching_config_file = reference_forms[f"{settings.STATIC_DIR}/datasets/{reference_form}"]
-    return matching_config_file, reference_form
+    return matching_config_file, f"{settings.STATIC_DIR}/datasets/{reference_form}",
 
 
 def lazy_load_reference_form(form_uri):

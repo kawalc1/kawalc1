@@ -87,21 +87,6 @@ def make_number(digit_list, current_confidence):
         return int("".join(str(x) for x in significant_part)), current_confidence
 
 
-def print_possible(after_reduction):
-    outcomes = []
-    for x in after_reduction:
-        outcome = {
-            "prabowo": int(x[0][0]),
-            "jokowi": int(x[0][1]),
-            "total": int(x[0][2]),
-            "invalid": int(x[0][3]),
-            "confidence": float(x[1])
-        }
-        logging.info(outcome)
-        outcomes.append(outcome)
-    return outcomes
-
-
 def get_number_config_for_index(config, prob_index):
     for number in config["numbers"]:
         number_index = number["id"]
@@ -204,8 +189,9 @@ def get_individual_numbers(numbers, checksums):
             numbers_in_checksums[number_in_checksum["id"]] = number_in_checksum
 
     numbers_not_in_checksums = []
+
     for i, number in enumerate(numbers):
-        in_checksums = filter(lambda x: x == number["id"], numbers_in_checksums)
+        in_checksums = list(filter(lambda x: x == number["id"], numbers_in_checksums))
         if not in_checksums:
             numbers_not_in_checksums.append(number)
 
