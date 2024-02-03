@@ -21,6 +21,7 @@ from mengenali.io import write_string, read_image, write_image
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
+STORAGE_BASE_URL = "https://storage.googleapis.com/kawalc1"
 
 def index(request):
     return static_serve(request, 'index.html', '/home/sjappelodorus/verifikatorc1/static')
@@ -53,7 +54,7 @@ def extract_tps(request, kelurahan, tps, filename):
     config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
     config = load_config(config_file)
     base_url = request.GET.get('baseUrl',
-                               f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/')
+                               f'{STORAGE_BASE_URL}/static/transformed/{kelurahan}/{tps}/')
     file_path = path.join(settings.STATIC_DIR, f'transformed/{kelurahan}/{tps}/{filename}')
     # file_path = f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/{filename}'
 
@@ -146,7 +147,7 @@ def align(request, kelurahan, tps, filename):
 
 def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, store_files=True):
     store_files = json.loads(request.GET.get('storeFiles', 'false').lower())
-    base_url = request.GET.get('baseUrl', f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
+    base_url = request.GET.get('baseUrl', f'{STORAGE_BASE_URL}/firebase/{kelurahan}/{tps}/')
     url = f'{base_url}/{filename}'
     output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
     from datetime import datetime
@@ -166,7 +167,7 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
 
 
 def extract_roi(request, kelurahan, tps, filename):
-    file_path = f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/{filename}.webp'
+    file_path = f'{STORAGE_BASE_URL}/static/transformed/{kelurahan}/{tps}/{filename}.webp'
 
     tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
     image = read_image(file_path)
@@ -209,7 +210,7 @@ def download(request, kelurahan, tps, filename):
                 output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
                 target_path = f'{kelurahan}/{tps}'
                 base_url = request.GET.get('baseUrl',
-                                           f'https://storage.googleapis.com/kawalc1/firebase/{kelurahan}/{tps}/')
+                                           f'{STORAGE_BASE_URL}/firebase/{kelurahan}/{tps}/')
                 url = f'{base_url}/{filename}'
                 write_transformed_image(aligned_image, 0, 0, True, url,
                                         output_path, target_path, store_files)
