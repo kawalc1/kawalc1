@@ -59,8 +59,8 @@ def unpickle_keypoints(array):
     keypoints = []
     descriptors = []
     for point in array:
-        temp_feature = cv2.KeyPoint(x=point[0][0], y=point[0][1], _size=point[1], _angle=point[2], _response=point[3],
-                                    _octave=point[4], _class_id=point[5])
+        temp_feature = cv2.KeyPoint(x=point[0][0], y=point[0][1], size=point[1], angle=point[2], response=point[3],
+                                    octave=point[4], class_id=point[5])
         temp_descriptor = point[6]
         keypoints.append(temp_feature)
         descriptors.append(temp_descriptor)
@@ -246,6 +246,7 @@ def register_image_brisk(file_path, reference_form_path, output_path, result_wri
     difference_hash = dhash(image)
     similarity = 0.0
     try:
+
         brisk = cv2.BRISK_create()
         im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
         logging.info("BRISK image %s", (datetime.now() - lap).total_seconds())
@@ -310,8 +311,9 @@ def show_match(im_kp, image, raw_matches, ref_kp, reference_form_path):
         if m.distance < 0.75 * n.distance:
             good.append([m])
     # img3 = cv2.drawMatchesKnn(image, im_kp, reference, ref_kp, matches, None, **draw_params)
-    im_matches = cv2.drawMatchesKnn(image, im_kp, reference, ref_kp, good, outImg=img_match, matchColor=None,
-                                    singlePointColor=(255, 255, 255), flags=2)
+    im_matches = cv2.drawMatchesKnn(img1=image, keypoints1=im_kp, img2=reference,
+                                    keypoints2=ref_kp, matches1to2=good, outImg=img_match, matchColor=None,
+                                    singlePointColor=(255, 255, 255), matchesMask=[], flags=2)
     factor = 0.5
     im_matches_small = cv2.resize(im_matches, None, fx=factor, fy=factor)
     cv2.imshow("match", im_matches_small)

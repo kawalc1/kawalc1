@@ -1,0 +1,30 @@
+name: build-pr
+on:
+  push:
+    branches-ignore: [ 'main' ]
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_SECRET }}
+      - name: Find PR number
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        if: github.ref_name != 'main'
+        with:
+          state: open
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: sjappelodorus/kawalc1:pr-${{ steps.findPr.outputs.pr }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

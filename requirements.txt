@@ -1,12 +1,14 @@
-numpy==1.15.4
+numpy==1.26.3
 scipy>=0.15.1
 Pillow>=2.1.0
-opencv-python==3.4.5.20
+opencv-python==4.8.1.78
 dask[array]
 lxml
 psycopg2-binary
-scikit-image==0.14.2
+scikit-image==0.22.0
 django
 django-storages[google]
 dj-inmemorystorage
 psutil
+urllib3==1.26.6
+matplotlib==3.8.2

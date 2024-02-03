@@ -1,4 +1,4 @@
-<div flow-init="{singleFile:true, query: {configFile : 'digit_config_pilpres_exact_smaller_2019.json'}}"
+<div flow-init="{singleFile:true, query: {configFile : 'pilpres_2024_plano_halaman2.json'}}"
      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,webp:1}[$file.getExtension()]"
      flow-files-submitted="$flow.upload()" flow-file-progress="updateProgress($file)"
      flow-file-added="setImage(null)"
@@ -6,8 +6,8 @@
 <div class="introduction fader" ng-hide="$flow.files.length">
     {{ 'INTRODUCTION' | translate }}. {{ 'INTRODUCTION_TRYIT' | translate }} <a target="_blank"
                                                                                 download="trial-run.JPG"
-                                                                                href="contoh-pilpres-2019/trial-run.JPG">{{
-    'INTRODUCTION_TRYIT_LINK' | translate }}</a>!
+                                                                                href="contoh-pilpres-2024/trial-run.JPG">{{
+    'INTRODUCTION_TRYIT_LINK_1' | translate }}</a>!
 </div>
 <div class="block column"
      ng-class="{success : hasUploadFinished(), done: isAreaSelected()}">
@@ -91,29 +91,36 @@
             {{ mostProbableOutcome[1].number }}
           </td>
           </tr>
-            <tr>
-                <td>
-                    {{ 'FORM_VOTES_INVALID' | translate}}
-                </td>
-                <td>
-                  {{ totals[0].number}}
-                </td>
+            <td>
+                {{ mostProbableOutcome[2].displayName }}
+            </td>
+            <td>
+                {{ mostProbableOutcome[2].number }}
+            </td>
             </tr>
-            <tr>
-                <td>
-                    {{'FORM_VOTES_VALID'| translate }}
-                </td>
-                <td class="jumlah" ng-class="{warning : !numbersAddUp() }">
-                  {{ mostProbableOutcome[2].number }}
-                </td>
-            </tr>
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    {{ 'FORM_VOTES_INVALID' | translate}}-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                  {{ totals[0].number}}-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    {{'FORM_VOTES_VALID'| translate }}-->
+<!--                </td>-->
+<!--                <td class="jumlah" ng-class="{warning : !numbersAddUp() }">-->
+<!--                  {{ mostProbableOutcome[2].number }}-->
+<!--                </td>-->
+<!--            </tr>-->
 
             <tr>
                 <td>
                     {{ 'FORM_VOTES_TOTAL' | translate}}
                 </td>
                 <td class="jumlah">
-                    <b>{{ totals[2].number}}</b>
+                    <b>{{ (mostProbableOutcome[0].number + mostProbableOutcome[1].number + mostProbableOutcome[2].number) }}</b>
                 </td>
             </tr>
         </table>
@@ -199,30 +206,42 @@
                 </tr>
                 <tr>
                     <td>
-                        {{'FORM_VOTES_INVALID'|translate}}
+                        {{ mostProbableOutcome[2].displayName }}
                     </td>
+
                     <td>
-                        <input ng-model="correctionTotals[0].number" type="number" max="999"
-                               ng-maxlength="3"
-                               ng-show="correction && !submitted"/>
-                        <span ng-show="correction && submitted">{{correctionTotals[0].number}}</span>
-                        <span ng-show="correct">{{totals[0].number}}</span>
+                        <input ng-model="correction[2].number" type="number" max="999"
+                               ng-maxlength="3" ng-show="correction && !submitted"/>
+                        <span ng-show="correction && submitted">{{ correction[2].number }}</span>
+                        <span ng-show="correct">{{mostProbableOutcome[2].number}}</span>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        {{'FORM_VOTES_VALID'| translate}}
-                    </td>
-                    <td class="jumlah">
-                        <span ng-show="correction">{{ correction[0].number +  correction[1].number}}</span>
-                        <span ng-show="correct">{{ totals[2].number }}</span>
-                    </td>
-                </tr>
+<!--                <tr>-->
+<!--                    <td>-->
+<!--                        {{'FORM_VOTES_INVALID'|translate}}-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <input ng-model="correctionTotals[0].number" type="number" max="999"-->
+<!--                               ng-maxlength="3"-->
+<!--                               ng-show="correction && !submitted"/>-->
+<!--                        <span ng-show="correction && submitted">{{correctionTotals[0].number}}</span>-->
+<!--                        <span ng-show="correct">{{totals[0].number}}</span>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>-->
+<!--                        {{'FORM_VOTES_VALID'| translate}}-->
+<!--                    </td>-->
+<!--                    <td class="jumlah">-->
+<!--                        <span ng-show="correction">{{ correction[0].number +  correction[1].number}}</span>-->
+<!--                        <span ng-show="correct">{{ totals[2].number }}</span>-->
+<!--                    </td>-->
+<!--                </tr>-->
 
                 <tr>
                     <td> {{ 'FORM_VOTES_TOTAL' | translate}} </td>
                     <td class="jumlah">
-                        <span ng-show="correction"><b>{{ correction[0].number +  correction[1].number  + correctionTotals[0].number}}</b></span>
+                        <span ng-show="correction"><b>{{ correction[0].number +  correction[1].number + correction[2].number }}</b></span>
                         <span ng-show="correct"><b>{{ totals[2].number }}</b></span>
                     </td>
                 </tr>
@@ -247,6 +266,6 @@
     </form>
 </div>
 <div class="bottomright" >
-<b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-pilpres-2019.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>.
+<!--<b class="emphasis pulse animated">{{ 'NEW_ALERT' | translate }}</b> {{ 'TRY_THESE' | translate }} <a href="contoh-pilpres-2019.zip">{{ 'TRY_NEW_FORMS' | translate }}</a>.-->
     </div>
 </div>

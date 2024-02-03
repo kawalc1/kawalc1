@@ -1,6 +1,8 @@
-FROM python:3.7
+FROM python:3.9.6
 
 ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN mkdir /kawalc1
 

@@ -1,0 +1,30 @@
+domains:
+- domain: kawalc1.org
+  type: PRIMARY
+  zone: kawalc1.org
+ingress:
+  rules:
+  - component:
+      name: sjappelodorus-kawalc-1
+    match:
+      path:
+        prefix: /
+name: sjappelodorus-kawalc-1
+region: sgp
+services:
+- envs:
+  - key: FORCE_LOCAL_FILE_SYSTEM
+    scope: RUN_AND_BUILD_TIME
+    value: "True"
+  health_check:
+    http_path: /static/index.html#/
+  http_port: 8000
+  image:
+    registry: sjappelodorus
+    registry_type: DOCKER_HUB
+    repository: kawalc1
+    tag: latest
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: sjappelodorus-kawalc-1
+  source_dir: /

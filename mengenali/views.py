@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from datetime import datetime
 
+from mengenali.image_classifier import detect_most_similar
 from mengenali.io import write_string, read_image, write_image
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
@@ -39,7 +40,8 @@ def download_file(uri, target_path):
 @csrf_exempt
 def extract_upload(request):
     filename = request.GET.get("filename", "")
-    config_file = request.GET.get("configFile", 'digit_config_pilpres_2019.json') if request.GET else json.loads(request.body.decode('utf-8'))["configFile"]
+    config_file = request.GET.get("configFile", 'digit_config_pilpres_2019.json') if request.GET else \
+        json.loads(request.body.decode('utf-8'))["configFile"]
     output = extraction.extract_rois(filename, settings.STATIC_DIR, path.join(settings.STATIC_DIR, 'extracted'),
                                      settings.STATIC_DIR,
                                      load_config(config_file))
@@ -72,7 +74,8 @@ def load_config(config_file_name):
 def get_probabilities_result_parsable(request):
     json_data = json.loads(request.body.decode('utf-8'))
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
-                                                             json_data["probabilities"], settings.CATEGORIES_COUNT, print_outcome_parsable)
+                                                             json_data["probabilities"], settings.CATEGORIES_COUNT,
+                                                             print_outcome_parsable)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -88,7 +91,8 @@ def get_probabilities_result(request):
     logging.info(str(json_data))
 
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
-                                                             json_data["probabilities"], settings.CATEGORIES_COUNT, print_outcome)
+                                                             json_data["probabilities"], settings.CATEGORIES_COUNT,
+                                                             print_outcome)
     results = []
     for outcome in outcomes:
         results.append(outcome)
@@ -129,7 +133,7 @@ def get_outcome(output, config_file):
 def align(request, kelurahan, tps, filename):
     try:
         config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
-        matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
+        matcher = request.GET.get('featureAlgorithm', 'brisk').lower()
         a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
         output = {**a}
 
@@ -160,6 +164,7 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
     return a, image
 
+
 def extract_roi(request, kelurahan, tps, filename):
     file_path = f'https://storage.googleapis.com/kawalc1/static/transformed/{kelurahan}/{tps}/{filename}.webp'
 
@@ -187,11 +192,13 @@ def download(request, kelurahan, tps, filename):
         config_file = config_files[0]
 
         start_lap = datetime.now()
-        a, aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+        a, aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher,
+                                          store_files)
         print("Sim1", a["similarity"])
         if a["similarity"] < 100:
             config_file = config_files[1]
-            second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher, store_files)
+            second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps,
+                                                          get_reference_form(config_file), matcher, store_files)
             print("Sim2", second["similarity"])
             if second["similarity"] > a["similarity"]:
                 a = second
@@ -217,7 +224,7 @@ def download(request, kelurahan, tps, filename):
 
         loaded_config = load_config(config_file)
         b = extraction.extract_rois_in_memory(file_path, path.join(tps_dir, 'extracted'),
-                                    settings.STATIC_DIR, loaded_config, aligned_image, False, True)
+                                              settings.STATIC_DIR, loaded_config, aligned_image, False, True)
 
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
@@ -233,7 +240,8 @@ def download(request, kelurahan, tps, filename):
             probabilities.insert(0, probability_set)
 
         c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
-                                                          settings.CATEGORIES_COUNT, print_outcome) if calculate_numbers else {}
+                                                          settings.CATEGORIES_COUNT,
+                                                          print_outcome) if calculate_numbers else {}
         logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
@@ -273,17 +281,36 @@ def transform(request):
         handle_uploaded_file(request.FILES['file'], filename)
 
         try:
+
             config_file = request.POST.get("configFile", "")
-            res, image = registration.process_file(None, 1, settings.STATIC_DIR, filename, get_reference_form(config_file),
-                                             config_file, "akaze")
-            output = json.loads(res)
-            output["configFile"] = config_file
+
+            detect_matching_config = False
+
+            matching_config_file, reference_form = detect_matching_config_file_from_image(
+                filename) if detect_matching_config else config_file, get_reference_form(config_file)
+
+            result = registration.process_file(None, 1, settings.STATIC_DIR, filename, reference_form,
+                                               matching_config_file, "brisk")
+            output = json.loads(result)
+            output["configFile"] = matching_config_file
         except Exception as e:
             logging.exception("this is not good!")
             output = {'transformedUrl': None, 'success': False}
         return JsonResponse(output)
     else:
         return HttpResponseNotFound('Method not supported')
+
+
+def detect_matching_config_file_from_image(filename):
+    image_path = path.join(settings.STATIC_DIR + '/upload', filename)
+    image = read_image(image_path)
+    most_similar, confidence = detect_most_similar(image, f'datasets/form_features')
+    reference_form = most_similar.replace(".brisk", ".jpg")
+
+    config_files = ["pilpres_2024_plano_halaman2.json", "pilpres_2024_plano_halaman3.json"]
+    reference_forms = {f"{get_reference_form(config_file)}": config_file for config_file in config_files}
+    matching_config_file = reference_forms[f"{settings.STATIC_DIR}/datasets/{reference_form}"]
+    return matching_config_file, f"{settings.STATIC_DIR}/datasets/{reference_form}",
 
 
 def lazy_load_reference_form(form_uri):
@@ -362,8 +389,8 @@ def process_form(config_name, posted_config, scan_url):
         transform_output = json.loads(registered_file)
     transformed_url = transform_output["transformedUrl"]
     extracted = json.loads(extraction.extract_rois("transformed/" + transformed_url, settings.STATIC_DIR,
-                                              path.join(settings.STATIC_DIR, 'extracted'),
-                                              settings.STATIC_DIR, posted_config))
+                                                   path.join(settings.STATIC_DIR, 'extracted'),
+                                                   settings.STATIC_DIR, posted_config))
     digit_area = extracted["digitArea"]
     numbers = extracted["numbers"]
     probabilities = []

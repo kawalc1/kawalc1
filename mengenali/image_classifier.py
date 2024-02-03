@@ -15,11 +15,11 @@ def read_descriptors(reference_form_path):
         return pickle.load(pickled)
 
 
-def detect_party(image):
+def detect_most_similar(image, feature_path: str):
     brisk = cv2.BRISK_create()
     im_kp, im_descriptors = brisk.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
 
-    features_dir = pathlib.Path(settings.STATIC_DIR).joinpath('datasets/features')
+    features_dir = pathlib.Path(settings.STATIC_DIR).joinpath(feature_path)
     listdir = os.listdir(features_dir)
     most_similar = 0
     most_similar_form = ""

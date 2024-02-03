@@ -17,7 +17,7 @@ import logging
 import matplotlib.pyplot as plt
 
 from mengenali.io import read_image, write_image, image_url
-from mengenali.partyclassifier import detect_party
+from mengenali.image_classifier import detect_most_similar
 
 image_threshold = 128
 
@@ -48,7 +48,7 @@ def process_image(cropped):
     if h > w:
         pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = int((22.0 / h) * w), 22
-        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
+        test_im = pil_im.resize(mnist_size, Image.Resampling.LANCZOS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
         left = int((28 - mnist_size[0])) // 2
@@ -58,7 +58,7 @@ def process_image(cropped):
     else:
         pil_im = Image.fromarray(cropped.astype('uint8'))
         mnist_size = 22, int((22.0 / w) * h)
-        test_im = pil_im.resize(mnist_size, Image.ANTIALIAS)
+        test_im = pil_im.resize(mnist_size, Image.Resampling.LANCZOS)
         # now place the image into a 28x28 array
         output_image = Image.fromarray(np.zeros((28, 28)))
         top = int((28 - mnist_size[1])) // 2
@@ -448,7 +448,7 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
         ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
         pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
         if name == "namaPartai":
-            most_similar_form, most_similar = detect_party(roi_image)
+            most_similar_form, most_similar = detect_most_similar(roi_image, 'datasets/party_features')
             party_name = {"party": most_similar_form, "confidence": most_similar}
 
     unsharpened_image = unsharp_image(original_image)

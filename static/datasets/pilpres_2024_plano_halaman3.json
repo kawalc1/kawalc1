@@ -1,0 +1,43 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "sah",
+            "displayName": "Jumlah Sah",
+            "digitCoordinates": [
+                [260,304, 1018,1064],
+                [260,306, 1074,1122],
+                [260,304, 1132,1180]
+
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "tidaksah",
+            "displayName": "Tidak Sah",
+            "digitCoordinates": [
+                [424,472, 1018,1066],
+                [426,472, 1074,1124],
+                [424,472, 1132,1180]
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "jumlah",
+            "displayName": "Jumlah",
+            "digitCoordinates": [
+                [598,646, 1018,1070],
+                [598,646, 1074,1124],
+                [600,644, 1132,1186]
+            ]
+        }
+    ],
+    "checkSums": [
+        {
+            "sigma": ["0", "1"],
+            "total": "2"
+        }
+    ],
+    "roi": [],
+    "referenceForm": "PPWP-2024-hal3-plano.jpg"
+}

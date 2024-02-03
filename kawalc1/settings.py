@@ -43,8 +43,8 @@ POOL_SIZE=int(os.environ.get('POOL_SIZE', '64'))
 patch_https_connection_pool(maxsize=POOL_SIZE)
 mimetypes.add_type('image/webp', '.webp')
 
-
-FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', False))
+TEST_MODE = bool(os.environ.get('TEST_MODE', False))
+FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', TEST_MODE))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
 LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
 STORAGE_CLASS = 'kawalc1.storage.OverwriteStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
@@ -57,7 +57,7 @@ if CREDS_FROM_FILE:
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "kawalc1-google-credentials.json"
 SECRET = os.environ.get('KAWALC1_SECRET', 'test')
 AUTHENTICATION_ENABLED = SECRET is not 'test'
-BASE_DIR = "."
+BASE_DIR = "../" if TEST_MODE else "."
 TARGET_EXTENSION = ".jpg"
 PADDING_INNER = 2
 PADDING_OUTER = 16
