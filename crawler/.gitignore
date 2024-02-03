@@ -2,3 +2,5 @@ crawler.iml
 crawler.ipr
 crawler.iws
 *.db
+.bsp/
+target/
