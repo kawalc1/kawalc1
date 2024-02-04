@@ -46,7 +46,7 @@ def read_image(file_path):
 
 def read_file(file_path):
     if is_url(file_path):
-        logging.warning("downloading from %s", file_path)
+        logging.info("downloading from %s", file_path)
         return urllib.request.urlopen(file_path, cafile=certifi.where())
     else:
         logging.info("reading %s", os.path.abspath(file_path))

@@ -21,7 +21,7 @@ from mengenali.io import write_string, read_image, write_image
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
-STORAGE_BASE_URL = "https://storage.googleapis.com/kawalc1"
+STORAGE_BASE_URL = "https://storage.googleapis.com/kawalc1/2024"
 
 def index(request):
     return static_serve(request, 'index.html', '/home/sjappelodorus/verifikatorc1/static')
@@ -152,18 +152,18 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
     from datetime import datetime
     lap = datetime.now()
-    func = registration.register_image_akaze
-    if matcher == "akaze":
-        func = registration.register_image_akaze
+    func = registration.register_image_brisk
+    # if matcher == "akaze":
+    #     func = registration.register_image_akaze
+    # if matcher == "sift":
+    #     func = registration.register_image_brisk
     if matcher == "brisk":
         func = registration.register_image_brisk
-    if matcher == "sift":
-        func = registration.register_image_brisk
 
-    resp, image = func(url, reference_form, output_path, None, f'{kelurahan}/{tps}', store_files)
+    resp = func(url, reference_form, output_path, None, f"{kelurahan}/{tps}/")
     a = json.loads(resp)
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
-    return a, image
+    return a
 
 
 def extract_roi(request, kelurahan, tps, filename):

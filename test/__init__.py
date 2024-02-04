@@ -1,3 +1,3 @@
 
 import sys
-sys.path.append('~/PycharmProjects/kawalc1')
+sys.path.append('~/IdeaProjects/kawalc1')
