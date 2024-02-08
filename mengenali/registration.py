@@ -155,78 +155,78 @@ def dhash(image, hashSize=8):
 #             separators=(',', ':'))
 
 
-# def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path="", store_files=True):
-#     from datetime import datetime
-#     lap = datetime.now()
-#
-#     key_points = read_descriptors(reference_form_path, "akaze")
-#     ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
-#     h = key_points['h']
-#     w = key_points['w']
-#
-#     akaze = cv2.AKAZE_create()
-#
-#     logging.info("AKAZE reference %s", (datetime.now() - lap).total_seconds())
-#     lap = datetime.now()
-#
-#     image = read_image(file_path)
-#     logging.info("image read %s", (datetime.now() - lap).total_seconds())
-#     lap = datetime.now()
-#
-#     difference_hash = dhash(image)
-#     similarity = 0.0
-#     try:
-#         im_kp, im_descriptors = akaze.detectAndCompute(image, None)
-#         logging.info("AKAZE image %s", (datetime.now() - lap).total_seconds())
-#         lap = datetime.now()
-#
-#         bf = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
-#         raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
-#         logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
-#         lap = datetime.now()
-#
-#         amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
-#         mkp1, mkp2 = zip(*matches)
-#         logging.warning("matches %s", matches.__sizeof__())
-#
-#         # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
-#
-#         p1 = np.float32([kp.pt for kp in mkp1])
-#         p2 = np.float32([kp.pt for kp in mkp2])
-#
-#         homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-#
-#         logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
-#         lap = datetime.now()
-#
-#         homography, transform = check_homography(homography_transform)
-#
-#         # good_enough_match = check_match(homography, transform)
-#         good_enough_match = True
-#
-#         image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
-#         logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
-#         lap = datetime.now()
-#
-#         tr_kp, tr_descriptors = akaze.detectAndCompute(image_transformed, None)
-#         tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
-#         tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
-#         trkp1, trkp2 = zip(*tr_matches_filtered)
-#         similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
-#
-#         transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
-#                                                     file_path,
-#                                                     output_path, target_path, store_files)
-#         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-#         return create_response(transformed_image, good_enough_match, difference_hash, similarity), image_transformed
-#     except Exception as e:
-#         logging.exception("Registration failed")
-#         return json.dumps(
-#             {'transformedUrl': None,
-#              'transformedUri': None,
-#              'similarity': -1.0,
-#              'hash': str(difference_hash), 'success': False},
-#             separators=(',', ':'))
+def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path="", store_files=True):
+    from datetime import datetime
+    lap = datetime.now()
+
+    key_points = read_descriptors(reference_form_path, "akaze")
+    ref_kp, ref_descriptors = unpickle_keypoints(key_points['keypoints'])
+    h = key_points['h']
+    w = key_points['w']
+
+    akaze = cv2.AKAZE_create()
+
+    logging.info("AKAZE reference %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    image = read_image(file_path)
+    logging.info("image read %s", (datetime.now() - lap).total_seconds())
+    lap = datetime.now()
+
+    difference_hash = dhash(image)
+    similarity = 0.0
+    try:
+        im_kp, im_descriptors = akaze.detectAndCompute(image, None)
+        logging.info("AKAZE image %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        bf = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+        raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
+        logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
+        mkp1, mkp2 = zip(*matches)
+        logging.warning("matches %s", matches.__sizeof__())
+
+        # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+
+        p1 = np.float32([kp.pt for kp in mkp1])
+        p2 = np.float32([kp.pt for kp in mkp2])
+
+        homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+
+        logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        homography, transform = check_homography(homography_transform)
+
+        # good_enough_match = check_match(homography, transform)
+        good_enough_match = True
+
+        image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
+        logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+        lap = datetime.now()
+
+        tr_kp, tr_descriptors = akaze.detectAndCompute(image_transformed, None)
+        tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
+        tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
+        trkp1, trkp2 = zip(*tr_matches_filtered)
+        similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
+
+        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+                                                    file_path,
+                                                    output_path, target_path, store_files)
+        logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity), image_transformed
+    except Exception as e:
+        logging.exception("Registration failed")
+        return json.dumps(
+            {'transformedUrl': None,
+             'transformedUri': None,
+             'similarity': -1.0,
+             'hash': str(difference_hash), 'success': False},
+            separators=(',', ':'))
 
 
 def register_image_brisk(file_path, reference_form_path, output_path, result_writer, target_path=""):
@@ -292,7 +292,7 @@ def register_image_brisk(file_path, reference_form_path, output_path, result_wri
                                                     file_path,
                                                     output_path, target_path)
         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity), image_transformed
     except Exception as e:
         logging.exception("Registration failed")
         return json.dumps(

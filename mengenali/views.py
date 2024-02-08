@@ -116,14 +116,12 @@ def find_number(output, name):
 
 
 def get_outcome(output, config_file):
-    if config_file == "digit_config_ppwp_scan_halaman_2_2019.json" or config_file == "digit_config_pilpres_exact_smaller_2019.json":
+    if config_file == "pilpres_2024_plano_halaman2.json":
         return {
-            'prabowo': find_number(output, 'prabowo'),
-            'jokowi': find_number(output, 'jokowi'),
-            'jumlah': find_number(output, 'jumlah'),
-            'tidakSah': find_number(output, 'tidakSah'),
+            'anies': find_number(output, 'anies'),
+            'prabowo': find_number(output, 'prabs'),
+            'ganjar': find_number(output, 'ganjar'),
             'confidence': output['probabilityMatrix'][0][0]['confidence'],
-            'confidenceTidakSah': output['probabilityMatrix'][1][0]['confidence']
         }
     return {
         'phpJumlah': find_number(output, 'phpJumlah'),
@@ -135,11 +133,11 @@ def align(request, kelurahan, tps, filename):
     try:
         config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
         matcher = request.GET.get('featureAlgorithm', 'brisk').lower()
-        a = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
+        a, image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher)
         output = {**a}
 
     except Exception as e:
-        logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
+        logging.exception("failed 'align/<int:kelurahan>/<int:tps>/<str:filename>'")
         output = {'transformedUrl': None, 'success': False}
 
     return JsonResponse(output)
@@ -152,18 +150,18 @@ def __do_alignment(filename, kelurahan, request, tps, reference_form, matcher, s
     output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
     from datetime import datetime
     lap = datetime.now()
-    func = registration.register_image_brisk
+    func = registration.register_image_akaze
     # if matcher == "akaze":
     #     func = registration.register_image_akaze
     # if matcher == "sift":
     #     func = registration.register_image_brisk
-    if matcher == "brisk":
-        func = registration.register_image_brisk
+    # if matcher == "brisk":
+    #     func = registration.register_image_brisk
 
-    resp = func(url, reference_form, output_path, None, f"{kelurahan}/{tps}/")
+    resp, image = func(url, reference_form, output_path, None, f"{kelurahan}/{tps}/")
     a = json.loads(resp)
     logging.info("1: Register  %s", (datetime.now() - lap).total_seconds())
-    return a
+    return a, image
 
 
 def extract_roi(request, kelurahan, tps, filename):
@@ -182,7 +180,7 @@ def extract_roi(request, kelurahan, tps, filename):
 
 def download(request, kelurahan, tps, filename):
     config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
-    matcher = request.GET.get('featureAlgorithm', 'akaze').lower()
+    matcher = request.GET.get('featureAlgorithm', 'brisk').lower()
 
     try:
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
@@ -195,27 +193,27 @@ def download(request, kelurahan, tps, filename):
         start_lap = datetime.now()
         a, aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher,
                                           store_files)
-        print("Sim1", a["similarity"])
-        if a["similarity"] < 100:
-            config_file = config_files[1]
-            second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps,
-                                                          get_reference_form(config_file), matcher, store_files)
-            print("Sim2", second["similarity"])
-            if second["similarity"] > a["similarity"]:
-                a = second
-                aligned_image = second_aligned_image
-                print("second", config_file)
-            else:
-                print("Sim1 (back to first)")
-                output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
-                target_path = f'{kelurahan}/{tps}'
-                base_url = request.GET.get('baseUrl',
-                                           f'{STORAGE_BASE_URL}/firebase/{kelurahan}/{tps}/')
-                url = f'{base_url}/{filename}'
-                write_transformed_image(aligned_image, 0, 0, True, url,
-                                        output_path, target_path, store_files)
-                config_file = config_files[0]
-                print("first", config_file)
+        # print("Sim1", a["similarity"])
+        # if a["similarity"] < 1:
+        #     config_file = config_files[1]
+        #     second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps,
+        #                                                   get_reference_form(config_file), matcher, store_files)
+        #     print("Sim2", second["similarity"])
+        #     if second["similarity"] > a["similarity"]:
+        #         a = second
+        #         aligned_image = second_aligned_image
+        #         print("second", config_file)
+        #     else:
+        #         print("Sim1 (back to first)")
+        #         output_path = path.join(settings.TRANSFORMED_DIR, 'transformed')
+        #         target_path = f'{kelurahan}/{tps}'
+        #         base_url = request.GET.get('baseUrl',
+        #                                    f'{STORAGE_BASE_URL}/firebase/{kelurahan}/{tps}/')
+        #         url = f'{base_url}/{filename}'
+        #         write_transformed_image(aligned_image, 0, 0, True, url,
+        #                                 output_path, target_path, store_files)
+        #         config_file = config_files[0]
+        #         print("first", config_file)
 
         logging.info("1: Align  %s", (datetime.now() - start_lap).total_seconds())
 
