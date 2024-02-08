@@ -1,0 +1,336 @@
+{
+    "transformedUrl": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280.webp",
+    "transformedUri": "./static/2024/transformed/5171021003/4/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw=s1280.webp",
+    "similarity": 64.14355994682427,
+    "hash": "7812274386021799205",
+    "success": false,
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "anies",
+            "displayName": "Anies",
+            "digitCoordinates": [
+                [
+                    298,
+                    340,
+                    938,
+                    978
+                ],
+                [
+                    298,
+                    338,
+                    990,
+                    1032
+                ],
+                [
+                    298,
+                    336,
+                    1040,
+                    1082
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [],
+                    "filename": "static/img/empty.png"
+                },
+                {
+                    "probabilities": [
+                        0.0003125017061172824,
+                        1.274693620992035e-05,
+                        0.0006075104015098562,
+                        0.0009299581202100659,
+                        0.0043722263888228505,
+                        0.011315245587682156,
+                        0.0002143571975036937,
+                        8.123511615021385e-05,
+                        0.00039236847182664555,
+                        0.9817542727721267,
+                        7.577301840667998e-06
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~0~1.webp"
+                },
+                {
+                    "probabilities": [
+                        0.0008772097831115804,
+                        0.983112374302529,
+                        0.0010677615859643556,
+                        0.000259855695104787,
+                        0.0005528765904072148,
+                        0.0031664123010731187,
+                        0.0018604480775605999,
+                        0.00018674409477756503,
+                        0.006398283232545529,
+                        0.0008427454866569726,
+                        0.001675288850269234
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~0~2.webp"
+                }
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "prabs",
+            "displayName": "Prabowo",
+            "digitCoordinates": [
+                [
+                    610,
+                    652,
+                    938,
+                    980
+                ],
+                [
+                    610,
+                    652,
+                    988,
+                    1034
+                ],
+                [
+                    610,
+                    652,
+                    1040,
+                    1082
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [],
+                    "filename": "static/img/empty.png"
+                },
+                {
+                    "probabilities": [
+                        0.0001192096558112657,
+                        1.5015549348142269e-05,
+                        0.000500385222310515,
+                        0.0012752424530202194,
+                        0.0003529087890317967,
+                        0.00423030841211487,
+                        9.857162317656844e-05,
+                        0.00016412875890750928,
+                        0.0003195224335617167,
+                        0.9929142383195502,
+                        1.0468783167334195e-05
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~1~1.webp"
+                },
+                {
+                    "probabilities": [
+                        0.0002341881023795931,
+                        0.9931292036553648,
+                        0.00037788696078171533,
+                        0.00011224031396799473,
+                        0.0011576143916068745,
+                        0.001239106616346224,
+                        0.0009769137515042946,
+                        0.00025016463818564727,
+                        0.0009326204410252829,
+                        0.0006113670208738226,
+                        0.0009786941079639253
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~1~2.webp"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "ganjar",
+            "displayName": "Ganjar",
+            "digitCoordinates": [
+                [
+                    922,
+                    964,
+                    940,
+                    980
+                ],
+                [
+                    922,
+                    964,
+                    990,
+                    1034
+                ],
+                [
+                    922,
+                    962,
+                    1040,
+                    1084
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [
+                        6.036040580542565e-10,
+                        3.15706442155572e-08,
+                        4.291332198118708e-06,
+                        4.774685569994204e-08,
+                        3.593230986666036e-05,
+                        7.506294978240202e-06,
+                        1.7653292756533227e-08,
+                        7.448439455104779e-08,
+                        2.3783450328723494e-07,
+                        3.797731946349495e-07,
+                        0.9999514803964676
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~2~0.webp"
+                },
+                {
+                    "probabilities": [
+                        0.0007581874610820162,
+                        0.00046165655828131263,
+                        0.052271212076364794,
+                        0.09462638958898127,
+                        0.1186646241537084,
+                        6.097012404600006e-05,
+                        0.0011325102980728264,
+                        2.7921677395775872e-06,
+                        0.0003763346954619246,
+                        0.7295883481149191,
+                        0.0020569747613427714
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~2~1.webp"
+                },
+                {
+                    "probabilities": [
+                        0.0007062425897364824,
+                        0.978338416473988,
+                        0.0015084832709643837,
+                        0.0007184000516170323,
+                        0.0013213611651743114,
+                        0.0017720626900742658,
+                        0.0009024686565847247,
+                        0.0005773542793263269,
+                        0.008562305249372416,
+                        0.0021060006232388974,
+                        0.0034869049499230975
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~2~2.webp"
+                }
+            ]
+        }
+    ],
+    "digitArea": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/4/extracted/kWh2h6ii9maG2v5zSR6bofU-aDvScY5ZJfklObV0arwIYsSxhZ8VP-4eVVzGDM-XGiBjlkXapOi4EkggEcW0kVTKfadATLtojixiGw%3Ds1280~digit-area.webp",
+    "party": {},
+    "probabilityMatrix": [
+        [
+            {
+                "2": {
+                    "number": 91,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.6793121438703864
+            },
+            {
+                "2": {
+                    "number": 41,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.11048740079759632
+            }
+        ],
+        [
+            {
+                "2": {
+                    "number": 91,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.6793121438703864
+            },
+            {
+                "2": {
+                    "number": 41,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.11048740079759632
+            }
+        ],
+        [
+            {
+                "2": {
+                    "number": 91,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.6793121438703864
+            },
+            {
+                "2": {
+                    "number": 41,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 91,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 91,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.11048740079759632
+            }
+        ]
+    ],
+    "outcome": {
+        "anies": 91,
+        "prabowo": 91,
+        "ganjar": 91,
+        "confidence": 0.6793121438703864
+    },
+    "duration": 4.03849,
+    "configFile": "pilpres_2024_plano_halaman2.json"
+}

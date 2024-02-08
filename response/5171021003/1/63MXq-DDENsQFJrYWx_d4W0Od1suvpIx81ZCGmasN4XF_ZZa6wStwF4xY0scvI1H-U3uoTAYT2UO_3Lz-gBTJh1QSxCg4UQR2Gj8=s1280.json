@@ -1,0 +1,360 @@
+{
+    "transformedUrl": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280.webp",
+    "transformedUri": "./static/2024/transformed/5171021003/1/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8=s1280.webp",
+    "similarity": 534.4737582761394,
+    "hash": "4836647382726688571",
+    "success": false,
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "anies",
+            "displayName": "Anies",
+            "digitCoordinates": [
+                [
+                    298,
+                    340,
+                    938,
+                    978
+                ],
+                [
+                    298,
+                    338,
+                    990,
+                    1032
+                ],
+                [
+                    298,
+                    336,
+                    1040,
+                    1082
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [
+                        0.00035332971319299543,
+                        0.9895134640237596,
+                        0.001374111413792005,
+                        0.0001278987567538303,
+                        0.002885301790055468,
+                        0.0006461142205181457,
+                        0.0005185335523228548,
+                        0.00034795023743063345,
+                        0.0008791128730156163,
+                        0.0016694561855698585,
+                        0.0016847272335890485
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~0~0.webp"
+                },
+                {
+                    "probabilities": [
+                        0.003317971060504608,
+                        0.061796891436137605,
+                        0.6272448266644871,
+                        0.2592069746196346,
+                        0.0004930029793846756,
+                        0.004163552698061011,
+                        0.004617629553112842,
+                        0.029242277430254714,
+                        0.0017423143228418535,
+                        0.0037404282137182814,
+                        0.004434131021862746
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~0~1.webp"
+                },
+                {
+                    "probabilities": [
+                        2.719615908278517e-05,
+                        2.997282113149769e-07,
+                        0.00036421958457964006,
+                        0.9985291016301481,
+                        2.3332841099217902e-05,
+                        0.00015092450530354465,
+                        6.0743897819509274e-05,
+                        0.00020129414311305415,
+                        0.0002921806537034673,
+                        0.00034285090377212464,
+                        7.855953167596757e-06
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~0~2.webp"
+                }
+            ]
+        },
+        {
+            "id": "1",
+            "shortName": "prabs",
+            "displayName": "Prabowo",
+            "digitCoordinates": [
+                [
+                    610,
+                    652,
+                    938,
+                    980
+                ],
+                [
+                    610,
+                    652,
+                    988,
+                    1034
+                ],
+                [
+                    610,
+                    652,
+                    1040,
+                    1082
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [
+                        9.584976184746528e-05,
+                        0.00013423696708431452,
+                        0.9945061549439249,
+                        0.0005267702242914213,
+                        3.930263393974729e-05,
+                        0.00019859680403672977,
+                        0.0014480679623766442,
+                        0.0020801040948307203,
+                        0.00018604820426798468,
+                        1.0156903485426944e-05,
+                        0.0007747114999146689
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~1~0.webp"
+                },
+                {
+                    "probabilities": [
+                        3.6132088249213756e-06,
+                        3.695700716272135e-08,
+                        0.00047061739789959814,
+                        0.0007403866032497558,
+                        4.19655549166068e-05,
+                        2.024477465437661e-05,
+                        8.20776300204487e-06,
+                        0.9986752283157261,
+                        8.655896634834979e-06,
+                        1.8176506805312852e-05,
+                        1.2867021279103363e-05
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~1~1.webp"
+                },
+                {
+                    "probabilities": [
+                        0.00013154705550722222,
+                        0.0006336519830650803,
+                        0.00014329865616552524,
+                        0.0007602258048561907,
+                        0.9894994337987737,
+                        0.004686196641040897,
+                        9.022326311520075e-05,
+                        5.9326767674032294e-05,
+                        0.00014923956758737628,
+                        0.0036988084570950754,
+                        0.00014804800511956782
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~1~2.webp"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "shortName": "ganjar",
+            "displayName": "Ganjar",
+            "digitCoordinates": [
+                [
+                    922,
+                    964,
+                    940,
+                    980
+                ],
+                [
+                    922,
+                    964,
+                    990,
+                    1034
+                ],
+                [
+                    922,
+                    962,
+                    1040,
+                    1084
+                ]
+            ],
+            "extracted": [
+                {
+                    "probabilities": [
+                        1.2539361724110876e-09,
+                        5.991526322420547e-08,
+                        0.0008023351602555055,
+                        2.0012835906333648e-05,
+                        9.443539539381819e-05,
+                        1.7027676690407916e-05,
+                        2.6271030214305805e-08,
+                        3.9406558971908575e-06,
+                        0.00010887011258585186,
+                        8.459193986807578e-07,
+                        0.9989524448036426
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~2~0.webp"
+                },
+                {
+                    "probabilities": [
+                        0.0035689281195940125,
+                        4.2098035651221574e-05,
+                        0.0019492101288205925,
+                        0.9726350578275146,
+                        5.927137447557672e-06,
+                        0.00024059933506868328,
+                        0.001727327760532996,
+                        0.002904491934544131,
+                        4.469868003292327e-05,
+                        0.016699910795629297,
+                        0.0001817502451639133
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~2~1.webp"
+                },
+                {
+                    "probabilities": [
+                        9.785367429864315e-05,
+                        4.7101031177365365e-05,
+                        0.9976276860391998,
+                        0.0001987136545136336,
+                        0.00029901586890328805,
+                        0.00022900725839362189,
+                        0.0002661943648644513,
+                        0.00016241189201855798,
+                        4.15196712054347e-05,
+                        2.8991108598766728e-06,
+                        0.0010275974345653096
+                    ],
+                    "filename": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~2~2.webp"
+                }
+            ]
+        }
+    ],
+    "digitArea": "https://storage.googleapis.com/kawalc1/static/2024/transformed/5171021003/1/extracted/63MXq-DDENsQFJrYWx_d4W0Od1suvpIx81ZCGmasN4XF_ZZa6wStwF4xY0scvI1H-U3uoTAYT2UO_3Lz-gBTJh1QSxCg4UQR2Gj8%3Ds1280~digit-area.webp",
+    "party": {},
+    "probabilityMatrix": [
+        [
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 123,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.5903778458262361
+            },
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 133,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.24397180940151686
+            }
+        ],
+        [
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 123,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.5903778458262361
+            },
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 133,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.24397180940151686
+            }
+        ],
+        [
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 123,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.5903778458262361
+            },
+            {
+                "2": {
+                    "number": 32,
+                    "shortName": "ganjar",
+                    "displayName": "Ganjar"
+                },
+                "1": {
+                    "number": 274,
+                    "shortName": "prabs",
+                    "displayName": "Prabowo"
+                },
+                "0": {
+                    "number": 133,
+                    "shortName": "anies",
+                    "displayName": "Anies"
+                },
+                "confidence": 0.24397180940151686
+            }
+        ]
+    ],
+    "outcome": {
+        "anies": 123,
+        "prabowo": 274,
+        "ganjar": 32,
+        "confidence": 0.5903778458262361
+    },
+    "duration": 4.557882,
+    "configFile": "pilpres_2024_plano_halaman2.json"
+}
