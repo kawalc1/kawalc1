@@ -33,6 +33,23 @@
         }
     ],
     "checkSums": [],
-    "roi": [],
+  "roi": [
+    {
+      "name": "paslon",
+      "coordinates": [234, 1214, 844, 1106]
+    },
+    {
+      "name": "bubbleSheet1",
+      "coordinates": [344, 568, 946, 1076]
+    },
+    {
+      "name": "bubbleSheet2",
+      "coordinates": [658, 880, 948, 1076]
+    },
+    {
+      "name": "bubbleSheet3",
+      "coordinates": [970, 1190, 944, 1076]
+    }
+  ],
     "referenceForm": "PPWP-2024-hal2-plano.jpg"
 }
