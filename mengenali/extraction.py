@@ -433,26 +433,25 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
     original_image = aligned_image
+    unsharpened_image = unsharp_image(original_image)
+    del original_image
 
     roi = config["roi"]
     party_name = {}
     for region in roi:
         name = region["name"]
         digit = region["coordinates"]
-        roi_image = original_image[digit[0]:digit[1], digit[2]:digit[3]]
+        roi_image = unsharpened_image[digit[0]:digit[1], digit[2]:digit[3]]
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
         if store_rois:
             write_image(roi_file, roi_image)
 
-        akaze = cv2.AKAZE_create()
-        ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
-        pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
-        if name == "namaPartai":
-            most_similar_form, most_similar = detect_most_similar(roi_image, 'datasets/party_features')
-            party_name = {"party": most_similar_form, "confidence": most_similar}
-
-    unsharpened_image = unsharp_image(original_image)
-    del original_image
+        # akaze = cv2.AKAZE_create()
+        # ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
+        # pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
+        # if name == "namaPartai":
+        #     most_similar_form, most_similar = detect_most_similar(roi_image, 'datasets/party_features')
+        #     party_name = {"party": most_similar_form, "confidence": most_similar}
 
 
     # create structuring element for the connected component analysis
