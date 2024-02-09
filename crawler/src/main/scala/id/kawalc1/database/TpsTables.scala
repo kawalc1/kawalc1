@@ -1,20 +1,19 @@
 package id.kawalc1.database
 
-import java.sql.Timestamp
-
 import enumeratum.values.SlickValueEnumSupport
-import id.kawalc1
 import id.kawalc1._
 import slick.dbio.Effect
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
+import java.sql.Timestamp
+
 object TpsTables extends SlickValueEnumSupport {
   val profile = slick.jdbc.PostgresProfile
 
   class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
-    def idKel = column[Int]("idKel", O.PrimaryKey)
+    def idKel = column[Long]("idkel", O.PrimaryKey)
     def nama  = column[String]("nama")
 
     override def * = (idKel, nama) <> (KelurahanId.tupled, KelurahanId.unapply)
@@ -22,7 +21,56 @@ object TpsTables extends SlickValueEnumSupport {
 
   val kelurahanQuery = TableQuery[Kelurahan]
 
-  class Tps(tag: Tag) extends Table[SingleTps](tag, "tps") {
+  class TpsTable(tag: Tag) extends Table[SingleTpsDao](tag, "tps") {
+    def kelurahanId      = column[Long]("kelurahan_id")
+    def tpsId            = column[Int]("tps_id")
+    def name             = column[String]("name")
+    def idLokasi         = column[String]("id_lokasi")
+    def uid              = column[Option[String]]("uid")
+    def updatedTs        = column[Timestamp]("update_ts")
+    def uploadedPhotoId  = column[String]("uploaded_photo_id", O.PrimaryKey)
+    def uploadedPhotoUrl = column[String]("uploaded_photo_url")
+
+    def dpt  = column[Int]("dpt")
+    def pas1 = column[Option[Int]]("pas1")
+    def pas2 = column[Option[Int]]("pas2")
+    def pas3 = column[Option[Int]]("pas3")
+
+    def anyPendingTps     = column[Option[String]]("any_pending_tps")
+    def totalTps          = column[Int]("total_tps")
+    def totalPendingTps   = column[Int]("total_pending_tps")
+    def totalCompletedTps = column[Int]("total_completed_tps")
+    def totalErrorTps     = column[Int]("total_error_tps")
+
+    // We need to see if these can be determined
+    def formType = column[Option[Short]]("form_type")
+    def plano    = column[Option[Short]]("plano")
+    def halaman  = column[Option[String]]("halaman")
+
+    override def * =
+      (kelurahanId,
+       tpsId,
+       name,
+       idLokasi,
+       uid,
+       updatedTs,
+       uploadedPhotoId,
+       uploadedPhotoUrl,
+       dpt,
+       pas1,
+       pas2,
+       pas3,
+       anyPendingTps,
+       totalTps,
+       totalPendingTps,
+       totalCompletedTps,
+       totalErrorTps) <> (SingleTpsDao.tupled, SingleTpsDao.unapply)
+
+  }
+
+  val tpsQuery = TableQuery[TpsTable]
+
+  class TpsOldDao(tag: Tag) extends Table[SingleOldTps](tag, "tps-old") {
 
     def id        = column[Int]("kelurahan")
     def nama      = column[String]("nama")
@@ -81,18 +129,18 @@ object TpsTables extends SlickValueEnumSupport {
               partai.map(x => Dpr(x, partaiJum.get))
             case _ => None
           }
-          SingleTps(
+          SingleOldTps(
             nama,
             photo,
             None,
             id,
             tps,
-            Verification(timestamp,
-                         plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
-                         sum,
-                         (Common.apply _).tupled(common))
+            VerificationOld(timestamp,
+                            plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
+                            sum,
+                            (Common.apply _).tupled(common))
           )
-      }, { v: SingleTps =>
+      }, { v: SingleOldTps =>
         val plano             = v.verification.c1.flatMap(_.plano.map(_.value))
         val formType          = v.verification.c1.map(_.`type`.value)
         val halaman           = v.verification.c1.flatMap(_.halaman)
@@ -124,9 +172,9 @@ object TpsTables extends SlickValueEnumSupport {
       })
   }
 
-  val tpsQuery = TableQuery[Tps]
+  val tpsOldQuery = TableQuery[TpsOldDao]
 
-  class TpsUnverified(tag: Tag) extends Table[SingleTps](tag, "tps_unverified") {
+  class TpsUnverified(tag: Tag) extends Table[SingleOldTps](tag, "tps_unverified") {
 
     def id        = column[Int]("kelurahan")
     def nama      = column[String]("nama")
@@ -188,18 +236,18 @@ object TpsTables extends SlickValueEnumSupport {
               partai.map(x => Dpr(x, partaiJum.get))
             case _ => None
           }
-          SingleTps(
+          SingleOldTps(
             nama,
             photo,
             imageId,
             id,
             tps,
-            Verification(timestamp,
-                         plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
-                         sum,
-                         (Common.apply _).tupled(common))
+            VerificationOld(timestamp,
+                            plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
+                            sum,
+                            (Common.apply _).tupled(common))
           )
-      }, { v: SingleTps =>
+      }, { v: SingleOldTps =>
         val plano             = v.verification.c1.flatMap(_.plano.map(_.value))
         val formType          = v.verification.c1.map(_.`type`.value)
         val halaman           = v.verification.c1.flatMap(_.halaman)
@@ -236,7 +284,7 @@ object TpsTables extends SlickValueEnumSupport {
 
   val tpsUnverifiedQuery = TableQuery[TpsUnverified]
 
-  def upsertTps(results: Seq[Seq[SingleTps]]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+  def upsertTps(results: Seq[Seq[SingleTpsDao]]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     results.flatten.map(tpsQuery.insertOrUpdate)
   }
 

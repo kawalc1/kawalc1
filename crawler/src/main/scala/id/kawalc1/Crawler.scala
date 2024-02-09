@@ -34,12 +34,14 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val conf   = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val kawalPemiluClient = new KawalPemiluClient("https://kawal-c1.appspot.com/api/c")
+  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy")
   val processor =
     new PhotoProcessor(kawalPemiluClient)
   val tpsDb             = Database.forConfig("tpsDatabase")
-  val kelurahanDatabase = Database.forConfig("kelurahanDatabase")
+  val kelurahanDatabase = Database.forConfig("verificationResults")
   val resultsDatabase   = Database.forConfig("verificationResults")
+  private val session   = resultsDatabase.createSession()
+  println(session)
 
   def process(phase: String,
               func: (PostgresProfile.backend.Database, PostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
@@ -75,7 +77,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "submit" =>
           val unverifieds = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.drop(14992).result).futureValue.toList
           val futures = Source(unverifieds).mapAsync(6) {
-            t: SingleTps =>
+            t: SingleOldTps =>
               val body = t.verification.c1.get.halaman match {
                 case Some("1") =>
                   val p = t.verification.sum.get.asInstanceOf[SingleSum]
@@ -238,31 +240,31 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           println(s"This much: $howMany")
         case "fetch" =>
           process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
-        case "align" =>
-          val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
-          logger.info(s"Will align $howMany forms")
-          process("align", processor.align, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+        //        case "align" =>
+        //          val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
+        //          logger.info(s"Will align $howMany forms")
+        //          process("align", processor.align, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "extract" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToExtractQuery.result).futureValue.length
           logger.info(s"Will extract $howMany forms with $batchParams")
           process("extract", processor.extract, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "presidential" =>
           process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
-        case "detect" =>
-          implicit val pw = new PrintWriter(new File(s"batches/detections-${LocalDateTime.now()}-${url.getHost}.csv"))
-          val howMany     = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
-          println(s"Will detect: $howMany")
-          process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+        //        case "detect" =>
+        //          implicit val pw = new PrintWriter(new File(s"batches/detections-${LocalDateTime.now()}-${url.getHost}.csv"))
+        //          val howMany = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
+        //          println(s"Will detect: $howMany")
+        //          process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "tps-unprocessed" =>
           implicit val pw = new PrintWriter(new File(s"batches/felix-${LocalDateTime.now()}-${url.getHost}.csv"))
           val howMany     = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length
           println(s"Will detect: $howMany")
           process("detections", processor.processUnverifiedDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
-        case "roi" =>
-          implicit val pw = new PrintWriter(new File(s"batches/rois-${LocalDateTime.now()}-${url.getHost}.csv"))
-          val howMany     = resultsDatabase.run(ResultsTables.tpsToRoiQuery.result).futureValue.length
-          println(s"Will detect: $howMany")
-          process("rois", processor.processRois, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+        //        case "roi" =>
+        //          implicit val pw = new PrintWriter(new File(s"batches/rois-${LocalDateTime.now()}-${url.getHost}.csv"))
+        //          val howMany = resultsDatabase.run(ResultsTables.tpsToRoiQuery.result).futureValue.length
+        //          println(s"Will detect: $howMany")
+        //          process("rois", processor.processRois, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
       }
     }
   )

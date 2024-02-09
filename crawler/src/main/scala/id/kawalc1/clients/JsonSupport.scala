@@ -1,16 +1,15 @@
 package id.kawalc1.clients
 
-import java.sql.Timestamp
-import java.time.Instant
-
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpjson4s.Json4sSupport
 import enumeratum.values._
 import id.kawalc1._
-import org.json4s.JsonAST.{JInt, JObject}
-import org.json4s.native.Serialization
-import org.json4s.{CustomSerializer, Formats, native}
+import org.json4s.JsonAST.JObject
 import org.json4s._
+import org.json4s.native.Serialization
+
+import java.sql.Timestamp
+import java.time.Instant
 
 trait JsonSupport extends Json4sSupport with LazyLogging {
   implicit val serialization: Serialization.type = native.Serialization
@@ -27,7 +26,7 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
   }
 
   case object SummarySerialize
-      extends CustomSerializer[Verification](format =>
+      extends CustomSerializer[VerificationOld](format =>
         ({
           case x: JObject =>
             val tss       = (x \ "ts").extract[Long]
@@ -51,9 +50,9 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
               case _                 => parseSummary(maybeC1, sum)
             }
 
-            Verification(timeStamp, maybeC1, summary, common)
+            VerificationOld(timeStamp, maybeC1, summary, common)
         }, {
-          case _: Verification => throw new Exception("cannot serialize")
+          case _: VerificationOld => throw new Exception("cannot serialize")
         }))
 
   import org.json4s.DefaultFormats
