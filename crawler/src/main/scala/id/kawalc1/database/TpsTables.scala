@@ -15,7 +15,7 @@ object TpsTables extends SlickValueEnumSupport {
 
   class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
     def idKel = column[Int]("idKel", O.PrimaryKey)
-    def nama = column[String]("nama")
+    def nama  = column[String]("nama")
 
     override def * = (idKel, nama) <> (KelurahanId.tupled, KelurahanId.unapply)
   }
@@ -24,31 +24,31 @@ object TpsTables extends SlickValueEnumSupport {
 
   class Tps(tag: Tag) extends Table[SingleTps](tag, "tps") {
 
-    def id = column[Int]("kelurahan")
-    def nama = column[String]("nama")
-    def tps = column[Int]("tps")
+    def id        = column[Int]("kelurahan")
+    def nama      = column[String]("nama")
+    def tps       = column[Int]("tps")
     def timestamp = column[Timestamp]("ts")
-    def photo = column[String]("photo", O.PrimaryKey)
-    def plano = column[Option[Short]]("plano")
-    def formType = column[Option[Short]]("form_type")
-    def halaman = column[Option[String]]("halaman")
+    def photo     = column[String]("photo", O.PrimaryKey)
+    def plano     = column[Option[Short]]("plano")
+    def formType  = column[Option[Short]]("form_type")
+    def halaman   = column[Option[String]]("halaman")
 
     def common = (cakupan, pending, error, janggal)
 
     def cakupan = column[Option[Int]]("cakupan")
     def pending = column[Option[Int]]("pending")
-    def error = column[Option[Int]]("error")
+    def error   = column[Option[Int]]("error")
     def janggal = column[Option[Int]]("janggal")
 
     def presLembar2 = (pas1, pas2, sah, tSah)
 
-    def pas1 = column[Option[Int]]("pas1")
-    def pas2 = column[Option[Int]]("pas2")
-    def sah = column[Option[Int]]("sah")
-    def tSah = column[Option[Int]]("tSah")
-    def partai = column[Option[String]]("partai")
+    def pas1      = column[Option[Int]]("pas1")
+    def pas2      = column[Option[Int]]("pas2")
+    def sah       = column[Option[Int]]("sah")
+    def tSah      = column[Option[Int]]("tSah")
+    def partai    = column[Option[String]]("partai")
     def partaiJum = column[Option[Int]]("partai_jum")
-    def jum = column[Option[Int]]("jum")
+    def jum       = column[Option[Int]]("jum")
 
     private def upackPresidential(sum: Option[Summary]) = {
       sum.flatMap {
@@ -87,41 +87,40 @@ object TpsTables extends SlickValueEnumSupport {
             None,
             id,
             tps,
-            Verification(
-              timestamp,
-              plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
-              sum,
-              (Common.apply _).tupled(common)))
+            Verification(timestamp,
+                         plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
+                         sum,
+                         (Common.apply _).tupled(common))
+          )
       }, { v: SingleTps =>
-        val plano = v.verification.c1.flatMap(_.plano.map(_.value))
-        val formType = v.verification.c1.map(_.`type`.value)
-        val halaman = v.verification.c1.flatMap(_.halaman)
+        val plano             = v.verification.c1.flatMap(_.plano.map(_.value))
+        val formType          = v.verification.c1.map(_.`type`.value)
+        val halaman           = v.verification.c1.flatMap(_.halaman)
         val maybePresidential = upackPresidential(v.verification.sum)
-        val summaryFields = maybePresidential.getOrElse((None, None, None, None))
-        val maybeDpr = upackDpr(v.verification.sum)
+        val summaryFields     = maybePresidential.getOrElse((None, None, None, None))
+        val maybeDpr          = upackDpr(v.verification.sum)
         val maybeJum = v.verification.sum match {
           case Some(SingleSum(x)) => Some(x)
-          case _ => None
+          case _                  => None
         }
-        val partai = maybeDpr.map(_.partai)
+        val partai      = maybeDpr.map(_.partai)
         val partaiVotes = maybeDpr.map(_.votes)
 
         val common = v.verification.common
 
-        Some(
-          v.kelurahanId,
-          v.nama,
-          v.tpsId,
-          v.verification.ts,
-          v.photo,
-          plano,
-          formType,
-          halaman,
-          Common.unapply(common).get,
-          summaryFields,
-          partai,
-          partaiVotes,
-          maybeJum)
+        Some(v.kelurahanId,
+             v.nama,
+             v.tpsId,
+             v.verification.ts,
+             v.photo,
+             plano,
+             formType,
+             halaman,
+             Common.unapply(common).get,
+             summaryFields,
+             partai,
+             partaiVotes,
+             maybeJum)
       })
   }
 
@@ -129,32 +128,32 @@ object TpsTables extends SlickValueEnumSupport {
 
   class TpsUnverified(tag: Tag) extends Table[SingleTps](tag, "tps_unverified") {
 
-    def id = column[Int]("kelurahan")
-    def nama = column[String]("nama")
-    def tps = column[Int]("tps")
+    def id        = column[Int]("kelurahan")
+    def nama      = column[String]("nama")
+    def tps       = column[Int]("tps")
     def timestamp = column[Timestamp]("ts")
-    def photo = column[String]("photo", O.PrimaryKey)
-    def plano = column[Option[Short]]("plano")
-    def formType = column[Option[Short]]("form_type")
-    def halaman = column[Option[String]]("halaman")
+    def photo     = column[String]("photo", O.PrimaryKey)
+    def plano     = column[Option[Short]]("plano")
+    def formType  = column[Option[Short]]("form_type")
+    def halaman   = column[Option[String]]("halaman")
 
     def common = (cakupan, pending, error, janggal)
 
     def cakupan = column[Option[Int]]("cakupan")
     def pending = column[Option[Int]]("pending")
-    def error = column[Option[Int]]("error")
+    def error   = column[Option[Int]]("error")
     def janggal = column[Option[Int]]("janggal")
 
     def presLembar2 = (pas1, pas2, sah, tSah)
 
-    def pas1 = column[Option[Int]]("pas1")
-    def pas2 = column[Option[Int]]("pas2")
-    def sah = column[Option[Int]]("sah")
-    def tSah = column[Option[Int]]("tsah")
-    def partai = column[Option[String]]("partai")
+    def pas1      = column[Option[Int]]("pas1")
+    def pas2      = column[Option[Int]]("pas2")
+    def sah       = column[Option[Int]]("sah")
+    def tSah      = column[Option[Int]]("tsah")
+    def partai    = column[Option[String]]("partai")
     def partaiJum = column[Option[Int]]("partai_jum")
-    def jum = column[Option[Int]]("jum")
-    def imageId = column[Option[String]]("image_id")
+    def jum       = column[Option[Int]]("jum")
+    def imageId   = column[Option[String]]("image_id")
 
     private def upackPresidential(sum: Option[Summary]) = {
       sum.flatMap {
@@ -182,12 +181,8 @@ object TpsTables extends SlickValueEnumSupport {
                 case Some("1") =>
                   //                  println(s"jum $jum")
                   Some(SingleSum(jum.get))
-                case Some("2") => Some((PresidentialLembar2.apply _).
-                  tupled(
-                    presLembar2._1.get,
-                    presLembar2._2.get,
-                    presLembar2._3.get,
-                    presLembar2._4.get))
+                case Some("2") =>
+                  Some((PresidentialLembar2.apply _).tupled(presLembar2._1.get, presLembar2._2.get, presLembar2._3.get, presLembar2._4.get))
               }
             case Some(FormType.DPR.value) =>
               partai.map(x => Dpr(x, partaiJum.get))
@@ -199,23 +194,23 @@ object TpsTables extends SlickValueEnumSupport {
             imageId,
             id,
             tps,
-            Verification(
-              timestamp,
-              plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
-              sum,
-              (Common.apply _).tupled(common)))
+            Verification(timestamp,
+                         plano.map(x => C1(Plano.withValueOpt(x), FormType.withValue(formType.get), halaman)),
+                         sum,
+                         (Common.apply _).tupled(common))
+          )
       }, { v: SingleTps =>
-        val plano = v.verification.c1.flatMap(_.plano.map(_.value))
-        val formType = v.verification.c1.map(_.`type`.value)
-        val halaman = v.verification.c1.flatMap(_.halaman)
+        val plano             = v.verification.c1.flatMap(_.plano.map(_.value))
+        val formType          = v.verification.c1.map(_.`type`.value)
+        val halaman           = v.verification.c1.flatMap(_.halaman)
         val maybePresidential = upackPresidential(v.verification.sum)
-        val summaryFields = maybePresidential.getOrElse((None, None, None, None))
-        val maybeDpr = upackDpr(v.verification.sum)
+        val summaryFields     = maybePresidential.getOrElse((None, None, None, None))
+        val maybeDpr          = upackDpr(v.verification.sum)
         val maybeJum = v.verification.sum match {
           case Some(SingleSum(x)) => Some(x)
-          case _ => None
+          case _                  => None
         }
-        val partai = maybeDpr.map(_.partai)
+        val partai      = maybeDpr.map(_.partai)
         val partaiVotes = maybeDpr.map(_.votes)
 
         val common = v.verification.common
@@ -234,7 +229,8 @@ object TpsTables extends SlickValueEnumSupport {
           partai,
           partaiVotes,
           maybeJum,
-          v.imageId)
+          v.imageId
+        )
       })
   }
 
