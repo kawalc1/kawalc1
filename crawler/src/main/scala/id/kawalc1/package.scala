@@ -1,9 +1,9 @@
 package id
 
 import java.sql.Timestamp
-
 import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.{ShortEnum, ShortEnumEntry}
+import id.kawalc1.database.TpsTables.Tps
 
 import scala.collection.immutable
 
@@ -105,17 +105,59 @@ package object kawalc1 extends LazyLogging {
       verification: Verification
   )
 
-  case class Tps(photos: Map[String, Verification])
+  case class TpsOld(photos: Map[String, Verification])
 
-  case class Kelurahan(
+  case class KelurahanOld(
       id: Int,
       name: String,
       parentNames: Seq[String],
-      data: Map[Int, Tps]
+      data: Map[Int, TpsOld]
+  )
+
+  case class UploadedPhoto(
+      photoUrl: String,
+      imageId: String
+  )
+
+  case class TpsInfo(
+      pendingUploads: Option[Map[String, Boolean]],
+      idLokasi: String,
+      pas2: Int,
+      totalTps: Int,
+      pas3: Int,
+      totalCompletedTps: Int,
+      dpt: Int,
+      totalPendingTps: Int,
+      anyPendingTps: Option[String],
+      uid: Option[String],
+      uploadedPhoto: Option[UploadedPhoto],
+      name: String,
+      totalErrorTps: Int,
+      pas1: Int,
+      updateTs: Int
+  )
+
+  case class Kelurahan(
+      id: String,
+      names: Seq[String],
+      aggregated: Map[Long, Seq[TpsInfo]]
+  )
+
+  case class KelurahanResponse(
+      result: Kelurahan
   )
 
   object Kelurahan {
-    def toTps(kelurahan: Kelurahan): Seq[SingleTps] = {
+//    def toTps(kelurahan: KelurahanResponse): Seq[SingleTps] = {
+//      for {
+//        tps   <- kelurahan.result.aggregated
+//        photo <- tps._2.photos
+//      } yield SingleTps(kelurahan.name, photo._1, None, kelurahan.id, tps._1, photo._2)
+//    }.toSeq
+  }
+
+  object KelurahanOld {
+    def toTps(kelurahan: KelurahanOld): Seq[SingleTps] = {
       for {
         tps   <- kelurahan.data
         photo <- tps._2.photos

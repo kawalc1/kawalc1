@@ -15,8 +15,8 @@ class DatabaseSpecs extends WordSpec with Matchers with FutureMatcher with LazyL
     "Store TPS results" in {
       val db        = Database.forConfig("tpsTestDatabase")
       val response  = Source.fromURL(getClass.getResource("/api/c/5.json")).mkString
-      val kelurahan = Serialization.read[Kelurahan](response)
-      val tpses     = Kelurahan.toTps(kelurahan)
+      val kelurahan = Serialization.read[KelurahanOld](response)
+      val tpses     = KelurahanOld.toTps(kelurahan)
       println(s"$tpses")
       val setup =
         DBIO.seq(TpsTables.tpsQuery.schema.drop, TpsTables.tpsQuery.schema.create, TpsTables.tpsQuery ++= tpses)
