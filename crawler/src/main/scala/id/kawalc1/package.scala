@@ -179,8 +179,9 @@ package object kawalc1 extends LazyLogging {
     def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
       for {
         tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
+        t: TpsInfo                <- tps._2
+        if t.uploadedPhoto.isDefined
       } yield {
-        val t = tps._2.maxBy(_.uploadedPhoto.isDefined)
         SingleTpsDao(
           kelurahanId = kelurahan.result.id.toLong,
           tpsId = t.name.toInt,
@@ -188,8 +189,12 @@ package object kawalc1 extends LazyLogging {
           idLokasi = t.idLokasi,
           uid = t.uid,
           updatedTs = Timestamp.from(Instant.ofEpochMilli(t.updateTs)),
-          uploadedPhotoId = t.uploadedPhoto.map(_.imageId).getOrElse(s"${UUID.randomUUID()}"),
-          uploadedPhotoUrl = t.uploadedPhoto.map(_.photoUrl).getOrElse(s"${UUID.randomUUID()}"),
+          uploadedPhotoId = t.uploadedPhoto
+            .map(_.imageId)
+            .getOrElse(throw new IllegalStateException(s"${t.idLokasi} ${t.name} does not have imageId")),
+          uploadedPhotoUrl = t.uploadedPhoto
+            .map(_.photoUrl)
+            .getOrElse(throw new IllegalStateException(s"${t.idLokasi} ${t.name} does not have uploadedPhotoUrl")),
           dpt = t.dpt,
           pas1 = Some(t.pas1),
           pas2 = Some(t.pas2),

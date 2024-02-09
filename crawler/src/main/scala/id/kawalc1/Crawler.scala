@@ -1,6 +1,6 @@
 package id.kawalc1
 
-import java.io.{File, PrintWriter}
+import java.io.{ File, PrintWriter }
 import java.net.URL
 import java.time.LocalDateTime
 
@@ -9,12 +9,12 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
-import id.kawalc1.cli.{CrawlerConf, Tool}
-import id.kawalc1.clients.{FireStoreClient, JsonSupport, KawalC1Client, KawalPemiluClient}
-import id.kawalc1.database.{DetectionResult, ResultsTables, TpsTables}
-import id.kawalc1.services.{BlockingSupport, PhotoProcessor}
+import id.kawalc1.cli.{ CrawlerConf, Tool }
+import id.kawalc1.clients.{ FireStoreClient, JsonSupport, KawalC1Client, KawalPemiluClient }
+import id.kawalc1.database.{ DetectionResult, ResultsTables, TpsTables }
+import id.kawalc1.services.{ BlockingSupport, PhotoProcessor }
 import org.json4s.native.Serialization
-import slick.{backend, jdbc}
+import slick.{ backend, jdbc }
 import slick.jdbc.PostgresProfile
 import slick.jdbc.PostgresProfile.api._
 
@@ -27,28 +27,29 @@ case class BatchParams(start: Long, batchSize: Long, threads: Int, limit: Option
 object Crawler extends App with LazyLogging with BlockingSupport with JsonSupport {
   override def duration: FiniteDuration = 1.hour
 
-  implicit val system: ActorSystem                = ActorSystem("crawler")
-  implicit val materializer: ActorMaterializer    = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem("crawler")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContext = system.dispatcher
 
-  val conf   = new CrawlerConf(args.toSeq)
+  val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
   private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy")
   val processor =
     new PhotoProcessor(kawalPemiluClient)
-  val tpsDb             = Database.forConfig("tpsDatabase")
+  val tpsDb = Database.forConfig("tpsDatabase")
   val kelurahanDatabase = Database.forConfig("verificationResults")
-  val resultsDatabase   = Database.forConfig("verificationResults")
-  private val session   = resultsDatabase.createSession()
+  val resultsDatabase = Database.forConfig("verificationResults")
+  private val session = resultsDatabase.createSession()
   println(session)
 
-  def process(phase: String,
-              func: (PostgresProfile.backend.Database, PostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
-              sourceDb: PostgresProfile.backend.Database,
-              targetDb: PostgresProfile.backend.Database,
-              client: KawalC1Client,
-              params: BatchParams): Unit = {
+  def process(
+    phase: String,
+    func: (PostgresProfile.backend.Database, PostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
+    sourceDb: PostgresProfile.backend.Database,
+    targetDb: PostgresProfile.backend.Database,
+    client: KawalC1Client,
+    params: BatchParams): Unit = {
     val amount = func(sourceDb, targetDb, client, params)
     logger.info(s"Processed $amount in phase $phase")
   }
@@ -72,7 +73,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
     (c: CrawlerConf) => {
       val token = c.Submit.token.toOption.get
       val force = c.Submit.force.toOption.getOrElse(false)
-      val name  = c.Submit.name.toOption.get
+      val name = c.Submit.name.toOption.get
       name match {
         case "submit" =>
           val unverifieds = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.drop(14992).result).futureValue.toList
@@ -84,12 +85,13 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
                   Approval(t.kelurahanId, "", t.tpsId, SingleSum(p.jum), t.imageId.get, C1(Some(Plano.NO), FormType.PPWP, Some("1")))
                 case Some("2") =>
                   val p = t.verification.sum.get.asInstanceOf[PresidentialLembar2]
-                  Approval(t.kelurahanId,
-                           "",
-                           t.tpsId,
-                           PresidentialLembar2(p.pas1, p.pas2, p.sah, p.tSah),
-                           t.imageId.get,
-                           C1(Some(Plano.NO), FormType.PPWP, Some("2")))
+                  Approval(
+                    t.kelurahanId,
+                    "",
+                    t.tpsId,
+                    PresidentialLembar2(p.pas1, p.pas2, p.sah, p.tSah),
+                    t.imageId.get,
+                    C1(Some(Plano.NO), FormType.PPWP, Some("2")))
               }
               kawalPemiluClient.submitApprove("https://upload.kawalpemilu.org", token, body).map {
                 case Right(resp) =>
@@ -102,9 +104,9 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           futures.runFold(Seq.empty[Option[Boolean]])(_ :+ _).futureValue
 
         case "switch" =>
-          val client    = new FireStoreClient("https://firestore.googleapis.com/v1/projects/kawal-c1/databases/(default)/documents/t2/")
+          val client = new FireStoreClient("https://firestore.googleapis.com/v1/projects/kawal-c1/databases/(default)/documents/t2/")
           val terbaliks = resultsDatabase.run(ResultsTables.terbaliksQuery.drop(1).result).futureValue
-          var i         = 0
+          var i = 0
           terbaliks.foreach {
             t =>
               i = i + 1
@@ -113,12 +115,13 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
                   halaman1 <- client.getDocId(t.kelurahan, t.tps, t.hal2Photo, token)
                   halaman2 <- client.getDocId(t.kelurahan, t.tps, t.hal1Photo, token)
                   moved1 <- {
-                    val body = Approval(t.kelurahan,
-                                        "",
-                                        t.tps,
-                                        PresidentialLembar2(t.pas1, t.pas2, t.jumlah, t.tidakSah),
-                                        halaman1.imageId,
-                                        C1(Some(Plano.NO), FormType.PPWP, Some("2")))
+                    val body = Approval(
+                      t.kelurahan,
+                      "",
+                      t.tps,
+                      PresidentialLembar2(t.pas1, t.pas2, t.jumlah, t.tidakSah),
+                      halaman1.imageId,
+                      C1(Some(Plano.NO), FormType.PPWP, Some("2")))
                     kawalPemiluClient.submitApprove("https://upload.kawalpemilu.org", token, body)
                   }
                   moved2 <- {
@@ -153,8 +156,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
             //        println(s"$success")
           }
       }
-    }
-  )
+    })
 
   myTool.registerSubcmdHandler(
     conf.Stats,
@@ -162,7 +164,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
       val on = c.Stats.on()
       on match {
         case "det-duplicated" =>
-          val aligned                                    = resultsDatabase.run(ResultsTables.detectionsQuery.result).futureValue
+          val aligned = resultsDatabase.run(ResultsTables.detectionsQuery.result).futureValue
           val grouped: Map[String, Seq[DetectionResult]] = aligned.groupBy((x: DetectionResult) => s"${x.hash.getOrElse("")}")
           println(s"Groups size: ${grouped.size}")
           val pw = new PrintWriter(new File("scan-dups.csv"))
@@ -187,13 +189,12 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
 
           println(s"Size ${duplicates.size}")
       }
-    }
-  )
+    })
   myTool.registerSubcmdHandler(
     conf.CreateDb,
     (c: CrawlerConf) => {
       val phase = c.CreateDb.name
-      val drop  = c.CreateDb.drop()
+      val drop = c.CreateDb.drop()
       phase() match {
         case "terbalik" =>
           createDb(ResultsTables.terbaliksQuery.schema, resultsDatabase, drop)
@@ -217,22 +218,21 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           createDb(TpsTables.tpsUnverifiedQuery.schema, resultsDatabase, drop)
 
       }
-    }
-  )
+    })
 
   val urlie = "http://lh3.googleusercontent.com/6TSO9UKWsCHekURjdjoWOEKwYbUjUUsWUJqYVB_3VWVmm9TLvfoaXbPXLmgE8p0PbQtsEQ1OFaDC0FRSMbw"
   myTool.registerSubcmdHandler(
     conf.Process,
     (c: CrawlerConf) => {
-      val phase         = c.Process.phase()
-      val offset        = c.Process.offset.toOption.getOrElse(0)
-      val batchSize     = c.Process.batch.toOption.getOrElse(50)
-      val threads       = c.Process.threads.toOption.getOrElse(10)
-      val limit         = c.Process.limit.toOption
-      val service       = c.Process.service.toOption.getOrElse(Application.kawalC1UrlLocal)
-      val batchParams   = BatchParams(offset, batchSize, threads, limit)
+      val phase = c.Process.phase()
+      val offset = c.Process.offset.toOption.getOrElse(0)
+      val batchSize = c.Process.batch.toOption.getOrElse(50)
+      val threads = c.Process.threads.toOption.getOrElse(10)
+      val limit = c.Process.limit.toOption
+      val service = c.Process.service.toOption.getOrElse(Application.kawalC1UrlLocal)
+      val batchParams = BatchParams(offset, batchSize, threads, limit)
       val kawalC1Client = new KawalC1Client(service)
-      val url           = new URL(service)
+      val url = new URL(service)
       logger.info(s"Starting $phase with ${Serialization.write(batchParams)}")
       phase match {
         case "test" =>
@@ -257,7 +257,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         //          process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "tps-unprocessed" =>
           implicit val pw = new PrintWriter(new File(s"batches/felix-${LocalDateTime.now()}-${url.getHost}.csv"))
-          val howMany     = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length
+          val howMany = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length
           println(s"Will detect: $howMany")
           process("detections", processor.processUnverifiedDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         //        case "roi" =>
@@ -266,8 +266,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         //          println(s"Will detect: $howMany")
         //          process("rois", processor.processRois, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
       }
-    }
-  )
+    })
   myTool.run()
   system.terminate()
 }
