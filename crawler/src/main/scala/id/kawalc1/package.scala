@@ -20,8 +20,8 @@ package object kawalc1 extends LazyLogging {
     case (FormType.PPWP, Some(Plano.NO), Some("1")) =>
       "digit_config_ppwp_scan_halaman_1_2019.json,digit_config_ppwp_scan_halaman_2_2019.json"
     case _ =>
-      logger.error(s"Config not defined for $formType, $plano, $halaman")
-      ""
+//      logger.error(s"Config not defined for $formType, $plano, $halaman")
+      "pilpres_2024_plano_halaman2.json"
   }
   case class Problem(
       kelId: Int,
@@ -130,7 +130,10 @@ package object kawalc1 extends LazyLogging {
       totalTps: Int,
       totalPendingTps: Int,
       totalCompletedTps: Int,
-      totalErrorTps: Int
+      totalErrorTps: Int,
+      formType: Option[Short],
+      plano: Option[Short],
+      halaman: Option[String]
   )
 
   case class TpsOldDto(photos: Map[String, VerificationOld])
@@ -203,7 +206,10 @@ package object kawalc1 extends LazyLogging {
           totalTps = t.totalTps,
           totalPendingTps = t.totalPendingTps,
           totalCompletedTps = t.totalCompletedTps,
-          totalErrorTps = t.totalErrorTps
+          totalErrorTps = t.totalErrorTps,
+          formType = None,
+          plano = None,
+          halaman = None
         )
       }
     }.toSeq

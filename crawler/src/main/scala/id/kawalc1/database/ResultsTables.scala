@@ -18,7 +18,7 @@ case class Terbalik(kelurahan: Int,
                     php: Int,
                     hal1Photo: String)
 
-case class AlignResult(id: Int,
+case class AlignResult(id: Long,
                        tps: Int,
                        response: String,
                        responseCode: Int,
@@ -31,7 +31,7 @@ case class AlignResult(id: Int,
                        extracted: Option[Boolean],
                        hash: Option[String])
 
-case class ExtractResult(id: Int,
+case class ExtractResult(id: Long,
                          tps: Int,
                          photo: String,
                          response: String,
@@ -40,7 +40,7 @@ case class ExtractResult(id: Int,
                          config: String,
                          tpsArea: String)
 
-case class PresidentialResult(id: Int,
+case class PresidentialResult(id: Long,
                               tps: Int,
                               photo: String,
                               response: String,
@@ -54,16 +54,16 @@ case class PresidentialResult(id: Int,
                               jumlahSeluruh: Int,
                               jumlahConfidence: Double)
 
-case class DetectionResult(kelurahan: Int,
+case class DetectionResult(kelurahan: Long,
                            tps: Int,
                            photo: String,
                            response_code: Int,
                            config: Option[String],
                            pas1: Option[Int],
                            pas2: Option[Int],
+                           pas3: Option[Int],
                            jumlah: Option[Int],
                            tidak_sah: Option[Int],
-                           php_jumlah: Option[Int],
                            confidence: Option[Double],
                            confidence_tidak_sah: Option[Double],
                            hash: Option[String],
@@ -75,16 +75,16 @@ object ResultsTables extends SlickValueEnumSupport {
   val profile = slick.jdbc.PostgresProfile
 
   class DetectionResults(tag: Tag) extends Table[DetectionResult](tag, "detections") {
-    def kelurahan            = column[Int]("kelurahan")
+    def kelurahan            = column[Long]("kelurahan")
     def tps                  = column[Int]("tps")
-    def photo                = column[String]("photo")
+    def photo                = column[String]("photo", O.PrimaryKey)
     def response_code        = column[Int]("response_code")
     def config               = column[Option[String]]("config")
     def pas1                 = column[Option[Int]]("pas1")
     def pas2                 = column[Option[Int]]("pas2")
+    def pas3                 = column[Option[Int]]("pas3")
     def jumlah               = column[Option[Int]]("jumlah")
     def tidak_sah            = column[Option[Int]]("tidak_sah")
-    def php_jumlah           = column[Option[Int]]("php_jumlah")
     def confidence           = column[Option[Double]]("confidence")
     def confidence_tidak_sah = column[Option[Double]]("confidence_tidak_sah")
     def hash                 = column[Option[String]]("hash")
@@ -100,9 +100,9 @@ object ResultsTables extends SlickValueEnumSupport {
        config,
        pas1,
        pas2,
+       pas3,
        jumlah,
        tidak_sah,
-       php_jumlah,
        confidence,
        confidence_tidak_sah,
        hash,
@@ -114,7 +114,7 @@ object ResultsTables extends SlickValueEnumSupport {
   val detectionsQuery = TableQuery[DetectionResults]
 
   class AlignResults(tag: Tag) extends Table[AlignResult](tag, "align_results") {
-    def id               = column[Int]("kelurahan")
+    def id               = column[Long]("kelurahan")
     def tps              = column[Int]("tps")
     def response         = column[String]("response", O.SqlType("TEXT"))
     def responseCode     = column[Int]("response_code")
@@ -178,7 +178,7 @@ object ResultsTables extends SlickValueEnumSupport {
   val formsProcessedQuery = TableQuery[FormsProcessed]
 
   class ExtractResults(tag: Tag) extends Table[ExtractResult](tag, "extract_results") {
-    def id           = column[Int]("kelurahan")
+    def id           = column[Long]("kelurahan")
     def tps          = column[Int]("tps")
     def photo        = column[String]("photo", O.PrimaryKey)
     def response     = column[String]("response", O.SqlType("TEXT"))
@@ -210,7 +210,7 @@ object ResultsTables extends SlickValueEnumSupport {
   val terbaliksQuery = TableQuery[Terbaliks]
 
   class PresidentialResults(tag: Tag) extends Table[PresidentialResult](tag, "presidential_results") {
-    def id    = column[Int]("kelurahan")
+    def id    = column[Long]("kelurahan")
     def tps   = column[Int]("tps")
     def photo = column[String]("photo", O.PrimaryKey)
 
@@ -274,7 +274,7 @@ object ResultsTables extends SlickValueEnumSupport {
     joined
       .filter { case (a, b) => b.isEmpty }
       .map(_._1)
-      .filter(x => x.formType === FormType.PPWP.value && x.halaman === halaman)
+    //      .filter(x => x.formType === FormType.PPWP.value && x.halaman === halaman)
   }
 
   def tpsToExtractQuery = {
@@ -302,7 +302,7 @@ object ResultsTables extends SlickValueEnumSupport {
     joined
       .filter { case (a, b) => b.isEmpty }
       .map(_._1)
-      .filter(x => x.formType === FormType.PPWP.value)
+    //      .filter(x => x.formType === FormType.PPWP.value)
   }
 
   def tpsToRoiQuery = {
@@ -324,5 +324,9 @@ object ResultsTables extends SlickValueEnumSupport {
 
   def upsertPresidential(results: Seq[PresidentialResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
     results.map(presidentialResultsQuery.insertOrUpdate)
+  }
+
+  def upsertDetections(results: Seq[DetectionResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+    results.map(detectionsQuery.insertOrUpdate)
   }
 }

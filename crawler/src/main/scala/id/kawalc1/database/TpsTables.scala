@@ -64,7 +64,10 @@ object TpsTables extends SlickValueEnumSupport {
        totalTps,
        totalPendingTps,
        totalCompletedTps,
-       totalErrorTps) <> (SingleTpsDao.tupled, SingleTpsDao.unapply)
+       totalErrorTps,
+       formType,
+       plano,
+       halaman) <> (SingleTpsDao.tupled, SingleTpsDao.unapply)
 
   }
 
