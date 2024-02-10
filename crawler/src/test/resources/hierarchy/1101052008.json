@@ -1,0 +1,60 @@
+{
+  "result": {
+    "id": "1101052008",
+    "names": [
+      "ACEH",
+      "ACEH SELATAN",
+      "MEUKEK",
+      "ROT TEUNGOH"
+    ],
+    "aggregated": {
+      "1": [
+        {
+          "idLokasi": "11010520081",
+          "pas1": 0,
+          "pas2": 0,
+          "pas3": 0,
+          "name": "1",
+          "totalTps": 1,
+          "totalCompletedTps": 0,
+          "totalPendingTps": 0,
+          "totalErrorTps": 0,
+          "updateTs": 0,
+          "dpt": 257
+        }
+      ],
+      "2": [
+        {
+          "idLokasi": "11010520082",
+          "pas1": 0,
+          "pas2": 0,
+          "pas3": 0,
+          "name": "2",
+          "totalTps": 1,
+          "totalCompletedTps": 0,
+          "totalPendingTps": 0,
+          "totalErrorTps": 0,
+          "updateTs": 0,
+          "dpt": 278
+        }
+      ],
+      "3": [
+        {
+          "idLokasi": "11010520083",
+          "pas1": 0,
+          "pas2": 0,
+          "pas3": 0,
+          "name": "3",
+          "totalTps": 1,
+          "totalCompletedTps": 0,
+          "totalPendingTps": 0,
+          "totalErrorTps": 0,
+          "updateTs": 0,
+          "dpt": 264
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1707460462248
+  }
+}

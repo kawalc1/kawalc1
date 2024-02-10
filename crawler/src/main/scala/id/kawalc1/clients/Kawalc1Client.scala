@@ -40,7 +40,7 @@ class KawalC1Client(baseUrl: String)(implicit
     with JsonSupport {
   implicit val authorization = None
 
-  def alignPhoto(kelurahan: Int,
+  def alignPhoto(kelurahan: Long,
                  tps: Int,
                  photoUrl: String,
                  quality: Int,
@@ -48,21 +48,22 @@ class KawalC1Client(baseUrl: String)(implicit
                  featureAlgorithm: String): Future[Either[Response, Transform]] = {
     val url = Uri(s"$baseUrl/align/$kelurahan/$tps/$photoUrl=s$quality")
       .withQuery(
-        Query("storeFiles"       -> "true",
+        Query(
+//          "storeFiles"       -> "true",
               "baseUrl"          -> "http://lh3.googleusercontent.com",
               "configFile"       -> formConfig,
               "featureAlgorithm" -> featureAlgorithm))
     execute[Transform](Get(url))
   }
 
-  def extractNumbers(kelurahan: Int, tps: Int, photoUrl: String, formConfig: String): Future[Either[Response, Extraction]] = {
+  def extractNumbers(kelurahan: Long, tps: Int, photoUrl: String, formConfig: String): Future[Either[Response, Extraction]] = {
 
     val url = Uri(s"$baseUrl/extract/$kelurahan/$tps/$photoUrl")
       .withQuery(Query("baseUrl" -> "https://storage.googleapis.com/kawalc1/static/transformed", "configFile" -> formConfig))
     execute[Extraction](Get(url))
   }
 
-  def processProbabilities(kelurahan: Int,
+  def processProbabilities(kelurahan: Long,
                            tps: Int,
                            numbers: Seq[Numbers],
                            formConfig: String): Future[Either[Response, ProbabilitiesResponse]] = {
@@ -74,11 +75,11 @@ class KawalC1Client(baseUrl: String)(implicit
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
   }
 
-  def detectNumbers(kelurahan: Int, tps: Int, photoName: String, halaman: Option[String], plano: Option[Plano]) = {
+  def detectNumbers(kelurahan: Long, tps: Int, photoName: String, halaman: Option[String], plano: Option[Plano]) = {
     val url = Uri(s"$baseUrl/download/$kelurahan/$tps/$photoName")
       .withQuery(
         Query(
-          "storeFiles" -> "true",
+//          "storeFiles" -> "true",
           "baseUrl"    -> "http://lh3.googleusercontent.com",
           "configFile" -> kawalc1.formTypeToConfig(FormType.PPWP, plano, halaman),
         ))

@@ -1,0 +1,87 @@
+{
+  "result": {
+    "names": [
+      "BALI",
+      "KOTA DENPASAR",
+      "DENPASAR TIMUR",
+      "KESIMAN"
+    ],
+    "id": "5171021003",
+    "aggregated": {
+      "1": [
+        {
+          "pendingUploads": {
+            "1wqrKhSIYYB32g1TqLAz": true,
+            "C1IIbGYFexoOJOe8vvZO": true
+          },
+          "idLokasi": "51710210031",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 274,
+          "totalPendingTps": 1,
+          "anyPendingTps": "51710210031",
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707405011767
+        }
+      ],
+      "2": [
+        {
+          "idLokasi": "51710210032",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "name": "2",
+          "totalErrorTps": 0,
+          "dpt": 267,
+          "pas1": 0,
+          "totalPendingTps": 0,
+          "updateTs": 0
+        }
+      ],
+      "3": [
+        {
+          "pendingUploads": {},
+          "idLokasi": "11011420051",
+          "pas2": 15,
+          "totalTps": 1,
+          "pas3": 9,
+          "totalCompletedTps": 1,
+          "dpt": 293,
+          "totalPendingTps": 0,
+          "uid": "v7zAoLZ2vtfR00rK68jvbNMy7nA2",
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 23,
+          "updateTs": 1707293498697
+        },
+        {
+          "pendingUploads": {},
+          "idLokasi": "11011420051",
+          "pas2": 15,
+          "totalTps": 1,
+          "pas3": 9,
+          "totalCompletedTps": 0,
+          "dpt": 293,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11011420051",
+          "uid": "v7zAoLZ2vtfR00rK68jvbNMy7nA2",
+          "uploadedPhoto": {
+            "photoUrl": "http://lh3.googleusercontent.com/B1gVUI6-B7NrTp-92kZt_UgZTT3bVEChuQznV6UgZk1OzmExiPWgVd4VPiu232CBRZC3o_x-dKtl6EpZFxQHrdz-REi4dg_QKp6O",
+            "imageId": "ZPHbCLPIHYhVSuysrRcG"
+          },
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 23,
+          "updateTs": 1707293490289
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1707409343506
+  }
+}

@@ -3,7 +3,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.client.RequestBuilding.Get
 import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.stream.Materializer
-import id.kawalc1.Kelurahan
+import id.kawalc1.KelurahanOld
 
 import scala.concurrent.{ ExecutionContext, Future }
 

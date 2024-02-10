@@ -1,10 +1,11 @@
 package id
 
-import java.sql.Timestamp
-
 import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.{ShortEnum, ShortEnumEntry}
 
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.UUID
 import scala.collection.immutable
 
 package object kawalc1 extends LazyLogging {
@@ -19,8 +20,8 @@ package object kawalc1 extends LazyLogging {
     case (FormType.PPWP, Some(Plano.NO), Some("1")) =>
       "digit_config_ppwp_scan_halaman_1_2019.json,digit_config_ppwp_scan_halaman_2_2019.json"
     case _ =>
-      logger.error(s"Config not defined for $formType, $plano, $halaman")
-      ""
+//      logger.error(s"Config not defined for $formType, $plano, $halaman")
+      "pilpres_2024_plano_halaman2.json"
   }
   case class Problem(
       kelId: Int,
@@ -77,6 +78,13 @@ package object kawalc1 extends LazyLogging {
       halaman: Option[String]
   )
 
+  case class VerificationOld(
+      ts: Timestamp,
+      c1: Option[C1],
+      sum: Option[Summary],
+      common: Common
+  )
+
   case class Verification(
       ts: Timestamp,
       c1: Option[C1],
@@ -92,34 +100,127 @@ package object kawalc1 extends LazyLogging {
   )
 
   case class KelurahanId(
-      idKel: Int,
+      idKel: Long,
       nama: String
   )
 
-  case class SingleTps(
+  case class SingleOldTps(
       nama: String,
       photo: String,
       imageId: Option[String] = None,
       kelurahanId: Int,
       tpsId: Int,
-      verification: Verification
+      verification: VerificationOld
   )
 
-  case class Tps(photos: Map[String, Verification])
+  case class SingleTpsDao(
+      kelurahanId: Long,
+      tpsId: Int,
+      name: String,
+      idLokasi: String,
+      uid: Option[String],
+      updatedTs: Timestamp,
+      uploadedPhotoId: String,
+      uploadedPhotoUrl: String,
+      dpt: Int,
+      pas1: Option[Int],
+      pas2: Option[Int],
+      pas3: Option[Int],
+      anyPendingTps: Option[String],
+      totalTps: Int,
+      totalPendingTps: Int,
+      totalCompletedTps: Int,
+      totalErrorTps: Int,
+      formType: Option[Short],
+      plano: Option[Short],
+      halaman: Option[String]
+  )
 
-  case class Kelurahan(
+  case class TpsOldDto(photos: Map[String, VerificationOld])
+
+  case class KelurahanOld(
       id: Int,
       name: String,
       parentNames: Seq[String],
-      data: Map[Int, Tps]
+      data: Map[Int, TpsOldDto]
+  )
+
+  case class UploadedPhoto(
+      photoUrl: String,
+      imageId: String
+  )
+
+  case class TpsInfo(
+      pendingUploads: Option[Map[String, Boolean]],
+      idLokasi: String,
+      pas2: Int,
+      totalTps: Int,
+      pas3: Int,
+      totalCompletedTps: Int,
+      dpt: Int,
+      totalPendingTps: Int,
+      anyPendingTps: Option[String],
+      uid: Option[String],
+      uploadedPhoto: Option[UploadedPhoto],
+      name: String,
+      totalErrorTps: Int,
+      pas1: Int,
+      updateTs: Long
+  )
+
+  case class Kelurahan(
+      id: String,
+      names: Seq[String],
+      aggregated: Map[Long, Seq[TpsInfo]]
+  )
+
+  case class KelurahanResponse(
+      result: Kelurahan
   )
 
   object Kelurahan {
-    def toTps(kelurahan: Kelurahan): Seq[SingleTps] = {
+    def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
+      for {
+        tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
+        t: TpsInfo                <- tps._2
+        if t.uploadedPhoto.isDefined
+      } yield {
+        SingleTpsDao(
+          kelurahanId = kelurahan.result.id.toLong,
+          tpsId = t.name.toInt,
+          name = kelurahan.result.names.mkString(", "),
+          idLokasi = t.idLokasi,
+          uid = t.uid,
+          updatedTs = Timestamp.from(Instant.ofEpochMilli(t.updateTs)),
+          uploadedPhotoId = t.uploadedPhoto
+            .map(_.imageId)
+            .getOrElse(throw new IllegalStateException(s"${t.idLokasi} ${t.name} does not have imageId")),
+          uploadedPhotoUrl = t.uploadedPhoto
+            .map(_.photoUrl)
+            .getOrElse(throw new IllegalStateException(s"${t.idLokasi} ${t.name} does not have uploadedPhotoUrl")),
+          dpt = t.dpt,
+          pas1 = Some(t.pas1),
+          pas2 = Some(t.pas2),
+          pas3 = Some(t.pas3),
+          anyPendingTps = t.anyPendingTps,
+          totalTps = t.totalTps,
+          totalPendingTps = t.totalPendingTps,
+          totalCompletedTps = t.totalCompletedTps,
+          totalErrorTps = t.totalErrorTps,
+          formType = None,
+          plano = None,
+          halaman = None
+        )
+      }
+    }.toSeq
+  }
+
+  object KelurahanOld {
+    def toTps(kelurahan: KelurahanOld): Seq[SingleOldTps] = {
       for {
         tps   <- kelurahan.data
         photo <- tps._2.photos
-      } yield SingleTps(kelurahan.name, photo._1, None, kelurahan.id, tps._1, photo._2)
+      } yield SingleOldTps(kelurahan.name, photo._1, None, kelurahan.id, tps._1, photo._2)
     }.toSeq
   }
 

@@ -11,6 +11,7 @@ import logging
 from os.path import join
 
 from kawalc1 import settings
+from kawalc1.settings import TRANSFORMED_DIR
 from mengenali.io import write_image, read_image, image_url, is_url
 
 logging.basicConfig(level=logging.DEBUG)
@@ -23,7 +24,7 @@ def print_result(result_writer, iteration, homography, transform, result):
 
 
 def create_response(image_path, success, hash, similarity):
-    transformed_path = path.join('static/transformed', image_path)
+    transformed_path = path.join(TRANSFORMED_DIR, 'transformed', image_path)
     return json.dumps(
         {'transformedUrl': image_url(transformed_path), 'transformedUri': transformed_path,
          'similarity': similarity, 'hash': str(hash), 'success': success},
@@ -79,79 +80,79 @@ def dhash(image, hashSize=8):
     return sum([2 ** i for (i, v) in enumerate(diff.flatten()) if v])
 
 
-def register_image_sift(file_path, reference_form_path, output_path, result_writer, target_path=""):
-    from datetime import datetime
-    lap = datetime.now()
-
-    reference = read_image(reference_form_path)
-    logging.info("read reference %s", reference_form_path)
-    sift = cv2.xfeatures2d.SIFT_create()
-    ref_kp, ref_descriptors = sift.detectAndCompute(reference, None)
-
-
-
-    logging.info("SIFT reference %s", (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
-
-    image = read_image(file_path)
-    logging.info("image read %s", (datetime.now() - lap).total_seconds())
-    lap = datetime.now()
-
-    difference_hash = dhash(image)
-    similarity = 0.0
-    try:
-        im_kp, im_descriptors = sift.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
-        logging.info("SIFT image %s", (datetime.now() - lap).total_seconds())
-        lap = datetime.now()
-
-        bf = cv2.BFMatcher(cv2.NORM_L2)
-        raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
-        logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
-        lap = datetime.now()
-
-        amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
-        mkp1, mkp2 = zip(*matches)
-        logging.warning("matches %s", matches.__sizeof__())
-
-        # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
-
-        p1 = np.float32([kp.pt for kp in mkp1])
-        p2 = np.float32([kp.pt for kp in mkp2])
-
-        homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-
-        logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
-        lap = datetime.now()
-
-        homography, transform = check_homography(homography_transform)
-
-        # good_enough_match = check_match(homography, transform)
-        good_enough_match = True
-
-        h, w = reference.shape
-        image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
-        logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
-        lap = datetime.now()
-
-        tr_kp, tr_descriptors = sift.detectAndCompute(image_transformed, None)
-        tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
-        tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
-        trkp1, trkp2 = zip(*tr_matches_filtered)
-        similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
-
-        transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
-                                                    file_path,
-                                                    output_path, target_path)
-        logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
-    except Exception as e:
-        logging.exception("Registration failed")
-        return json.dumps(
-            {'transformedUrl': None,
-             'transformedUri': None,
-             'similarity': -1.0,
-             'hash': str(difference_hash), 'success': False},
-            separators=(',', ':'))
+# def register_image_sift(file_path, reference_form_path, output_path, result_writer, target_path=""):
+#     from datetime import datetime
+#     lap = datetime.now()
+#
+#     reference = read_image(reference_form_path)
+#     logging.info("read reference %s", reference_form_path)
+#     sift = cv2.xfeatures2d.SIFT_create()
+#     ref_kp, ref_descriptors = sift.detectAndCompute(reference, None)
+#
+#
+#
+#     logging.info("SIFT reference %s", (datetime.now() - lap).total_seconds())
+#     lap = datetime.now()
+#
+#     image = read_image(file_path)
+#     logging.info("image read %s", (datetime.now() - lap).total_seconds())
+#     lap = datetime.now()
+#
+#     difference_hash = dhash(image)
+#     similarity = 0.0
+#     try:
+#         im_kp, im_descriptors = sift.detectAndCompute(cv2.resize(image, None, fx=1.0, fy=1.0), None)
+#         logging.info("SIFT image %s", (datetime.now() - lap).total_seconds())
+#         lap = datetime.now()
+#
+#         bf = cv2.BFMatcher(cv2.NORM_L2)
+#         raw_matches = bf.knnMatch(im_descriptors, trainDescriptors=ref_descriptors, k=2)
+#         logging.info("knn matched %s", (datetime.now() - lap).total_seconds())
+#         lap = datetime.now()
+#
+#         amount, matches = filter_matches_with_amount(im_kp, ref_kp, raw_matches)
+#         mkp1, mkp2 = zip(*matches)
+#         logging.warning("matches %s", matches.__sizeof__())
+#
+#         # show_match(im_kp, image, raw_matches, ref_kp, reference_form_path)
+#
+#         p1 = np.float32([kp.pt for kp in mkp1])
+#         p2 = np.float32([kp.pt for kp in mkp2])
+#
+#         homography_transform, mask = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+#
+#         logging.info("RANSAC  %s", (datetime.now() - lap).total_seconds())
+#         lap = datetime.now()
+#
+#         homography, transform = check_homography(homography_transform)
+#
+#         # good_enough_match = check_match(homography, transform)
+#         good_enough_match = True
+#
+#         h, w = reference.shape
+#         image_transformed = cv2.warpPerspective(image, homography_transform, (w, h))
+#         logging.info("transformed image %s, %s", file_path, (datetime.now() - lap).total_seconds())
+#         lap = datetime.now()
+#
+#         tr_kp, tr_descriptors = sift.detectAndCompute(image_transformed, None)
+#         tr_raw_matches = bf.knnMatch(tr_descriptors, trainDescriptors=ref_descriptors, k=2)
+#         tr_amount, tr_matches_filtered = filter_matches_with_amount(tr_kp, ref_kp, tr_raw_matches)
+#         trkp1, trkp2 = zip(*tr_matches_filtered)
+#         similarity = feature_similarity(trkp1, trkp2) if tr_amount > 0 else -1
+#
+#         transformed_image = write_transformed_image(image_transformed, homography, transform, good_enough_match,
+#                                                     file_path,
+#                                                     output_path, target_path)
+#         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
+#         return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+#     except Exception as e:
+#         logging.exception("Registration failed")
+#         return json.dumps(
+#             {'transformedUrl': None,
+#              'transformedUri': None,
+#              'similarity': -1.0,
+#              'hash': str(difference_hash), 'success': False},
+#             separators=(',', ':'))
 
 
 def register_image_akaze(file_path, reference_form_path, output_path, result_writer, target_path="", store_files=True):
@@ -291,7 +292,7 @@ def register_image_brisk(file_path, reference_form_path, output_path, result_wri
                                                     file_path,
                                                     output_path, target_path)
         logging.info("transformed %s, %s", transformed_image, (datetime.now() - lap).total_seconds())
-        return create_response(transformed_image, good_enough_match, difference_hash, similarity)
+        return create_response(transformed_image, good_enough_match, difference_hash, similarity), image_transformed
     except Exception as e:
         logging.exception("Registration failed")
         return json.dumps(
@@ -325,12 +326,12 @@ def process_file(result_writer, count, root, file_name, reference_form_path, con
     output_path = join(root, 'transformed')
 
     func = ""
-    if feature_algorithm == "akaze":
-        func = register_image_akaze
+    # if feature_algorithm == "akaze":
+    #     func = register_image_akaze
+    # if feature_algorithm == "sift":
+    #     func = register_image_sift
     if feature_algorithm == "brisk":
         func = register_image_brisk
-    if feature_algorithm == "sift":
-        func = register_image_sift
     return func(image_path, reference_form_path, output_path, result_writer, config_file)
 
 

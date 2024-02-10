@@ -46,3 +46,4 @@ pycharm.env
 app_prod.yaml
 output/
 .DS_Store
+.envrc

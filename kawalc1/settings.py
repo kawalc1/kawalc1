@@ -58,7 +58,7 @@ if CREDS_FROM_FILE:
 SECRET = os.environ.get('KAWALC1_SECRET', 'test')
 AUTHENTICATION_ENABLED = SECRET is not 'test'
 BASE_DIR = "../" if TEST_MODE else "."
-TARGET_EXTENSION = ".jpg"
+TARGET_EXTENSION = ".webp"
 PADDING_INNER = 2
 PADDING_OUTER = 16
 
@@ -69,7 +69,7 @@ mpl_logger.setLevel(logging.WARNING)
 
 INMEMORYSTORAGE_PERSIST = True
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-TRANSFORMED_DIR = os.environ.get('TRANSFORMED_DIR', STATIC_DIR)
+TRANSFORMED_DIR = os.environ.get('TRANSFORMED_DIR', STATIC_DIR + '/2024')
 LOGS_PATH = os.environ.get('LOGS_PATH', BASE_DIR)
 VALIDATION_DIR = os.path.join(BASE_DIR, 'validation')
 DATASET_DIR = os.path.join(STATIC_DIR, 'datasets')

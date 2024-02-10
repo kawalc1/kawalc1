@@ -5,7 +5,7 @@ import org.rogach.scallop.ScallopConf
 class Tool[C <: ScallopConf](conf: C) {
   type Handler = C => Unit
 
-  var subcmdHandlers = Map[ScallopConf, Handler]()
+  var subcmdHandlers                  = Map[ScallopConf, Handler]()
   var primaryHandler: Option[Handler] = None
 
   def registerSubcmdHandler(subcmd: ScallopConf, handler: Handler): Unit = {

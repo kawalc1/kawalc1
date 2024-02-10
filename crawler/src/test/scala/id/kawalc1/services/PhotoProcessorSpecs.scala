@@ -9,12 +9,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
 
-class PhotoProcessorSpecs
-    extends WordSpec
-    with Matchers
-    with ScalaFutures
-    with ScalatestRouteTest
-    with JsonSupport {
+class PhotoProcessorSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
   "PhotoProcessor" should {
     "read probability matrix" in {
       val response      = Source.fromURL(getClass.getResource("/probabilities.json")).mkString
