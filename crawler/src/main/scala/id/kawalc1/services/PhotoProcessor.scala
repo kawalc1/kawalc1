@@ -89,7 +89,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   def fetch(sourceDb: PostgresProfile.backend.Database,
             targetDb: PostgresProfile.backend.Database,
             client: KawalC1Client,
-            params: BatchParams): Long = {
+            params: BatchParams)(implicit authClient: OAuthClient): Long = {
 
     batchTransform[KelurahanId, Seq[SingleTpsDao], KelurahanTable](
       sourceDb = sourceDb,
@@ -102,14 +102,18 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
-  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client) = {
+  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client)(
+      implicit
+      authClient: OAuthClient): Future[Seq[Seq[SingleTpsDao]]] = {
     streamResults(kelurahan, getSingleLurah, threads, client)
   }
 
-  def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client): Future[Seq[SingleTpsDao]] = {
+  private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(implicit
+                                                                                 authClient: OAuthClient): Future[Seq[SingleTpsDao]] = {
     logger.info(s"Get ${number.idKel}  (${number.nama}) ")
+    Thread.sleep(50L)
     kawalPemiluClient
-      .getKelurahan(number.idKel)
+      .getKelurahan(number.idKel, authClient)
       .map {
         case Right(kel) => Kelurahan.toTps(kel)
         case Left(_)    => Seq.empty
@@ -143,9 +147,9 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   def processDetections(sourceDb: PostgresProfile.backend.Database,
                         targetDb: PostgresProfile.backend.Database,
                         client: KawalC1Client,
-                        params: BatchParams)(implicit pw: PrintWriter): Long = {
-    pw.println(
-      "kelurahan,tps,photo,response_code,config,pas1,pas2,pas3,jumlah,tidak_sah,confidence,confidence_tidak_sah,hash,similarity,aligned,roi")
+                        params: BatchParams): Long = {
+    //    pw.println(
+    //      "kelurahan,tps,photo,response_code,config,pas1,pas2,pas3,jumlah,tidak_sah,confidence,confidence_tidak_sah,hash,similarity,aligned,roi")
     batchTransform[SingleTpsDao, DetectionResult, TpsTable](sourceDb,
                                                             targetDb,
                                                             client,
@@ -217,7 +221,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       hash = resp.hash,
       similarity = resp.similarity,
       aligned = resp.transformedUrl,
-      roi = resp.digitArea
+      roi = resp.digitArea,
+      response = r.responseBody,
     )
   }
 
@@ -280,17 +285,20 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   def processSingleDetection(tps: SingleTpsDao, client: KawalC1Client): Future[CombiResult] = {
     //    val plano: Option[Plano] = tps.verification.c1.flatMap(_.plano)
     client
-      .detectNumbers(kelurahan = tps.kelurahanId,
-                     tps = tps.tpsId,
-                     photoName = tps.uploadedPhotoUrl.replace("http://lh3.googleusercontent.com/", "") + "=s1280",
-                     None,
-                     None)
+      .detectNumbers(
+        kelurahan = tps.kelurahanId,
+        tps = tps.tpsId,
+        photoName = tps.uploadedPhotoUrl.replace("http://lh3.googleusercontent.com/", "") + "=s1280",
+        halaman = None,
+        plano = None
+      )
       .map {
-        case Right(e) =>
-          CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoId, 200, Serialization.write(e), e)
-        case Left(error) =>
+        case Right(response: CombiResponse) =>
+          println(s"${Serialization.write(response)}")
+          CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoId, 200, Serialization.write(response), response)
+        case Left(error: Response) =>
           logger.warn(s"Error digitizing: $error")
-          val emptyResponse = CombiResponse(Some("error"), Some(0.0), Some("hash"), Some("digit"), None, Some(""))
+          val emptyResponse = CombiResponse(Some("error"), Some(0.0), Some("hash"), Some("digit"), None, Some(""), None)
           CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoUrl, error.code, error.response, emptyResponse)
       }
   }
@@ -305,7 +313,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                   tps = tps.tpsId,
                   photoName = tps.photo.replace("http://lh3.googleusercontent.com/", "") + "=s1280")
       .map { _ =>
-        CombiResult(tps.kelurahanId, tps.tpsId, tps.photo, 200, "body", CombiResponse(None, None, None, None, None, None))
+        CombiResult(tps.kelurahanId, tps.tpsId, tps.photo, 200, "body", CombiResponse(None, None, None, None, None, None, None))
       }
   }
   //

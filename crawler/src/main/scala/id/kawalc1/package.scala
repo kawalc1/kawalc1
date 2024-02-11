@@ -178,6 +178,10 @@ package object kawalc1 extends LazyLogging {
       result: Kelurahan
   )
 
+  case class MaybeKelurahanResponse(
+      result: Option[Kelurahan]
+  )
+
   object Kelurahan {
     def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
       for {

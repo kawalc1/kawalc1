@@ -69,7 +69,8 @@ case class DetectionResult(kelurahan: Long,
                            hash: Option[String],
                            similarity: Option[Double],
                            aligned: Option[String],
-                           roi: Option[String])
+                           roi: Option[String],
+                           response: String)
 
 object ResultsTables extends SlickValueEnumSupport {
   val profile = slick.jdbc.PostgresProfile
@@ -91,6 +92,7 @@ object ResultsTables extends SlickValueEnumSupport {
     def similarity           = column[Option[Double]]("similarity")
     def aligned              = column[Option[String]]("aligned", O.SqlType("TEXT"))
     def roi                  = column[Option[String]]("roi", O.SqlType("TEXT"))
+    def response             = column[String]("response", O.SqlType("TEXT"))
 
     override def * =
       (kelurahan,
@@ -108,7 +110,8 @@ object ResultsTables extends SlickValueEnumSupport {
        hash,
        similarity,
        aligned,
-       roi) <> (DetectionResult.tupled, DetectionResult.unapply)
+       roi,
+       response) <> (DetectionResult.tupled, DetectionResult.unapply)
   }
 
   val detectionsQuery = TableQuery[DetectionResults]
@@ -302,6 +305,7 @@ object ResultsTables extends SlickValueEnumSupport {
     joined
       .filter { case (a, b) => b.isEmpty }
       .map(_._1)
+      .take(1)
     //      .filter(x => x.formType === FormType.PPWP.value)
   }
 

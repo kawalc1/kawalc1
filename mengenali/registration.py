@@ -42,9 +42,9 @@ def get_target_path(file_path, target_path):
 
 
 def write_transformed_image(image_transformed, homography, transform, good_enough_match, file_path, output_path,
-                            target_path, store_files=True):
+                            target_path, store_files=True) -> str:
     file_prefix = "~trans" if good_enough_match else "~bad"
-    transformed_image = get_target_path(file_path, target_path)
+    transformed_image: str = get_target_path(file_path, target_path)
 
     image_path = join(output_path, transformed_image)
 

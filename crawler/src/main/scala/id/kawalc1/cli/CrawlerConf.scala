@@ -6,12 +6,13 @@ class CrawlerConf(toolArgs: Seq[String]) extends ScallopConf(toolArgs) {
   import CrawlerConf._
 
   val Process = new Subcommand("process") {
-    val phase   = choice(Phases)
-    val offset  = opt[Int](required = false)
-    val service = opt[String](required = false)
-    val limit   = opt[Int](required = false)
-    val batch   = opt[Int](required = false)
-    val threads = opt[Int](required = false)
+    val phase        = choice(Phases)
+    val refreshToken = opt[String](required = false)
+    val offset       = opt[Int](required = false)
+    val service      = opt[String](required = false)
+    val limit        = opt[Int](required = false)
+    val batch        = opt[Int](required = false)
+    val threads      = opt[Int](required = false)
   }
 
   val Stats = new Subcommand("stats") {

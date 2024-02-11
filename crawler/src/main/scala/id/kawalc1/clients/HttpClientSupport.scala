@@ -44,12 +44,15 @@ trait HttpClientSupport extends LazyLogging {
                                                  authorization: Option[Authorization]): Future[Either[Response, A]] = {
     val defaultAuth = headers.Authorization(GenericHttpCredentials("", Application.secret))
     for {
-      resp: HttpResponse <- http.singleRequest(request.withHeaders(List()), SecurityContext)
+      resp: HttpResponse <- http.singleRequest(request.withHeaders(authorization.toList), SecurityContext)
       str: String        <- consumeEntity(resp.entity)
       requestBody        <- consumeEntity(request.entity)
     } yield {
       resp.status match {
-        case code: StatusCode if code.isSuccess() => parseJson[A](str)
+        case code: StatusCode if code.isSuccess() => {
+          logger.info(s"Request ${request.method.value} ${request.uri}")
+          parseJson[A](str)
+        }
         case errorCode =>
           logger.info(s"Request ${request.method.value} ${request.uri}, error: $errorCode")
           logger.info(s"Req: $requestBody Resp: ${Await.result(consumeEntity(resp.entity), 10.seconds)}")
