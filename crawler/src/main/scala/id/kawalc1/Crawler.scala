@@ -33,12 +33,12 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val conf   = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy2")
-  val processor                 = new PhotoProcessor(kawalPemiluClient)
-  val tpsDb                     = Database.forConfig("tpsDatabase")
-  val kelurahanDatabase         = Database.forConfig("verificationResults")
-  val resultsDatabase           = Database.forConfig("verificationResults")
-  val detectionsDatabase        = Database.forConfig("detectionsDatabase")
+  private val kawalPemiluClient  = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy2")
+  val processor                  = new PhotoProcessor(kawalPemiluClient)
+  val tpsDb                      = Database.forConfig("tpsDatabase")
+  private val kelurahanDatabase  = Database.forConfig("verificationResults")
+  val resultsDatabase            = Database.forConfig("verificationResults")
+  private val detectionsDatabase = Database.forConfig("detectionsDatabase")
 
   def process(phase: String,
               func: (PostgresProfile.backend.Database, PostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
@@ -201,7 +201,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "forms-processed" =>
           createDb(ResultsTables.formsProcessedQuery.schema, resultsDatabase, drop)
         case "detect" =>
-          createDb(ResultsTables.detectionsQuery.schema, detectionsDatabase, drop)
+          createDb(ResultsTables.detectionsQuery.schema, resultsDatabase, drop)
         case "fetch" =>
           createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
         case "align" =>
@@ -256,7 +256,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           val outputFile = new File(s"batches/detections-${LocalDateTime.now()}-${url.getHost}.csv")
           val howMany    = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
           println(s"Will detect: $howMany")
-          process("detections", processor.processDetections, resultsDatabase, detectionsDatabase, kawalC1Client, batchParams)
+          process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         //        case "tps-unprocessed" =>
         //          implicit val pw = new PrintWriter(new File(s"batches/felix-${LocalDateTime.now()}-${url.getHost}.csv"))
         //          val howMany = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length
