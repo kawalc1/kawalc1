@@ -25,10 +25,10 @@ class OAuthClient(baseUrl: String, initialToken: String)(implicit val system: Ac
 
   private var currentToken: Option[ResponseWithTime] = None
 
-  def refreshToken(): Future[Either[Response, ResponseWithTime]] = {
+  def refreshToken(force: Boolean = false): Future[Either[Response, ResponseWithTime]] = {
     val expired                = currentToken.forall(x => Instant.now.minus(50, ChronoUnit.MINUTES).isAfter(x.issuedAt))
     implicit val authorization = None
-    if (expired) {
+    if (expired || force) {
       for {
         response <- execute[RefreshTokenResponse](
           Post(s"$baseUrl/token?key=${Application.kpApiKey}",
@@ -36,7 +36,7 @@ class OAuthClient(baseUrl: String, initialToken: String)(implicit val system: Ac
           .map(_.map(ResponseWithTime(Instant.now(), _)))
       } yield {
         response.foreach { x: ResponseWithTime =>
-          logger.warn(s"Updated token to ${x.issuedAt}")
+          logger.warn(s"Updated token to ${x.issuedAt}, ${x.response.refresh_token}")
           currentToken = Some(x)
         }
         response

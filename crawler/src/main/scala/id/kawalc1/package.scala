@@ -151,7 +151,7 @@ package object kawalc1 extends LazyLogging {
   )
 
   case class TpsInfo(
-      pendingUploads: Option[Map[String, Boolean]],
+      pendingUploads: Option[Map[String, String]],
       idLokasi: String,
       pas2: Int,
       totalTps: Int,
@@ -183,10 +183,22 @@ package object kawalc1 extends LazyLogging {
   )
 
   object Kelurahan {
+
+    private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
+      infos.flatMap { t =>
+        val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.map {
+          case (key, value) => UploadedPhoto(value, key)
+        })
+        val photos = pendingPhotos ++ t.uploadedPhoto
+        photos.map(p => t.copy(uploadedPhoto = Some(p)))
+      }
+
+    }
+
     def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
       for {
         tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
-        t: TpsInfo                <- tps._2
+        t: TpsInfo                <- explodeForPhotos(tps._2)
         if t.uploadedPhoto.isDefined
       } yield {
         SingleTpsDao(

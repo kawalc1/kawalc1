@@ -25,32 +25,37 @@ class KawalPemiluClient(baseUrl: String)(implicit
 
   def getKelurahan(number: Long, authClient: OAuthClient): Future[Either[Response, KelurahanResponse]] = {
     for {
-      token <- authClient.refreshToken()
-      auth <- Future.successful(
-        Authorization(OAuth2BearerToken(token.getOrElse(throw new IllegalStateException("no token")).response.access_token)))
-      resp <- {
-        implicit val authorization: Option[Authorization] = Some(auth)
-        execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number"))))
-      }
-      finalResp <- {
-        resp match {
-          case Left(value) => Future.successful(Left(value))
-          case Right(maybe: MaybeKelurahanResponse) =>
-            maybe.result match {
-              case Some(v) => Future.successful(Right(KelurahanResponse(v)))
-              case None =>
-                logger.warn("Retrying after 5 seconds")
-                Thread.sleep(5000)
-                implicit val authorization: Option[Authorization] = Some(auth)
-                execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
-                  case Left(value)  => Left(value)
-                  case Right(value) => Right(KelurahanResponse(value.result.get))
-                }
+      auth <- authClient
+        .refreshToken()
+        .map(token => Authorization(OAuth2BearerToken(token.getOrElse(throw new IllegalStateException("no token")).response.access_token)))
+      resp <- getData(number, auth)
+      finalResp <- resp match {
+        case Left(value)                            => Future.successful(Left(value))
+        case Right(value) if value.result.isDefined => Future.successful(Right(KelurahanResponse(value.result.get)))
+        case Right(_) =>
+          for {
+            auth <- authClient
+              .refreshToken(true)
+              .map(token =>
+                Authorization(OAuth2BearerToken(token.getOrElse(throw new IllegalStateException("no token")).response.access_token)))
+            data <- getData(number, auth)
+          } yield {
+            data match {
+              case Left(value)  => Left(value)
+              case Right(value) => Right(KelurahanResponse(value.result.get))
             }
-        }
-
+          }
       }
     } yield finalResp
+  }
+
+  private def getData(number: Long, auth: Authorization): Future[Either[Response, MaybeKelurahanResponse]] = {
+    implicit val authorization: Option[Authorization] = Some(auth)
+    execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
+      case Left(value) if value.code == 404 => Right(MaybeKelurahanResponse(None))
+      case Left(value)                      => Left(value)
+      case Right(value)                     => Right(value)
+    }
   }
 
   def subitProblem(baseUrl: String, token: String, problem: Problem): Future[Either[Response, SubmitResponse]] = {

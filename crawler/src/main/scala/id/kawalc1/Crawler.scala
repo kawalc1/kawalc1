@@ -33,7 +33,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val conf   = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy")
+  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy2")
   val processor                 = new PhotoProcessor(kawalPemiluClient)
   val tpsDb                     = Database.forConfig("tpsDatabase")
   val kelurahanDatabase         = Database.forConfig("verificationResults")

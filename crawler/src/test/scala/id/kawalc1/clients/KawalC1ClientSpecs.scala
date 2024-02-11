@@ -1,6 +1,7 @@
 package id.kawalc1.clients
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import id.kawalc1
 import id.kawalc1.{KelurahanOld, KelurahanResponse, PresidentialLembar2, SingleSum}
 import org.json4s.native.Serialization
 import org.scalatest.concurrent.ScalaFutures
@@ -26,11 +27,15 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val response  = Source.fromURL(getClass.getResource("/hierarchy/5171021003.json")).mkString
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
-      set.keySet.size shouldBe 3
+      set.keySet.size shouldBe 4
       set.head._1 shouldBe 1
       val firstTps = set.head._2.head
       firstTps.idLokasi shouldBe "51710210031"
       firstTps.name shouldBe "1"
+
+      val lastTps: kawalc1.TpsInfo = set.last._2.head
+      lastTps.idLokasi shouldBe "62080220041"
+      lastTps.pendingUploads.get.head._1 shouldBe "pzQbcMvsX2AmEHdUbhTB"
     }
 
     "parse the `4.json` response" in {

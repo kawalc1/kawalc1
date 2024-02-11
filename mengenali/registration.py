@@ -226,7 +226,7 @@ def register_image_akaze(file_path, reference_form_path, output_path, result_wri
              'transformedUri': None,
              'similarity': -1.0,
              'hash': str(difference_hash), 'success': False},
-            separators=(',', ':'))
+            separators=(',', ':')), image
 
 
 def register_image_brisk(file_path, reference_form_path, output_path, result_writer, target_path=""):

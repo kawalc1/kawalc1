@@ -294,7 +294,6 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       )
       .map {
         case Right(response: CombiResponse) =>
-          println(s"${Serialization.write(response)}")
           CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoId, 200, Serialization.write(response), response)
         case Left(error: Response) =>
           logger.warn(s"Error digitizing: $error")

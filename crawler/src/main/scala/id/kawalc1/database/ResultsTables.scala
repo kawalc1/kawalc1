@@ -305,7 +305,6 @@ object ResultsTables extends SlickValueEnumSupport {
     joined
       .filter { case (a, b) => b.isEmpty }
       .map(_._1)
-      .take(1)
     //      .filter(x => x.formType === FormType.PPWP.value)
   }
 
