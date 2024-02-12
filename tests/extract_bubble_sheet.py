@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from mengenali.bubble_sheet_reader import extract_digits
+from mengenali.bubble_sheet_reader import extract_digits_from_path
 from tests import setup_django_settings
 
 
@@ -13,7 +13,7 @@ class ExtractBubbleSheet(unittest.TestCase):
 
     def assert_most_similar(self, bubble_file: str, expected_number):
         reference_form_path = f'./resources/bubble_sheet/{bubble_file}'
-        digits = extract_digits(Path(reference_form_path))
+        digits = extract_digits_from_path(Path(reference_form_path))
         print(digits)
         number = [digits[0], digits[1], digits[2]]
         self.assertEqual(number, expected_number)

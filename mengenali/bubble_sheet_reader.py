@@ -37,13 +37,18 @@ def find_contours(thresholded_image):
     return bubble_contours
 
 
-def extract_digits(path: Path):
+def extract_digits_from_path(path: Path):
     image = cv2.imread(str(path))
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    extract_digits(image)
+
+
+def extract_digits(gray):
+    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     kernel = np.ones((5, 5), np.uint8)
     closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
 
     thresh = cv2.threshold(closed, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 
     contours = find_contours(thresh)
-    return extract_three_numbers(contours, thresh.shape[0])
+    numbers = extract_three_numbers(contours, thresh.shape[0])
+    return int(f"{numbers[0]}{numbers[1]}{numbers[2]}")

@@ -117,14 +117,25 @@ def find_number(output, name):
                     return v['number']
 
 
-def get_outcome(output, config_file):
+def get_outcome(output, bubbleNumbers, config_file):
     if config_file == "pilpres_2024_plano_halaman2.json":
-        return {
+        confidence = output['probabilityMatrix'][0][0]['confidence']
+        neuralNumbers = {
             'anies': find_number(output, 'anies'),
             'prabowo': find_number(output, 'prabs'),
             'ganjar': find_number(output, 'ganjar'),
-            'confidence': output['probabilityMatrix'][0][0]['confidence'],
+            'confidence': confidence,
         }
+        if confidence < 0.6:
+            return {
+                'anies': bubbleNumbers[0],
+                'prabowo': bubbleNumbers[1],
+                'ganjar': bubbleNumbers[2],
+                'confidence': confidence,
+                'neuralNumbers': neuralNumbers
+            }
+
+        return neuralNumbers
     return {
         'phpJumlah': find_number(output, 'phpJumlah'),
         'confidence': output['probabilityMatrix'][1][0]['confidence']
@@ -254,7 +265,7 @@ def download(request, kelurahan, tps, filename):
 
         output = {**a, **b}
 
-        outcome = get_outcome(output, config_file) if similarity > 1.0 else { 'confidence': 0}
+        outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else { 'confidence': 0}
         output['outcome'] = outcome
 
         output['success'] = bool(outcome['confidence'] > 0.8)
@@ -267,6 +278,7 @@ def download(request, kelurahan, tps, filename):
         del output["transformedUri"]
         del output["probabilityMatrix"]
         del output["duration"]
+        del output["bubbleNumbers"]
         if "party" in output:
             del output["party"]
         del output["success"]
