@@ -5,8 +5,8 @@ lazy val json4sVersion           = "3.5.5"
 lazy val scalaLoggingVersion     = "3.8.0"
 lazy val enumeratumVersion       = "1.5.15"
 lazy val enumeratumJson4sVersion = "1.5.15"
-lazy val slickVersion            = "3.3.2"
-lazy val enumeratumSlickVersion  = "1.5.16"
+lazy val slickVersion            = "3.4.1"
+lazy val enumeratumSlickVersion  = "1.7.4"
 lazy val logbackVersion          = "1.2.3"
 
 lazy val root = (project in file(".")).settings(
@@ -28,22 +28,23 @@ lazy val root = (project in file(".")).settings(
     "com.typesafe.akka"          %% "akka-stream"          % akkaVersion,
     "com.typesafe.scala-logging" %% "scala-logging"        % "3.9.5",
     //"com.typesafe.scala-logging" %% "scala-logging"        % scalaLoggingVersion,
-    "de.heikoseeberger"  %% "akka-http-json4s"    % akkaHttpJson4sVersion,
-    "org.json4s"         %% "json4s-native"       % json4sVersion,
-    "org.json4s"         %% "json4s-ext"          % json4sVersion,
-    "com.beachape"       %% "enumeratum"          % enumeratumVersion,
-    "com.beachape"       %% "enumeratum-json4s"   % enumeratumJson4sVersion,
-    "com.typesafe.slick" %% "slick"               % slickVersion,
-    "com.typesafe.slick" %% "slick-hikaricp"      % slickVersion,
-    "com.h2database"     % "h2"                   % "1.4.196",
-    "org.postgresql"     % "postgresql"           % "42.2.5",
-    "org.xerial"         % "sqlite-jdbc"          % "3.7.2",
-    "com.beachape"       %% "enumeratum-slick"    % enumeratumSlickVersion,
-    "ch.qos.logback"     % "logback-classic"      % logbackVersion,
-    "com.typesafe.akka"  %% "akka-http-testkit"   % akkaHttpVersion % Test,
-    "com.typesafe.akka"  %% "akka-testkit"        % akkaVersion % Test,
-    "com.typesafe.akka"  %% "akka-stream-testkit" % akkaVersion % Test,
-    "org.scalatest"      %% "scalatest"           % "3.0.8" % Test,
-    "org.rogach"         %% "scallop"             % "3.3.0"
+    "de.heikoseeberger"   %% "akka-http-json4s"    % akkaHttpJson4sVersion,
+    "org.json4s"          %% "json4s-native"       % json4sVersion,
+    "org.json4s"          %% "json4s-ext"          % json4sVersion,
+    "com.beachape"        %% "enumeratum"          % enumeratumVersion,
+    "com.beachape"        %% "enumeratum-json4s"   % enumeratumJson4sVersion,
+    "com.typesafe.slick"  %% "slick"               % slickVersion,
+    "com.typesafe.slick"  %% "slick-hikaricp"      % slickVersion,
+    "com.github.tminglei" %% "slick-pg"            % "0.21.1",
+    "com.h2database"      % "h2"                   % "1.4.196",
+    "org.postgresql"      % "postgresql"           % "42.2.5",
+    "org.xerial"          % "sqlite-jdbc"          % "3.7.2",
+    "com.beachape"        %% "enumeratum-slick"    % enumeratumSlickVersion,
+    "ch.qos.logback"      % "logback-classic"      % logbackVersion,
+    "com.typesafe.akka"   %% "akka-http-testkit"   % akkaHttpVersion % Test,
+    "com.typesafe.akka"   %% "akka-testkit"        % akkaVersion % Test,
+    "com.typesafe.akka"   %% "akka-stream-testkit" % akkaVersion % Test,
+    "org.scalatest"       %% "scalatest"           % "3.0.8" % Test,
+    "org.rogach"          %% "scallop"             % "3.3.0"
   )
 )

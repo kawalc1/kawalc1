@@ -5,13 +5,12 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.{Source => StreamSource}
 import id.kawalc1._
 import id.kawalc1.clients._
+import id.kawalc1.database.CustomPostgresProfile.api._
 import id.kawalc1.database.ResultsTables.{AlignResults, ExtractResults}
 import id.kawalc1.database.TpsTables.{TpsPhotoTable, Kelurahan => KelurahanTable}
 import id.kawalc1.database._
 import org.json4s.native.Serialization
-import slick.dbio.Effect
-import slick.jdbc.PostgresProfile
-import slick.jdbc.PostgresProfile.api._
+import slick.dbio.{DBIO, Effect, NoStream}
 import slick.sql.FixedSqlAction
 
 import java.io.PrintWriter
@@ -33,11 +32,11 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   val FeatureAlgorithm = "akaze"
   val url              = "http://lh3.googleusercontent.com/HZ6AJF6YYqA2M5MXxH99XedoaE1Rk3-IelJEsnosBVPLdMb73X0w7T5_mWvExCsIZlI-cud3kSU9Lk7c700"
 
-  private def transform[A, B](sourceDb: PostgresProfile.backend.Database,
-                              targetDb: PostgresProfile.backend.Database,
+  private def transform[A, B](sourceDb: CustomPostgresProfile.backend.Database,
+                              targetDb: CustomPostgresProfile.backend.Database,
                               query: Seq[A],
                               process: (Seq[A], Int, KawalC1Client) => Future[Seq[B]],
-                              insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]],
+                              insert: Seq[B] => Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]],
                               threads: Int,
                               kawalC1Client: KawalC1Client) = {
     for {
@@ -47,12 +46,12 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
 
   }
 
-  private def batchTransform[A, B, C <: Table[A]](sourceDb: PostgresProfile.backend.Database,
-                                                  targetDb: PostgresProfile.backend.Database,
+  private def batchTransform[A, B, C <: Table[A]](sourceDb: CustomPostgresProfile.backend.Database,
+                                                  targetDb: CustomPostgresProfile.backend.Database,
                                                   client: KawalC1Client,
                                                   query: Query[C, C#TableElementType, Seq],
                                                   process: (Seq[A], Int, KawalC1Client) => Future[Seq[B]],
-                                                  insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]],
+                                                  insert: Seq[B] => Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]],
                                                   params: BatchParams) = {
     var numberOfItems = 0
     var start: Long   = params.start
@@ -61,14 +60,14 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       val items     = sourceDb.run(nextBatch.result).futureValue
       numberOfItems = items.length
       val inserted = transform(sourceDb, targetDb, items, process, insert, params.threads, client).futureValue
-      logger.info(s"Inserted batch $start - ${start + params.batchSize}. # of items: ${inserted.length}")
+      logger.info(s"Inserted batch $start - ${start + params.batchSize}. # of items: ${inserted.map(_.getOrElse(0)).sum}")
       start += params.batchSize
     } while (numberOfItems > 0)
     start + numberOfItems
   }
 
-  def align(sourceDb: PostgresProfile.backend.Database,
-            targetDb: PostgresProfile.backend.Database,
+  def align(sourceDb: CustomPostgresProfile.backend.Database,
+            targetDb: CustomPostgresProfile.backend.Database,
             client: KawalC1Client,
             params: BatchParams): Long = {
 
@@ -86,8 +85,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
-  def fetch(sourceDb: PostgresProfile.backend.Database,
-            targetDb: PostgresProfile.backend.Database,
+  def fetch(sourceDb: CustomPostgresProfile.backend.Database,
+            targetDb: CustomPostgresProfile.backend.Database,
             client: KawalC1Client,
             params: BatchParams)(implicit authClient: OAuthClient): Long = {
 
@@ -118,8 +117,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       }
   }
 
-  def extract(sourceDb: PostgresProfile.backend.Database,
-              targetDb: PostgresProfile.backend.Database,
+  def extract(sourceDb: CustomPostgresProfile.backend.Database,
+              targetDb: CustomPostgresProfile.backend.Database,
               client: KawalC1Client,
               params: BatchParams): Long =
     batchTransform[AlignResult, ExtractResult, AlignResults](sourceDb,
@@ -130,8 +129,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                                                              ResultsTables.upsertExtract,
                                                              params)
 
-  def processProbabilities(sourceDb: PostgresProfile.backend.Database,
-                           targetDb: PostgresProfile.backend.Database,
+  def processProbabilities(sourceDb: CustomPostgresProfile.backend.Database,
+                           targetDb: CustomPostgresProfile.backend.Database,
                            client: KawalC1Client,
                            params: BatchParams): Long =
     batchTransform[ExtractResult, PresidentialResult, ExtractResults](sourceDb,
@@ -142,8 +141,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                                                                       ResultsTables.upsertPresidential,
                                                                       params)
 
-  def processDetections(sourceDb: PostgresProfile.backend.Database,
-                        targetDb: PostgresProfile.backend.Database,
+  def processDetections(sourceDb: CustomPostgresProfile.backend.Database,
+                        targetDb: CustomPostgresProfile.backend.Database,
                         client: KawalC1Client,
                         params: BatchParams): Long = {
     //    pw.println(
@@ -157,8 +156,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                                                                       params)
   }
 
-  //  def processUnverifiedDetections(sourceDb: PostgresProfile.backend.Database,
-  //                                  targetDb: PostgresProfile.backend.Database,
+  //  def processUnverifiedDetections(sourceDb: CustomPostgresProfile.backend.Database,
+  //                                  targetDb: CustomPostgresProfile.backend.Database,
   //                                  client: KawalC1Client,
   //                                  params: BatchParams)(implicit pw: PrintWriter): Long = {
   //    pw.println(
