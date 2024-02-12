@@ -75,9 +75,9 @@ class KawalPemiluClient(baseUrl: String)(implicit
   private def getData(number: Long, auth: Authorization): Future[Either[Response, MaybeKelurahanResponse]] = {
     implicit val authorization: Option[Authorization] = Some(auth)
     execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
-      case Left(value) if value.code == 404 => Right(MaybeKelurahanResponse(None))
-      case Left(value)                      => Left(value)
-      case Right(value)                     => Right(value)
+      case Left(value) if Seq(404, 500, 503).contains(value.code) => Right(MaybeKelurahanResponse(None))
+      case Left(value)                                            => Left(value)
+      case Right(value)                                           => Right(value)
     }
   }
 
