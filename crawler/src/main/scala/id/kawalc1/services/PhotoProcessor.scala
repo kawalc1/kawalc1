@@ -95,7 +95,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       sourceDb = sourceDb,
       targetDb = targetDb,
       client = client,
-      query = TpsTables.kelurahanQuery.sortBy(_.idKel).filter(x => x.idKel === 1101012001L || x.idKel === 1101012002L),
+      query = TpsTables.kelurahanQuery.sortBy(_.idKel), //.filter(x => x.idKel === 1101012001L || x.idKel === 1101012002L),
       process = fetchTps,
       insert = TpsTables.upsertTps,
       params = params
@@ -110,7 +110,6 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(implicit
                                                                                  authClient: OAuthClient): Future[TpsBasedData] = {
     logger.info(s"Get ${number.idKel}  (${number.nama}) ")
-    Thread.sleep(50L)
     kawalPemiluClient
       .getKelurahan(number.idKel, authClient)
       .map {
