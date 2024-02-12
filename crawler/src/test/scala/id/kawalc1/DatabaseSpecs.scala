@@ -16,7 +16,7 @@ class DatabaseSpecs extends WordSpec with Matchers with FutureMatcher with LazyL
       val db                            = Database.forConfig("tpsTestDatabase")
       val response                      = Source.fromURL(getClass.getResource("/hierarchy/5171021003.json")).mkString
       val kelurahan                     = Serialization.read[KelurahanResponse](response)
-      val tpses: Seq[SingleTpsPhotoDao] = Kelurahan.toTps(kelurahan)
+      val tpses: Seq[SingleTpsPhotoDao] = Kelurahan.toPhotoTps(kelurahan)
       val tpsJson                       = Serialization.writePretty(tpses)
       println(s"$tpsJson")
       val setup =

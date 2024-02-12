@@ -216,7 +216,34 @@ package object kawalc1 extends LazyLogging {
 
     }
 
-    def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
+    def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
+      (for {
+        (_, infos) <- kelurahan.result.aggregated
+      } yield {
+        val t = infos.head
+        SingleTpsDao(
+          kelurahanId = kelurahan.result.id.toLong,
+          tpsId = t.name.toInt,
+          name = kelurahan.result.names.mkString(", "),
+          idLokasi = t.idLokasi,
+          uid = t.uid,
+          updatedTs = Timestamp.from(Instant.ofEpochMilli(t.updateTs)),
+          uploadedPhotoId = t.uploadedPhoto.map(_.imageId),
+          uploadedPhotoUrl = t.uploadedPhoto.map(_.photoUrl),
+          dpt = t.dpt,
+          pas1 = Some(t.pas1),
+          pas2 = Some(t.pas2),
+          pas3 = Some(t.pas3),
+          anyPendingTps = t.anyPendingTps,
+          totalTps = t.totalTps,
+          totalPendingTps = t.totalPendingTps,
+          totalCompletedTps = t.totalCompletedTps,
+          totalErrorTps = t.totalErrorTps
+        )
+      }).toSeq
+    }
+
+    def toPhotoTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
       for {
         tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
         t: TpsInfo                <- explodeForPhotos(tps._2)

@@ -2,7 +2,7 @@ package id.kawalc1.clients
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import id.kawalc1
-import id.kawalc1.{KelurahanOld, KelurahanResponse, PresidentialLembar2, SingleSum}
+import id.kawalc1.{Kelurahan, KelurahanOld, KelurahanResponse, PresidentialLembar2, SingleSum}
 import org.json4s.native.Serialization
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
@@ -36,6 +36,10 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val lastTps: kawalc1.TpsInfo = set.last._2.head
       lastTps.idLokasi shouldBe "11010120013"
       lastTps.pendingUploads.get.head._1 shouldBe "5nCvPsP2YiQ1IqpdBnnt"
+      Kelurahan.toPhotoTps(kelurahan).length shouldBe 7
+      val tpses = Kelurahan.toTps(kelurahan)
+      tpses.length shouldBe 3
+      tpses.head.uploadedPhotoUrl shouldBe None
     }
 
     "parse the `1101012002.json` response" in {
@@ -51,6 +55,9 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val lastTps: kawalc1.TpsInfo = set.last._2.head
       lastTps.idLokasi shouldBe "11010120022"
       lastTps.pendingUploads.get.head._1 shouldBe "OdPjJsgCNa3x2PVAMIFT"
+
+      Kelurahan.toPhotoTps(kelurahan).length shouldBe 0
+      Kelurahan.toTps(kelurahan).length shouldBe 2
     }
 
     "parse the `5171021003.json` response" in {

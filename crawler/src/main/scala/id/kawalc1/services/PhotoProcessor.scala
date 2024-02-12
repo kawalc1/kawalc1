@@ -116,7 +116,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     kawalPemiluClient
       .getKelurahan(number.idKel, authClient)
       .map {
-        case Right(kel) => Kelurahan.toTps(kel)
+        case Right(kel) => Kelurahan.toPhotoTps(kel)
         case Left(_)    => Seq.empty
       }
   }
