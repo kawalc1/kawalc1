@@ -1,15 +1,18 @@
 package id.kawalc1.database
 
+import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1._
+import id.kawalc1.services.BlockingSupport
 import slick.dbio.Effect
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
 import java.sql.Timestamp
+import scala.concurrent.ExecutionContext
 
-object TpsTables extends SlickValueEnumSupport {
+object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLogging {
   val profile = slick.jdbc.PostgresProfile
 
   class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
@@ -334,10 +337,21 @@ object TpsTables extends SlickValueEnumSupport {
 
   val tpsUnverifiedQuery = TableQuery[TpsUnverified]
 
-  def upsertTps(results: Seq[TpsBasedData]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.flatMap { t =>
-      t.plain.map(tpsQuery.insertOrUpdate) ++ t.withPhoto.map(tpsPhotoQuery.insertOrUpdate)
+  private val sedotDatabase = Database.forConfig("sedotDatabase")
+
+  def upsertTps(results: Seq[TpsBasedData])(implicit ex: ExecutionContext): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+    val tpsToUpsert = results.flatMap { t =>
+      t.plain.map(tpsQuery.insertOrUpdate)
     }
+    val photosToUpsert = results.flatMap { t =>
+      t.withPhoto.map(tpsPhotoQuery.insertOrUpdate)
+    }
+
+    sedotDatabase.run(DBIO.sequence(tpsToUpsert)).foreach { uploaded =>
+      logger.info(s"Uploaded ${uploaded.sum} records into the sedot DB")
+    }
+
+    tpsToUpsert ++ photosToUpsert
   }
 
 }

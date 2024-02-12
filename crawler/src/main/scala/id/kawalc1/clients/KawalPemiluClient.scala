@@ -6,10 +6,8 @@ import akka.http.caching.scaladsl.{Cache, CachingSettings, LfuCacheSettings}
 import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.model.headers.{Authorization, OAuth2BearerToken}
 import akka.stream.Materializer
-import id.kawalc1.Config.Application
 import id.kawalc1._
 
-import java.time.Instant
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,15 +32,16 @@ class KawalPemiluClient(baseUrl: String)(implicit
     defaultCachingSettings.lfuCacheSettings
       .withInitialCapacity(1)
       .withMaxCapacity(1)
-      .withTimeToLive(1.minute)
+      .withTimeToLive(5.seconds)
 
   private val cache: Cache[String, Boolean] = LfuCache(defaultCachingSettings.withLfuCacheSettings(lfuCacheSettings))
 
   private def avoidThunderingHerds(): Future[Boolean] = {
+    logger.info("Entering mutex...")
     cache.getOrLoad("mutex", _ => {
       Future {
-        logger.info("Waiting for rate limit to subside...")
-        Thread.sleep(20 * 1000L)
+        logger.info("Waiting 10 seconds for rate limit to subside...")
+        Thread.sleep(10 * 1000L)
         true
       }
     })

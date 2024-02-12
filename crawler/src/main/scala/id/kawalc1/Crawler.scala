@@ -38,7 +38,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val tpsDb = Database.forConfig("tpsDatabase")
   private val kelurahanDatabase = Database.forConfig("verificationResults")
   val resultsDatabase = Database.forConfig("verificationResults")
-  private val detectionsDatabase = Database.forConfig("detectionsDatabase")
+  private val sedotDatabase = Database.forConfig("sedotDatabase")
 
   def process(
     phase: String,
@@ -204,6 +204,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "detect" =>
           createDb(ResultsTables.detectionsQuery.schema, resultsDatabase, drop)
         case "fetch" =>
+          createDb(TpsTables.tpsQuery.schema, sedotDatabase, drop)
           createDb(TpsTables.tpsPhotoQuery.schema, resultsDatabase, drop)
           createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
         case "align" =>
@@ -241,7 +242,6 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           implicit val refreshToken: String = maybeToken.getOrElse(throw new IllegalArgumentException("Refresh token for KP required"))
           implicit val authClient = new OAuthClient("https://securetoken.googleapis.com/v1", refreshToken)
           authClient.refreshToken().futureValue
-
           process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "align" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
