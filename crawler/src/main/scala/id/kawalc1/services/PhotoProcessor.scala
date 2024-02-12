@@ -91,7 +91,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
             client: KawalC1Client,
             params: BatchParams)(implicit authClient: OAuthClient): Long = {
 
-    batchTransform[KelurahanId, Seq[SingleTpsPhotoDao], KelurahanTable](
+    batchTransform[KelurahanId, TpsBasedData, KelurahanTable](
       sourceDb = sourceDb,
       targetDb = targetDb,
       client = client,
@@ -102,22 +102,20 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
-  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client)(
-      implicit
-      authClient: OAuthClient): Future[Seq[Seq[SingleTpsPhotoDao]]] = {
+  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client)(implicit
+                                                                                 authClient: OAuthClient): Future[Seq[TpsBasedData]] = {
     streamResults(kelurahan, getSingleLurah, threads, client)
   }
 
-  private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(
-      implicit
-      authClient: OAuthClient): Future[Seq[SingleTpsPhotoDao]] = {
+  private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(implicit
+                                                                                 authClient: OAuthClient): Future[TpsBasedData] = {
     logger.info(s"Get ${number.idKel}  (${number.nama}) ")
     Thread.sleep(50L)
     kawalPemiluClient
       .getKelurahan(number.idKel, authClient)
       .map {
-        case Right(kel) => Kelurahan.toPhotoTps(kel)
-        case Left(_)    => Seq.empty
+        case Right(kel) => TpsBasedData(withPhoto = Kelurahan.toPhotoTps(kel), plain = Kelurahan.toTps(kel))
+        case Left(_)    => TpsBasedData(Seq(), Seq())
       }
   }
 

@@ -156,6 +156,11 @@ package object kawalc1 extends LazyLogging {
       totalErrorTps: Int
   )
 
+  case class TpsBasedData(
+      withPhoto: Seq[SingleTpsPhotoDao],
+      plain: Seq[SingleTpsDao]
+  )
+
   case class TpsOldDto(photos: Map[String, VerificationOld])
 
   case class KelurahanOld(

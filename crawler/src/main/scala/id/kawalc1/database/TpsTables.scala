@@ -76,9 +76,9 @@ object TpsTables extends SlickValueEnumSupport {
 
   class TpsTable(tag: Tag) extends Table[SingleTpsDao](tag, "tps") {
     def kelurahanId = column[Long]("kelurahan_id")
-    def tpsId = column[Int]("tps_id", O.PrimaryKey)
+    def tpsId = column[Int]("tps_id")
     def name = column[String]("name")
-    def idLokasi = column[String]("id_lokasi")
+    def idLokasi = column[String]("id_lokasi", O.PrimaryKey)
     def uid = column[Option[String]]("uid")
     def updatedTs = column[Timestamp]("update_ts")
     def uploadedPhotoId = column[Option[String]]("uploaded_photo_id")
@@ -332,8 +332,10 @@ object TpsTables extends SlickValueEnumSupport {
 
   val tpsUnverifiedQuery = TableQuery[TpsUnverified]
 
-  def upsertTps(results: Seq[Seq[SingleTpsPhotoDao]]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.flatten.map(tpsPhotoQuery.insertOrUpdate)
+  def upsertTps(results: Seq[TpsBasedData]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
+    results.flatMap { t =>
+      t.plain.map(tpsQuery.insertOrUpdate) ++ t.withPhoto.map(tpsPhotoQuery.insertOrUpdate)
+    }
   }
 
 }
