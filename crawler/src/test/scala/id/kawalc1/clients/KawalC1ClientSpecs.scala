@@ -38,6 +38,21 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       lastTps.pendingUploads.get.head._1 shouldBe "5nCvPsP2YiQ1IqpdBnnt"
     }
 
+    "parse the `1101012002.json` response" in {
+      val response  = Source.fromURL(getClass.getResource("/hierarchy/1101012002.json")).mkString
+      val kelurahan = Serialization.read[KelurahanResponse](response)
+      val set       = kelurahan.result.aggregated
+      set.keySet.size shouldBe 2
+      set.head._1 shouldBe 1
+      val firstTps = set.head._2.head
+      firstTps.idLokasi shouldBe "11010120021"
+      firstTps.name shouldBe "1"
+
+      val lastTps: kawalc1.TpsInfo = set.last._2.head
+      lastTps.idLokasi shouldBe "11010120022"
+      lastTps.pendingUploads.get.head._1 shouldBe "OdPjJsgCNa3x2PVAMIFT"
+    }
+
     "parse the `5171021003.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/hierarchy/5171021003.json")).mkString
       val kelurahan = Serialization.read[KelurahanResponse](response)

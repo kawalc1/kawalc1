@@ -1,0 +1,57 @@
+{
+  "result": {
+    "names": [
+      "ACEH",
+      "ACEH SELATAN",
+      "BAKONGAN",
+      "UJONG MANGKI"
+    ],
+    "id": "1101012002",
+    "aggregated": {
+      "1": [
+        {
+          "pendingUploads": {
+            "QIie0zGhccAJNQpf9dqw": true,
+            "elo2SzGwRVZikuOoFO1s": true,
+            "7EmlnMbN5Q1pGf0HQqJ3": true,
+            "FA5TYojgONdUUCevppNz": true
+          },
+          "idLokasi": "11010120021",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 268,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11010120021",
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707595556433
+        }
+      ],
+      "2": [
+        {
+          "pendingUploads": {
+            "OdPjJsgCNa3x2PVAMIFT": true
+          },
+          "idLokasi": "11010120022",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 294,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11010120022",
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707365668187
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1707723917521
+  }
+}
