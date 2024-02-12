@@ -5,45 +5,21 @@ import imutils
 import numpy as np
 
 
-def group_to_number(group, thresholded_image):
-    sorted_by_y = sorted(group, key=lambda ctr: cv2.boundingRect(ctr)[1])
-    most_filled = (0, 0)
-    second_most_filled = (0, 0)
-    for idx, cont in enumerate(sorted_by_y):
-        mask = np.zeros(thresholded_image.shape, dtype="uint8")
-        cv2.drawContours(mask, [cont], -1, 255, -1)
-        mask = cv2.bitwise_and(thresholded_image, thresholded_image, mask=mask)
-        total = cv2.countNonZero(mask)
-
-        if total > most_filled[1]:
-            most_filled = (idx, total)
-        elif total > second_most_filled[1]:
-            second_most_filled = (idx, total)
-        # cv2_imshow(mask)
-        # print(f"{idx}: {total} {cv2.contourArea(cont)}")
-    ratio = most_filled[1] / second_most_filled[1]
-    if ratio > 1.2:
-        return most_filled
-    return 0
-
-
-def extract_three_numbers(cnt):
+def extract_three_numbers(cnt, height: int):
     sorted_by_x = sorted(cnt, key=lambda ctr: cv2.boundingRect(ctr)[0])
-    (previous_x, _, _, _) = cv2.boundingRect(sorted_by_x[0])
+    step = height / 10
 
-    contours = []
-    contour_group = []
-    for contour in sorted_by_x:
-        (x, y, w, h) = cv2.boundingRect(contour)
-        distance = x - previous_x
-        if distance > 20:
-            contours.append(contour_group)
-            contour_group = []
+    steps: list[float] = [index * step for index in range(0, 10)]
 
-        contour_group.append(contour)
-        previous_x = x
-    contours.append(contour_group)
-    return contours
+    digits = []
+    for bubble in sorted_by_x:
+        (x, y, w, h) = cv2.boundingRect(bubble)
+
+        differences = [abs(step - y) for step in steps]
+        digits.append(differences.index(min(differences)))
+
+    zeroes = [0 for _ in range(0, 3 - len(digits))]
+    return zeroes + digits
 
 
 def find_contours(thresholded_image):
@@ -64,13 +40,10 @@ def find_contours(thresholded_image):
 def extract_digits(path: Path):
     image = cv2.imread(str(path))
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+    kernel = np.ones((5, 5), np.uint8)
+    closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+
+    thresh = cv2.threshold(closed, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 
     contours = find_contours(thresh)
-    three = extract_three_numbers(contours)
-
-    numbers = []
-    for index in range(0,3):
-        numbers.append(group_to_number(three[index], thresh))
-    return numbers
-
+    return extract_three_numbers(contours, thresh.shape[0])
