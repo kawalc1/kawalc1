@@ -120,22 +120,23 @@ def find_number(output, name):
 def get_outcome(output, bubbleNumbers, config_file):
     if config_file == "pilpres_2024_plano_halaman2.json":
         confidence = output['probabilityMatrix'][0][0]['confidence']
-        neuralNumbers = {
+        neural_numbers = {
             'anies': find_number(output, 'anies'),
             'prabowo': find_number(output, 'prabs'),
             'ganjar': find_number(output, 'ganjar'),
             'confidence': confidence,
         }
-        if confidence < 0.6:
-            return {
-                'anies': bubbleNumbers[0],
-                'prabowo': bubbleNumbers[1],
-                'ganjar': bubbleNumbers[2],
-                'confidence': confidence,
-                'neuralNumbers': neuralNumbers
-            }
-
-        return neuralNumbers
+        bubble_numbers = {
+            'anies': bubbleNumbers[0],
+            'prabowo': bubbleNumbers[1],
+            'ganjar': bubbleNumbers[2],
+            'confidence': confidence,
+        }
+        return {
+            "neuralNumbers": neural_numbers,
+            "bubbleNumbers": bubble_numbers,
+            "confidence": confidence
+        }
     return {
         'phpJumlah': find_number(output, 'phpJumlah'),
         'confidence': output['probabilityMatrix'][1][0]['confidence']
@@ -266,7 +267,14 @@ def download(request, kelurahan, tps, filename):
         output = {**a, **b}
 
         outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else { 'confidence': 0}
-        output['outcome'] = outcome
+        neural_numbers = {}
+        confidence = outcome["confidence"]
+        neural_numbers = outcome["neuralNumbers"]
+        bubble_numbers = outcome["bubbleNumbers"]
+
+        output['neuralNumbers'] = neural_numbers
+        output['bubbleNumbers'] = bubble_numbers
+        output['outcome'] = neural_numbers if confidence > 0.6 else bubble_numbers
 
         output['success'] = bool(outcome['confidence'] > 0.8)
 
@@ -278,7 +286,6 @@ def download(request, kelurahan, tps, filename):
         del output["transformedUri"]
         del output["probabilityMatrix"]
         del output["duration"]
-        del output["bubbleNumbers"]
         if "party" in output:
             del output["party"]
         del output["success"]
