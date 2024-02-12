@@ -300,7 +300,14 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   }
 
   def processAndMapSingleDetection(tps: SingleTpsPhotoDao, client: KawalC1Client): Future[DetectionResult] = {
-    processSingleDetection(tps, client).map(toDetectionResult)
+    processSingleDetection(tps, client).map(toDetectionResult).map { x =>
+      logger.info(s"${x.kelurahan}, ${x.confidence
+        .map(a => s"conf: $a,")
+        .getOrElse("")} ${x.similarity.map(a => s"similarity: $a, ").getOrElse("")}${x.pas1.map(p => s"pas1: $p, ").getOrElse("")}${x.pas2
+        .map(p => s"pas2: $p, ")
+        .getOrElse("")}${x.pas3.map(p => s"pas3: $p, ").getOrElse("")}")
+      x
+    }
   }
 
   def processSingleRoi(tps: SingleOldTps, client: KawalC1Client): Future[CombiResult] = {
