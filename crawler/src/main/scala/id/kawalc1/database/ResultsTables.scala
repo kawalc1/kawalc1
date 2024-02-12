@@ -250,12 +250,12 @@ object ResultsTables extends SlickValueEnumSupport {
   val presidentialResultsQuery = TableQuery[PresidentialResults]
 
   def singleTpsQuery(url: String) = {
-    TpsTables.tpsQuery.filter(_.uploadedPhotoUrl === url)
+    TpsTables.tpsPhotoQuery.filter(_.uploadedPhotoUrl === url)
   }
 
   def alignErrorQuery = {
     val joined = for {
-      (a, b) <- TpsTables.tpsQuery join alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a, b) <- TpsTables.tpsPhotoQuery join alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined.filter(_._2.responseCode === 500).map(_._1)
     //    joined.filter { case (a, b: AlignResults) => b.responseCode === 200 }.map(_._1).filter(_.formType === FormType.PPWP.value)
@@ -272,7 +272,7 @@ object ResultsTables extends SlickValueEnumSupport {
 
   def tpsToAlignQuery(plano: Plano, halaman: String = "2") = {
     val joined = for {
-      (a: TpsTables.TpsTable, b: Rep[Option[AlignResults]]) <- TpsTables.tpsQuery joinLeft alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a: TpsTables.TpsPhotoTable, b: Rep[Option[AlignResults]]) <- TpsTables.tpsPhotoQuery joinLeft alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .filter { case (a, b) => b.isEmpty }
@@ -298,9 +298,9 @@ object ResultsTables extends SlickValueEnumSupport {
       .map(_._1)
   }
 
-  def tpsToDetectQuery(plano: Plano): Query[TpsTables.TpsTable, kawalc1.SingleTpsDao, Seq] = {
+  def tpsToDetectQuery(plano: Plano): Query[TpsTables.TpsPhotoTable, kawalc1.SingleTpsPhotoDao, Seq] = {
     val joined = for {
-      (a: TpsTables.TpsTable, b: Rep[Option[DetectionResults]]) <- TpsTables.tpsQuery joinLeft detectionsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a: TpsTables.TpsPhotoTable, b: Rep[Option[DetectionResults]]) <- TpsTables.tpsPhotoQuery joinLeft detectionsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .filter { case (a, b) => b.isEmpty }
@@ -310,7 +310,7 @@ object ResultsTables extends SlickValueEnumSupport {
 
   def tpsToRoiQuery = {
     val joined = for {
-      (a, b) <- TpsTables.tpsQuery join detectionsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a, b) <- TpsTables.tpsPhotoQuery join detectionsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .map(_._1)

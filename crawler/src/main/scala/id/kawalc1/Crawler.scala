@@ -203,7 +203,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "detect" =>
           createDb(ResultsTables.detectionsQuery.schema, resultsDatabase, drop)
         case "fetch" =>
-          createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
+          createDb(TpsTables.tpsPhotoQuery.schema, resultsDatabase, drop)
         case "align" =>
           createDb(ResultsTables.alignResultsQuery.schema, resultsDatabase, drop)
         case "extract" =>

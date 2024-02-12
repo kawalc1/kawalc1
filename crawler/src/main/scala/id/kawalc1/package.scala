@@ -113,7 +113,7 @@ package object kawalc1 extends LazyLogging {
       verification: VerificationOld
   )
 
-  case class SingleTpsDao(
+  case class SingleTpsPhotoDao(
       kelurahanId: Long,
       tpsId: Int,
       name: String,
@@ -195,13 +195,13 @@ package object kawalc1 extends LazyLogging {
 
     }
 
-    def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
+    def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
       for {
         tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
         t: TpsInfo                <- explodeForPhotos(tps._2)
         if t.uploadedPhoto.isDefined
       } yield {
-        SingleTpsDao(
+        SingleTpsPhotoDao(
           kelurahanId = kelurahan.result.id.toLong,
           tpsId = t.name.toInt,
           name = kelurahan.result.names.mkString(", "),
