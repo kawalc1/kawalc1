@@ -133,7 +133,8 @@ package object kawalc1 extends LazyLogging {
       totalErrorTps: Int,
       formType: Option[Short],
       plano: Option[Short],
-      halaman: Option[String]
+      halaman: Option[String],
+      lastUpdated: Timestamp = Timestamp.from(Instant.now())
   )
 
   case class SingleTpsDao(
@@ -153,7 +154,8 @@ package object kawalc1 extends LazyLogging {
       totalTps: Int,
       totalPendingTps: Int,
       totalCompletedTps: Int,
-      totalErrorTps: Int
+      totalErrorTps: Int,
+      lastUpdated: Timestamp = Timestamp.from(Instant.now())
   )
 
   case class TpsBasedData(
