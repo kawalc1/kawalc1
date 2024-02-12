@@ -2,21 +2,21 @@ package id.kawalc1.clients
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.client.RequestBuilding._
-import akka.http.scaladsl.model.headers.{Authorization, OAuth2BearerToken}
+import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.stream.Materializer
 import id.kawalc1._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 case class SubmitResponse(ok: Boolean)
 case class TpsId(id: String)
 case class GetResultPostBody(data: TpsId)
 class KawalPemiluClient(baseUrl: String)(implicit
-                                         val system: ActorSystem,
-                                         val mat: Materializer,
-                                         val ec: ExecutionContext)
-    extends HttpClientSupport
-    with JsonSupport {
+  val system: ActorSystem,
+  val mat: Materializer,
+  val ec: ExecutionContext)
+  extends HttpClientSupport
+  with JsonSupport {
 
   def getKelurahanOld(number: Long): Future[Either[Response, KelurahanOld]] = {
     implicit val authorization = None
@@ -30,7 +30,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
         .map(token => Authorization(OAuth2BearerToken(token.getOrElse(throw new IllegalStateException("no token")).response.access_token)))
       resp <- getData(number, auth)
       finalResp <- resp match {
-        case Left(value)                            => Future.successful(Left(value))
+        case Left(value) => Future.successful(Left(value))
         case Right(value) if value.result.isDefined => Future.successful(Right(KelurahanResponse(value.result.get)))
         case Right(_) =>
           for {
@@ -41,7 +41,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
             data <- getData(number, auth)
           } yield {
             data match {
-              case Left(value)  => Left(value)
+              case Left(value) => Left(value)
               case Right(value) => Right(KelurahanResponse(value.result.get))
             }
           }
@@ -53,8 +53,8 @@ class KawalPemiluClient(baseUrl: String)(implicit
     implicit val authorization: Option[Authorization] = Some(auth)
     execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
       case Left(value) if value.code == 404 => Right(MaybeKelurahanResponse(None))
-      case Left(value)                      => Left(value)
-      case Right(value)                     => Right(value)
+      case Left(value) => Left(value)
+      case Right(value) => Right(value)
     }
   }
 

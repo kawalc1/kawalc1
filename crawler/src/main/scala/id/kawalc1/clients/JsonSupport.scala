@@ -21,39 +21,39 @@ trait JsonSupport extends Json4sSupport with LazyLogging {
         val map = summary.extract[Map[String, Int]].head
         Some(Dpr(map._1, map._2))
       case None => Some(summary.extract[Pending])
-      case _    => None
+      case _ => None
     }
   }
 
   case object SummarySerialize
-      extends CustomSerializer[VerificationOld](format =>
-        ({
-          case x: JObject =>
-            val tss       = (x \ "ts").extract[Long]
-            val maybeC1   = (x \ "c1").extract[Option[C1]]
-            val sum       = (x \ "sum").extract[JObject]
-            val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss))
+    extends CustomSerializer[VerificationOld](format =>
+      ({
+        case x: JObject =>
+          val tss = (x \ "ts").extract[Long]
+          val maybeC1 = (x \ "c1").extract[Option[C1]]
+          val sum = (x \ "sum").extract[JObject]
+          val timeStamp = Timestamp.from(Instant.ofEpochMilli(tss))
 
-            val jum  = (sum \ "jum").extract[Option[Int]]
-            val pJum = (sum \ "pJum").extract[Option[Int]]
+          val jum = (sum \ "jum").extract[Option[Int]]
+          val pJum = (sum \ "pJum").extract[Option[Int]]
 
-            val cakupan = (sum \ "cakupan").extract[Option[Int]]
-            val pending = (sum \ "pending").extract[Option[Int]]
-            val error   = (sum \ "error").extract[Option[Int]]
-            val janggal = (sum \ "janggal").extract[Option[Int]]
+          val cakupan = (sum \ "cakupan").extract[Option[Int]]
+          val pending = (sum \ "pending").extract[Option[Int]]
+          val error = (sum \ "error").extract[Option[Int]]
+          val janggal = (sum \ "janggal").extract[Option[Int]]
 
-            val common = Common(cakupan, pending, error, janggal)
+          val common = Common(cakupan, pending, error, janggal)
 
-            val summary = (jum, pJum) match {
-              case (Some(num), None) => Some(SingleSum(num))
-              case (None, Some(num)) => Some(LegislativeSum(num))
-              case _                 => parseSummary(maybeC1, sum)
-            }
+          val summary = (jum, pJum) match {
+            case (Some(num), None) => Some(SingleSum(num))
+            case (None, Some(num)) => Some(LegislativeSum(num))
+            case _ => parseSummary(maybeC1, sum)
+          }
 
-            VerificationOld(timeStamp, maybeC1, summary, common)
-        }, {
-          case _: VerificationOld => throw new Exception("cannot serialize")
-        }))
+          VerificationOld(timeStamp, maybeC1, summary, common)
+      }, {
+        case _: VerificationOld => throw new Exception("cannot serialize")
+      }))
 
   import org.json4s.DefaultFormats
 

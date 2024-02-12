@@ -136,6 +136,26 @@ package object kawalc1 extends LazyLogging {
       halaman: Option[String]
   )
 
+  case class SingleTpsDao(
+      kelurahanId: Long,
+      tpsId: Int,
+      name: String,
+      idLokasi: String,
+      uid: Option[String],
+      updatedTs: Timestamp,
+      uploadedPhotoId: Option[String],
+      uploadedPhotoUrl: Option[String],
+      dpt: Int,
+      pas1: Option[Int],
+      pas2: Option[Int],
+      pas3: Option[Int],
+      anyPendingTps: Option[String],
+      totalTps: Int,
+      totalPendingTps: Int,
+      totalCompletedTps: Int,
+      totalErrorTps: Int
+  )
+
   case class TpsOldDto(photos: Map[String, VerificationOld])
 
   case class KelurahanOld(
@@ -151,7 +171,7 @@ package object kawalc1 extends LazyLogging {
   )
 
   case class TpsInfo(
-      pendingUploads: Option[Map[String, String]],
+      pendingUploads: Option[Map[String, Object]],
       idLokasi: String,
       pas2: Int,
       totalTps: Int,
@@ -186,8 +206,9 @@ package object kawalc1 extends LazyLogging {
 
     private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
       infos.flatMap { t =>
-        val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.map {
-          case (key, value) => UploadedPhoto(value, key)
+        val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.flatMap {
+          case (key, value) if value.toString != "true" => Some(UploadedPhoto(value.toString, key))
+          case _                                        => None
         })
         val photos = pendingPhotos ++ t.uploadedPhoto
         photos.map(p => t.copy(uploadedPhoto = Some(p)))

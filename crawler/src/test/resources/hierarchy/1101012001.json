@@ -1,0 +1,110 @@
+{
+  "result": {
+    "names": [
+      "ACEH",
+      "ACEH SELATAN",
+      "BAKONGAN",
+      "KEUDE BAKONGAN"
+    ],
+    "id": "1101012001",
+    "aggregated": {
+      "1": [
+        {
+          "pendingUploads": {},
+          "idLokasi": "11010120011",
+          "pas2": 90,
+          "totalTps": 1,
+          "pas3": 90,
+          "totalCompletedTps": 1,
+          "dpt": 284,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "uid": "nZVi21ToYFTqvssbYzYoxnV4Htz2",
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 90,
+          "updateTs": 1707629577536
+        },
+        {
+          "pendingUploads": {
+            "QOohUdllj2PPn57Xe2km": true,
+            "qCTo61rmwxl9P08dNeU1": true,
+            "RbPsE7KDyUfKrb7YTyb0": true
+          },
+          "idLokasi": "11010120011",
+          "pas2": 90,
+          "totalTps": 1,
+          "pas3": 90,
+          "totalCompletedTps": 1,
+          "dpt": 284,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11010120011",
+          "uid": "nZVi21ToYFTqvssbYzYoxnV4Htz2",
+          "uploadedPhoto": {
+            "photoUrl": "http://lh3.googleusercontent.com/bRsrOUw3izs8x_nMQ5zaGx02lWPY0qum68Z9ZOxoncuSdKRJi-1JM3nCBpNuSXeFonokUnYQoqloeq0xXg-QppHXWrjDZD51tBqtrQ",
+            "imageId": "EMkF6a70wsyInKeuDEyd"
+          },
+          "name": "1",
+          "totalErrorTps": 1,
+          "pas1": 90,
+          "anyErrorTps": "11010120011",
+          "updateTs": 1707212043007
+        }
+      ],
+      "2": [
+        {
+          "pendingUploads": {
+            "F33Djy8dlGTZvFptVyVd": "http://lh3.googleusercontent.com/0rJv55OO4pvAqPxjQveJlf814e-8xwmZ06wGMH8bfu6WTzzhSJN3yLULVV8HabrPiI44RsON4a50Cuff0Gks2hGNGFpc_QSj2MHc",
+            "LcI7l7YbnIUuzXQvnrSu": true,
+            "L7yacXZ3YrMgfAdf7qRh": true,
+            "9SCjhbVvyTWvKc3Z4IBe": "http://lh3.googleusercontent.com/3rqrTPXdjSx2dNKRFCrbdnP2jwm5tYbqZJtNHvj9OyQMlbwzC4LPQYsue0UoAevrm_7jzlR5CsR3suuhrGYdoxLpTGegJ7xZIUW3iw",
+            "agTZrNOfEehx33uaFnGe": true,
+            "r4gPUFCMsmzoLsVtVJtP": true,
+            "4l6sysYUEOoJ8SnC73Rl": "http://lh3.googleusercontent.com/Q0N42bZMzNE4ioIvAiMdVZN5jFnOhQFgNjMCSRjHU1V4g61tx1xIiA-pDq9vSMSZ3kEFWGmfAY1mhy5qVNp3Ky0jZGxx8rqEa0fUhg",
+            "cqDLqB96f6xGPIrF9NZ3": true,
+            "OPs9cn8GJI4LMD9rMGco": "http://lh3.googleusercontent.com/gfewySyi657EC2KI-Hp2AVvDU_HV7WEvH71KCWbXz_D09gG6dMFmA2vlKunOwU_onDuu1m6Q1IhZjUh4onPFN9_RBMbHFypylrhBnw",
+            "9JEtlQ7v1YmeknZszFVQ": true,
+            "ccD5fCoiMy62AovMT6D1": true,
+            "xQAjpYQ0Srxmc9n4xcJv": "http://lh3.googleusercontent.com/Km3cPFOHl1JOh_3ofkt_Tw1osctpgB4CcLlIB9_3MiAmYauQ-LqaOTb7eHDUSIDlpdM4Mbb8KShdQSqsQ2tCalLwUNFcpKApa6caaA"
+          },
+          "idLokasi": "11010120012",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 296,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11010120012",
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707661356365
+        }
+      ],
+      "3": [
+        {
+          "pendingUploads": {
+            "5nCvPsP2YiQ1IqpdBnnt": true,
+            "thewM6ZMkehr93V8mvpE": "http://lh3.googleusercontent.com/h_E2rVtRZ2HbMkRBov7YzV7_gMOp4DFFbfw0ATZReiMH9CEjBqb014LH3UlZQun3hMaYG5HfVf-PZurKXar1ncKKH-wHBPL_TYOK"
+          },
+          "idLokasi": "11010120013",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 293,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "11010120013",
+          "name": "3",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707661321892
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1707710659322
+  }
+}
