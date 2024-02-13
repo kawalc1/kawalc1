@@ -47,3 +47,7 @@ app_prod.yaml
 output/
 .DS_Store
 crawler/.envrc
+response/
+target/
+*.log
+tps-test.db

@@ -1,11 +1,14 @@
 version: "3"
 services:
   service-1:
+    restart: always
     build: .
   service-2:
+    restart: always
     build: .
   load-balancer:
     image: nginx:1.23-alpine
+    restart: always
     depends_on:
       - service-1
       - service-2
