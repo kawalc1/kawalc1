@@ -9,6 +9,9 @@ services:
   service-3:
     restart: always
     build: .
+  service-4:
+    restart: always
+    build: .
   service-5:
     restart: always
     build: .
