@@ -266,8 +266,7 @@ def download(request, kelurahan, tps, filename):
 
         output = {**a, **b}
 
-        outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else { 'confidence': 0}
-        neural_numbers = {}
+        outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else {'confidence': 0}
         confidence = outcome["confidence"]
         neural_numbers = outcome["neuralNumbers"]
         bubble_numbers = outcome["bubbleNumbers"]

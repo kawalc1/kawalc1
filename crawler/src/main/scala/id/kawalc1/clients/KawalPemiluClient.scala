@@ -74,10 +74,10 @@ class KawalPemiluClient(baseUrl: String)(implicit
   private def getData(number: Long, auth: Authorization): Future[Either[Response, MaybeKelurahanResponse]] = {
     implicit val authorization: Option[Authorization] = Some(auth)
     execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
-      case Left(value) if Seq(404, 500, 503).contains(value.code) => {
-        logger.info(s"Got ${value.code} ${value.response}")
+      case Left(value) if Seq(404, 500, 503).contains(value.code) =>
+        logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
+        Thread.sleep(10 * 1000L)
         Right(MaybeKelurahanResponse(None))
-      }
       case Left(value)  => Left(value)
       case Right(value) => Right(value)
     }
