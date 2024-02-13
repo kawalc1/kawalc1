@@ -6,12 +6,49 @@ services:
   service-2:
     restart: always
     build: .
+  service-3:
+    restart: always
+    build: .
+  service-5:
+    restart: always
+    build: .
+  service-6:
+    restart: always
+    build: .
+  service-7:
+    restart: always
+    build: .
+  service-8:
+    restart: always
+    build: .
+  service-9:
+    restart: always
+    build: .
+  service-10:
+    restart: always
+    build: .
+  service-11:
+    restart: always
+    build: .
+  service-12:
+    restart: always
+    build: .
   load-balancer:
     image: nginx:1.23-alpine
     restart: always
     depends_on:
       - service-1
       - service-2
+      - service-3
+      - service-4
+      - service-5
+      - service-6
+      - service-7
+      - service-8
+      - service-9
+      - service-10
+      - service-11
+      - service-12
     ports:
       - 8080:8080
     volumes:
