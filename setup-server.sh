@@ -38,7 +38,7 @@ server {
     server_name ${IP_ADDRESS};
 
     location / {
-        return 301 https://\$host\$request_uri;
+        return 301 https://$host$request_uri;
     }
 }
 
@@ -50,12 +50,12 @@ server {
     ssl_certificate_key /etc/nginx/conf.d/selfsigned.key;
 
     location / {
-        root ${DOCUMENT_ROOT};
-        index index.html;
-        try_files \$uri \$uri/ =404;
+	     proxy_pass  http://127.0.0.1:8080/;
     }
 }
 EOL
+
+git clone https://github.com/kawalc1/kawalc1.git
 
 # Run Nginx container with restart policy
 docker run -d --name nginx-container \
