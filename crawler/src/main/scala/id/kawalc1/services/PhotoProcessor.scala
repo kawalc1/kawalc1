@@ -5,13 +5,12 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.{Source => StreamSource}
 import id.kawalc1._
 import id.kawalc1.clients._
+import id.kawalc1.database.CustomPostgresProfile.api._
 import id.kawalc1.database.ResultsTables.{AlignResults, ExtractResults}
-import id.kawalc1.database.TpsTables.{TpsTable, Kelurahan => KelurahanTable}
+import id.kawalc1.database.TpsTables.{TpsPhotoTable, Kelurahan => KelurahanTable}
 import id.kawalc1.database._
 import org.json4s.native.Serialization
-import slick.dbio.Effect
-import slick.jdbc.PostgresProfile
-import slick.jdbc.PostgresProfile.api._
+import slick.dbio.{DBIO, Effect, NoStream}
 import slick.sql.FixedSqlAction
 
 import java.io.PrintWriter
@@ -33,11 +32,11 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
   val FeatureAlgorithm = "akaze"
   val url              = "http://lh3.googleusercontent.com/HZ6AJF6YYqA2M5MXxH99XedoaE1Rk3-IelJEsnosBVPLdMb73X0w7T5_mWvExCsIZlI-cud3kSU9Lk7c700"
 
-  private def transform[A, B](sourceDb: PostgresProfile.backend.Database,
-                              targetDb: PostgresProfile.backend.Database,
+  private def transform[A, B](sourceDb: CustomPostgresProfile.backend.Database,
+                              targetDb: CustomPostgresProfile.backend.Database,
                               query: Seq[A],
                               process: (Seq[A], Int, KawalC1Client) => Future[Seq[B]],
-                              insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]],
+                              insert: Seq[B] => Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]],
                               threads: Int,
                               kawalC1Client: KawalC1Client) = {
     for {
@@ -47,12 +46,12 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
 
   }
 
-  private def batchTransform[A, B, C <: Table[A]](sourceDb: PostgresProfile.backend.Database,
-                                                  targetDb: PostgresProfile.backend.Database,
+  private def batchTransform[A, B, C <: Table[A]](sourceDb: CustomPostgresProfile.backend.Database,
+                                                  targetDb: CustomPostgresProfile.backend.Database,
                                                   client: KawalC1Client,
                                                   query: Query[C, C#TableElementType, Seq],
                                                   process: (Seq[A], Int, KawalC1Client) => Future[Seq[B]],
-                                                  insert: Seq[B] => Seq[FixedSqlAction[Int, NoStream, Effect.Write]],
+                                                  insert: Seq[B] => Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]],
                                                   params: BatchParams) = {
     var numberOfItems = 0
     var start: Long   = params.start
@@ -61,18 +60,18 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       val items     = sourceDb.run(nextBatch.result).futureValue
       numberOfItems = items.length
       val inserted = transform(sourceDb, targetDb, items, process, insert, params.threads, client).futureValue
-      logger.info(s"Inserted batch $start - ${start + params.batchSize}. # of items: ${inserted.length}")
+      logger.info(s"Inserted batch $start - ${start + params.batchSize}. # of items: ${inserted.map(_.getOrElse(0)).sum}")
       start += params.batchSize
     } while (numberOfItems > 0)
     start + numberOfItems
   }
 
-  def align(sourceDb: PostgresProfile.backend.Database,
-            targetDb: PostgresProfile.backend.Database,
+  def align(sourceDb: CustomPostgresProfile.backend.Database,
+            targetDb: CustomPostgresProfile.backend.Database,
             client: KawalC1Client,
             params: BatchParams): Long = {
 
-    batchTransform[SingleTpsDao, AlignResult, TpsTable](
+    batchTransform[SingleTpsPhotoDao, AlignResult, TpsPhotoTable](
       sourceDb,
       targetDb,
       client,
@@ -86,38 +85,40 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
-  def fetch(sourceDb: PostgresProfile.backend.Database,
-            targetDb: PostgresProfile.backend.Database,
+  def fetch(sourceDb: CustomPostgresProfile.backend.Database,
+            targetDb: CustomPostgresProfile.backend.Database,
             client: KawalC1Client,
-            params: BatchParams): Long = {
+            params: BatchParams)(implicit authClient: OAuthClient): Long = {
 
-    batchTransform[KelurahanId, Seq[SingleTpsDao], KelurahanTable](
+    batchTransform[KelurahanId, TpsBasedData, KelurahanTable](
       sourceDb = sourceDb,
       targetDb = targetDb,
       client = client,
-      query = TpsTables.kelurahanQuery.sortBy(_.idKel), //.filter(_.idKel === 1101052003),
+      query = TpsTables.kelurahanQuery.sortBy(_.idKel), //.filter(x => x.idKel === 1101012001L || x.idKel === 1101012002L),
       process = fetchTps,
       insert = TpsTables.upsertTps,
       params = params
     )
   }
 
-  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client) = {
+  def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client)(implicit
+                                                                                 authClient: OAuthClient): Future[Seq[TpsBasedData]] = {
     streamResults(kelurahan, getSingleLurah, threads, client)
   }
 
-  def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client): Future[Seq[SingleTpsDao]] = {
+  private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(implicit
+                                                                                 authClient: OAuthClient): Future[TpsBasedData] = {
     logger.info(s"Get ${number.idKel}  (${number.nama}) ")
     kawalPemiluClient
-      .getKelurahan(number.idKel)
+      .getKelurahan(number.idKel, authClient)
       .map {
-        case Right(kel) => Kelurahan.toTps(kel)
-        case Left(_)    => Seq.empty
+        case Right(kel) => TpsBasedData(withPhoto = Kelurahan.toPhotoTps(kel), plain = Kelurahan.toTps(kel))
+        case Left(_)    => TpsBasedData(Seq(), Seq())
       }
   }
 
-  def extract(sourceDb: PostgresProfile.backend.Database,
-              targetDb: PostgresProfile.backend.Database,
+  def extract(sourceDb: CustomPostgresProfile.backend.Database,
+              targetDb: CustomPostgresProfile.backend.Database,
               client: KawalC1Client,
               params: BatchParams): Long =
     batchTransform[AlignResult, ExtractResult, AlignResults](sourceDb,
@@ -128,8 +129,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                                                              ResultsTables.upsertExtract,
                                                              params)
 
-  def processProbabilities(sourceDb: PostgresProfile.backend.Database,
-                           targetDb: PostgresProfile.backend.Database,
+  def processProbabilities(sourceDb: CustomPostgresProfile.backend.Database,
+                           targetDb: CustomPostgresProfile.backend.Database,
                            client: KawalC1Client,
                            params: BatchParams): Long =
     batchTransform[ExtractResult, PresidentialResult, ExtractResults](sourceDb,
@@ -140,23 +141,23 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                                                                       ResultsTables.upsertPresidential,
                                                                       params)
 
-  def processDetections(sourceDb: PostgresProfile.backend.Database,
-                        targetDb: PostgresProfile.backend.Database,
+  def processDetections(sourceDb: CustomPostgresProfile.backend.Database,
+                        targetDb: CustomPostgresProfile.backend.Database,
                         client: KawalC1Client,
-                        params: BatchParams)(implicit pw: PrintWriter): Long = {
-    pw.println(
-      "kelurahan,tps,photo,response_code,config,pas1,pas2,pas3,jumlah,tidak_sah,confidence,confidence_tidak_sah,hash,similarity,aligned,roi")
-    batchTransform[SingleTpsDao, DetectionResult, TpsTable](sourceDb,
-                                                            targetDb,
-                                                            client,
-                                                            ResultsTables.tpsToDetectQuery(Plano.NO),
-                                                            streamDetections,
-                                                            ResultsTables.upsertDetections,
-                                                            params)
+                        params: BatchParams): Long = {
+    //    pw.println(
+    //      "kelurahan,tps,photo,response_code,config,pas1,pas2,pas3,jumlah,tidak_sah,confidence,confidence_tidak_sah,hash,similarity,aligned,roi")
+    batchTransform[SingleTpsPhotoDao, DetectionResult, TpsPhotoTable](sourceDb,
+                                                                      targetDb,
+                                                                      client,
+                                                                      ResultsTables.tpsToDetectQuery(Plano.NO),
+                                                                      streamDetections,
+                                                                      ResultsTables.upsertDetections,
+                                                                      params)
   }
 
-  //  def processUnverifiedDetections(sourceDb: PostgresProfile.backend.Database,
-  //                                  targetDb: PostgresProfile.backend.Database,
+  //  def processUnverifiedDetections(sourceDb: CustomPostgresProfile.backend.Database,
+  //                                  targetDb: CustomPostgresProfile.backend.Database,
   //                                  client: KawalC1Client,
   //                                  params: BatchParams)(implicit pw: PrintWriter): Long = {
   //    pw.println(
@@ -217,7 +218,8 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       hash = resp.hash,
       similarity = resp.similarity,
       aligned = resp.transformedUrl,
-      roi = resp.digitArea
+      roi = resp.digitArea,
+      response = r.responseBody,
     )
   }
 
@@ -267,7 +269,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     Seq.empty[FixedSqlAction[Int, NoStream, Effect.Write]]
   }
 
-  def streamDetections(tps: Seq[SingleTpsDao], threads: Int, client: KawalC1Client): Future[Seq[DetectionResult]] = {
+  def streamDetections(tps: Seq[SingleTpsPhotoDao], threads: Int, client: KawalC1Client): Future[Seq[DetectionResult]] = {
     streamResults(tps, processAndMapSingleDetection, threads, client)
   }
 
@@ -277,26 +279,35 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
 
   val rand = new scala.util.Random
 
-  def processSingleDetection(tps: SingleTpsDao, client: KawalC1Client): Future[CombiResult] = {
+  def processSingleDetection(tps: SingleTpsPhotoDao, client: KawalC1Client): Future[CombiResult] = {
     //    val plano: Option[Plano] = tps.verification.c1.flatMap(_.plano)
     client
-      .detectNumbers(kelurahan = tps.kelurahanId,
-                     tps = tps.tpsId,
-                     photoName = tps.uploadedPhotoUrl.replace("http://lh3.googleusercontent.com/", "") + "=s1280",
-                     None,
-                     None)
+      .detectNumbers(
+        kelurahan = tps.kelurahanId,
+        tps = tps.tpsId,
+        photoName = tps.uploadedPhotoUrl.replace("http://lh3.googleusercontent.com/", "") + "=s1280",
+        halaman = None,
+        plano = None
+      )
       .map {
-        case Right(e) =>
-          CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoId, 200, Serialization.write(e), e)
-        case Left(error) =>
+        case Right(response: CombiResponse) =>
+          CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoId, 200, Serialization.write(response), response)
+        case Left(error: Response) =>
           logger.warn(s"Error digitizing: $error")
-          val emptyResponse = CombiResponse(Some("error"), Some(0.0), Some("hash"), Some("digit"), None, Some(""))
+          val emptyResponse = CombiResponse(Some("error"), Some(0.0), Some("hash"), Some("digit"), None, Some(""), None)
           CombiResult(tps.kelurahanId, tps.tpsId, tps.uploadedPhotoUrl, error.code, error.response, emptyResponse)
       }
   }
 
-  def processAndMapSingleDetection(tps: SingleTpsDao, client: KawalC1Client): Future[DetectionResult] = {
-    processSingleDetection(tps, client).map(toDetectionResult)
+  def processAndMapSingleDetection(tps: SingleTpsPhotoDao, client: KawalC1Client): Future[DetectionResult] = {
+    processSingleDetection(tps, client).map(toDetectionResult).map { x =>
+      logger.info(s"${x.kelurahan}, ${x.confidence
+        .map(a => s"conf: $a,")
+        .getOrElse("")} ${x.similarity.map(a => s"similarity: $a, ").getOrElse("")}${x.pas1.map(p => s"pas1: $p, ").getOrElse("")}${x.pas2
+        .map(p => s"pas2: $p, ")
+        .getOrElse("")}${x.pas3.map(p => s"pas3: $p, ").getOrElse("")}")
+      x
+    }
   }
 
   def processSingleRoi(tps: SingleOldTps, client: KawalC1Client): Future[CombiResult] = {
@@ -305,15 +316,15 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
                   tps = tps.tpsId,
                   photoName = tps.photo.replace("http://lh3.googleusercontent.com/", "") + "=s1280")
       .map { _ =>
-        CombiResult(tps.kelurahanId, tps.tpsId, tps.photo, 200, "body", CombiResponse(None, None, None, None, None, None))
+        CombiResult(tps.kelurahanId, tps.tpsId, tps.photo, 200, "body", CombiResponse(None, None, None, None, None, None, None))
       }
   }
   //
-  def alignPhoto(tps: Seq[SingleTpsDao], threads: Int, client: KawalC1Client): Future[Seq[AlignResult]] = {
+  def alignPhoto(tps: Seq[SingleTpsPhotoDao], threads: Int, client: KawalC1Client): Future[Seq[AlignResult]] = {
     streamResults(tps, alignSinglePhoto, threads, client)
   }
 
-  private def alignSinglePhoto(tps: SingleTpsDao, client: KawalC1Client): Future[AlignResult] = {
+  private def alignSinglePhoto(tps: SingleTpsPhotoDao, client: KawalC1Client): Future[AlignResult] = {
     val photo: Array[String] = tps.uploadedPhotoUrl.split("/")
     val photoUrl             = photo(photo.length - 1)
     //    val c1 = tps.verification.c1.get

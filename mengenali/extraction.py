@@ -16,6 +16,7 @@ import sys
 import logging
 import matplotlib.pyplot as plt
 
+from mengenali.bubble_sheet_reader import extract_digits
 from mengenali.io import read_image, write_image, image_url
 from mengenali.image_classifier import detect_most_similar
 
@@ -325,7 +326,8 @@ def extract_deprecated(file_name, source_path, target_path, dataset_path, config
                 if store_files:
                     write_image(extracted, digit)
 
-                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
+                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255,
+                                                     type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
                 if store_files:
@@ -340,7 +342,8 @@ def extract_deprecated(file_name, source_path, target_path, dataset_path, config
                 empty_struct = {"probabilities": [], "filename": 'img/empty.png'}
                 numbers[number_id]["extracted"].append(empty_struct)
 
-    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "signatures": signature_result}
+    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)),
+              "signatures": signature_result}
     logging.info(result)
 
     return result
@@ -422,13 +425,15 @@ def pickle_roi_features(img, image_name, ref_kp, ref_descriptors):
     h, w = img.shape
     pickle.dump({'keypoints': keypoint_array, 'h': h, 'w': w}, io.open_file(image_name + '.akaze.p', "wb"))
 
+
 def extract_rois(file_name, source_path, target_path, dataset_path, config, store_files=True):
-
     original_image = read_image(file_name)
-    return extract_rois_in_memory(file_name, target_path, dataset_path, config, original_image, store_files, store_files)
+    return extract_rois_in_memory(file_name, target_path, dataset_path, config, original_image, store_files,
+                                  store_files)
 
 
-def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned_image, store_digits=True, store_rois=True):
+def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned_image, store_digits=True,
+                           store_rois=True):
     head, tail = os.path.split(file_name)
     full_file_name, ext = os.path.splitext(tail)
     base_file_name = full_file_name.split('~')[-1]
@@ -438,6 +443,7 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
 
     roi = config["roi"]
     party_name = {}
+    bubble_candidates = [-1] * 3
     for region in roi:
         name = region["name"]
         digit = region["coordinates"]
@@ -446,13 +452,16 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
         if store_rois:
             write_image(roi_file, roi_image)
 
+        if "bubble" in name:
+            digit = extract_digits(roi_image)
+            bubble_candidates[int(name[-1]) - 1] = digit
+
         # akaze = cv2.AKAZE_create()
         # ref_kp, ref_descriptors = akaze.detectAndCompute(roi_image, None)
         # pickle_roi_features(roi_image, roi_file, ref_kp, ref_descriptors)
         # if name == "namaPartai":
         #     most_similar_form, most_similar = detect_most_similar(roi_image, 'datasets/party_features')
         #     party_name = {"party": most_similar_form, "confidence": most_similar}
-
 
     # create structuring element for the connected component analysis
     structuring_element = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
@@ -477,7 +486,8 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
                 if store_digits:
                     write_image(extracted, digit)
 
-                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255, type=cv2.THRESH_BINARY)
+                ret, thresholded_tif = cv2.threshold(digit.astype(np.uint8), image_threshold, 255,
+                                                     type=cv2.THRESH_BINARY)
                 digit_tif = extracted_file_name + ".tif"
                 extracted_tif = join(target_path, digit_tif)
                 if store_digits:
@@ -493,7 +503,8 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
                 numbers[number_id]["extracted"].append(empty_struct)
 
     digit_path = head.replace("output/", "")
-    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name }
+    result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name,
+              "bubbleNumbers": bubble_candidates}
     logging.info(result)
 
     return result

@@ -12,5 +12,7 @@ object Config {
     //    val kawalC1Url: String = "http://localhost:8000"
     val kawalC1UrlLocal: String            = "http://localhost:9000"
     val kawalC1AlternativeUrlLocal: String = "http://localhost:8010"
+    val kpApiKey                           = config.getString("app.kpApiKey")
+    val userUid                            = config.getString("app.userId")
   }
 }

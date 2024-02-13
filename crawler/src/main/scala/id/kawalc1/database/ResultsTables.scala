@@ -3,8 +3,8 @@ package id.kawalc1.database
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
 import id.kawalc1._
+import id.kawalc1.database.CustomPostgresProfile.api._
 import slick.dbio.Effect
-import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
@@ -69,10 +69,11 @@ case class DetectionResult(kelurahan: Long,
                            hash: Option[String],
                            similarity: Option[Double],
                            aligned: Option[String],
-                           roi: Option[String])
+                           roi: Option[String],
+                           response: String)
 
 object ResultsTables extends SlickValueEnumSupport {
-  val profile = slick.jdbc.PostgresProfile
+  val profile = id.kawalc1.database.CustomPostgresProfile
 
   class DetectionResults(tag: Tag) extends Table[DetectionResult](tag, "detections") {
     def kelurahan            = column[Long]("kelurahan")
@@ -91,6 +92,7 @@ object ResultsTables extends SlickValueEnumSupport {
     def similarity           = column[Option[Double]]("similarity")
     def aligned              = column[Option[String]]("aligned", O.SqlType("TEXT"))
     def roi                  = column[Option[String]]("roi", O.SqlType("TEXT"))
+    def response             = column[String]("response", O.SqlType("TEXT"))
 
     override def * =
       (kelurahan,
@@ -108,7 +110,8 @@ object ResultsTables extends SlickValueEnumSupport {
        hash,
        similarity,
        aligned,
-       roi) <> (DetectionResult.tupled, DetectionResult.unapply)
+       roi,
+       response) <> (DetectionResult.tupled, DetectionResult.unapply)
   }
 
   val detectionsQuery = TableQuery[DetectionResults]
@@ -247,12 +250,12 @@ object ResultsTables extends SlickValueEnumSupport {
   val presidentialResultsQuery = TableQuery[PresidentialResults]
 
   def singleTpsQuery(url: String) = {
-    TpsTables.tpsQuery.filter(_.uploadedPhotoUrl === url)
+    TpsTables.tpsPhotoQuery.filter(_.uploadedPhotoUrl === url)
   }
 
   def alignErrorQuery = {
     val joined = for {
-      (a, b) <- TpsTables.tpsQuery join alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a, b) <- TpsTables.tpsPhotoQuery join alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined.filter(_._2.responseCode === 500).map(_._1)
     //    joined.filter { case (a, b: AlignResults) => b.responseCode === 200 }.map(_._1).filter(_.formType === FormType.PPWP.value)
@@ -269,7 +272,7 @@ object ResultsTables extends SlickValueEnumSupport {
 
   def tpsToAlignQuery(plano: Plano, halaman: String = "2") = {
     val joined = for {
-      (a: TpsTables.TpsTable, b: Rep[Option[AlignResults]]) <- TpsTables.tpsQuery joinLeft alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a: TpsTables.TpsPhotoTable, b: Rep[Option[AlignResults]]) <- TpsTables.tpsPhotoQuery joinLeft alignResultsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .filter { case (a, b) => b.isEmpty }
@@ -295,9 +298,9 @@ object ResultsTables extends SlickValueEnumSupport {
       .map(_._1)
   }
 
-  def tpsToDetectQuery(plano: Plano): Query[TpsTables.TpsTable, kawalc1.SingleTpsDao, Seq] = {
+  def tpsToDetectQuery(plano: Plano): Query[TpsTables.TpsPhotoTable, kawalc1.SingleTpsPhotoDao, Seq] = {
     val joined = for {
-      (a: TpsTables.TpsTable, b: Rep[Option[DetectionResults]]) <- TpsTables.tpsQuery joinLeft detectionsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a: TpsTables.TpsPhotoTable, b: Rep[Option[DetectionResults]]) <- TpsTables.tpsPhotoQuery joinLeft detectionsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .filter { case (a, b) => b.isEmpty }
@@ -307,26 +310,26 @@ object ResultsTables extends SlickValueEnumSupport {
 
   def tpsToRoiQuery = {
     val joined = for {
-      (a, b) <- TpsTables.tpsQuery join detectionsQuery on (_.uploadedPhotoUrl === _.photo)
+      (a, b) <- TpsTables.tpsPhotoQuery join detectionsQuery on (_.uploadedPhotoUrl === _.photo)
     } yield (a, b)
     joined
       .map(_._1)
       .filter(x => x.formType === FormType.PPWP.value && x.halaman === "2" && x.plano === Plano.NO.value)
   }
 
-  def upsertAlign(results: Seq[AlignResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.map(alignResultsQuery.insertOrUpdate)
+  def upsertAlign(results: Seq[AlignResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    Seq(alignResultsQuery.insertOrUpdateAll(results))
   }
 
-  def upsertExtract(results: Seq[ExtractResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.map(extractResultsQuery.insertOrUpdate)
+  def upsertExtract(results: Seq[ExtractResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    Seq(extractResultsQuery.insertOrUpdateAll(results))
   }
 
-  def upsertPresidential(results: Seq[PresidentialResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.map(presidentialResultsQuery.insertOrUpdate)
+  def upsertPresidential(results: Seq[PresidentialResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    Seq(presidentialResultsQuery.insertOrUpdateAll(results))
   }
 
-  def upsertDetections(results: Seq[DetectionResult]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.map(detectionsQuery.insertOrUpdate)
+  def upsertDetections(results: Seq[DetectionResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    Seq(detectionsQuery.insertOrUpdateAll(results))
   }
 }

@@ -17,6 +17,7 @@ ADD static /kawalc1/static
 ADD manage.py /kawalc1/manage.py
 ADD __init__.py /kawalc1/__init__.py
 RUN mkdir /kawalc1/static/extracted && mkdir /kawalc1/static/upload && mkdir /kawalc1/static/transformed
+ENV GOOGLE_APPLICATION_CREDENTIALS="/kawalc1/gcp_creds/kawalc1-google-credentials.json"
 
 ADD . /kawalc1/
 

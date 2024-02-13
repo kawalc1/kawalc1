@@ -1,6 +1,7 @@
 # Create your views here.
 import json
 import logging
+import traceback
 from os import path
 
 from django.core.files.storage import default_storage
@@ -22,6 +23,7 @@ from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
 STORAGE_BASE_URL = "https://storage.googleapis.com/kawalc1/2024"
+
 
 def index(request):
     return static_serve(request, 'index.html', '/home/sjappelodorus/verifikatorc1/static')
@@ -115,13 +117,25 @@ def find_number(output, name):
                     return v['number']
 
 
-def get_outcome(output, config_file):
+def get_outcome(output, bubbleNumbers, config_file):
     if config_file == "pilpres_2024_plano_halaman2.json":
-        return {
+        confidence = output['probabilityMatrix'][0][0]['confidence']
+        neural_numbers = {
             'anies': find_number(output, 'anies'),
             'prabowo': find_number(output, 'prabs'),
             'ganjar': find_number(output, 'ganjar'),
-            'confidence': output['probabilityMatrix'][0][0]['confidence'],
+            'confidence': confidence,
+        }
+        bubble_numbers = {
+            'anies': bubbleNumbers[0],
+            'prabowo': bubbleNumbers[1],
+            'ganjar': bubbleNumbers[2],
+            'confidence': confidence,
+        }
+        return {
+            "neuralNumbers": neural_numbers,
+            "bubbleNumbers": bubble_numbers,
+            "confidence": confidence
         }
     return {
         'phpJumlah': find_number(output, 'phpJumlah'),
@@ -193,7 +207,8 @@ def download(request, kelurahan, tps, filename):
         start_lap = datetime.now()
         a, aligned_image = __do_alignment(filename, kelurahan, request, tps, get_reference_form(config_file), matcher,
                                           store_files)
-        # print("Sim1", a["similarity"])
+        similarity = a["similarity"]
+        print("Sim1", similarity)
         # if a["similarity"] < 1:
         #     config_file = config_files[1]
         #     second, second_aligned_image = __do_alignment(filename, kelurahan, request, tps,
@@ -223,7 +238,8 @@ def download(request, kelurahan, tps, filename):
 
         loaded_config = load_config(config_file)
         b = extraction.extract_rois_in_memory(file_path, path.join(tps_dir, 'extracted'),
-                                              settings.STATIC_DIR, loaded_config, aligned_image, False, True)
+                                              settings.STATIC_DIR, loaded_config, aligned_image, False,
+                                              True) if similarity > 1.0 else {"numbers": []}
 
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
@@ -250,8 +266,14 @@ def download(request, kelurahan, tps, filename):
 
         output = {**a, **b}
 
-        outcome = get_outcome(output, config_file)
-        output['outcome'] = outcome
+        outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else {'confidence': 0}
+        confidence = outcome["confidence"]
+        neural_numbers = outcome["neuralNumbers"]
+        bubble_numbers = outcome["bubbleNumbers"]
+
+        output['neuralNumbers'] = neural_numbers
+        output['bubbleNumbers'] = bubble_numbers
+        output['outcome'] = neural_numbers if confidence > 0.6 else bubble_numbers
 
         output['success'] = bool(outcome['confidence'] > 0.8)
 
@@ -263,12 +285,16 @@ def download(request, kelurahan, tps, filename):
         del output["transformedUri"]
         del output["probabilityMatrix"]
         del output["duration"]
-        del output["party"]
+        if "party" in output:
+            del output["party"]
         del output["success"]
+        if similarity < 1:
+            del output["transformedUrl"]
 
     except Exception as e:
         logging.exception("failed 'download/<int:kelurahan>/<int:tps>/<str:filename>'")
-        output = {'transformedUrl': None, 'success': False}
+        trace = ''.join(traceback.TracebackException.from_exception(e).format())
+        output = {'transformedUrl': None, 'success': False, 'exception': f'{trace}'}
 
     return JsonResponse(output)
 

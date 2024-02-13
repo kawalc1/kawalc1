@@ -29,7 +29,8 @@ case class CombiResponse(
     hash: Option[String],
     digitArea: Option[String],
     outcome: Option[Map[String, Double]],
-    configFile: Option[String]
+    configFile: Option[String],
+    exception: Option[String]
 )
 
 class KawalC1Client(baseUrl: String)(implicit
@@ -75,7 +76,11 @@ class KawalC1Client(baseUrl: String)(implicit
     execute[ProbabilitiesResponse](Post(Uri(s"$baseUrl/processprobs"), request))
   }
 
-  def detectNumbers(kelurahan: Long, tps: Int, photoName: String, halaman: Option[String], plano: Option[Plano]) = {
+  def detectNumbers(kelurahan: Long,
+                    tps: Int,
+                    photoName: String,
+                    halaman: Option[String],
+                    plano: Option[Plano]): Future[Either[Response, CombiResponse]] = {
     val url = Uri(s"$baseUrl/download/$kelurahan/$tps/$photoName")
       .withQuery(
         Query(

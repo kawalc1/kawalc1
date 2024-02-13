@@ -113,7 +113,7 @@ package object kawalc1 extends LazyLogging {
       verification: VerificationOld
   )
 
-  case class SingleTpsDao(
+  case class SingleTpsPhotoDao(
       kelurahanId: Long,
       tpsId: Int,
       name: String,
@@ -133,7 +133,34 @@ package object kawalc1 extends LazyLogging {
       totalErrorTps: Int,
       formType: Option[Short],
       plano: Option[Short],
-      halaman: Option[String]
+      halaman: Option[String],
+      lastUpdated: Timestamp = Timestamp.from(Instant.now())
+  )
+
+  case class SingleTpsDao(
+      kelurahanId: Long,
+      tpsId: Int,
+      name: String,
+      idLokasi: String,
+      uid: Option[String],
+      updatedTs: Timestamp,
+      uploadedPhotoId: Option[String],
+      uploadedPhotoUrl: Option[String],
+      dpt: Int,
+      pas1: Option[Int],
+      pas2: Option[Int],
+      pas3: Option[Int],
+      anyPendingTps: Option[String],
+      totalTps: Int,
+      totalPendingTps: Int,
+      totalCompletedTps: Int,
+      totalErrorTps: Int,
+      lastUpdated: Timestamp = Timestamp.from(Instant.now())
+  )
+
+  case class TpsBasedData(
+      withPhoto: Seq[SingleTpsPhotoDao],
+      plain: Seq[SingleTpsDao]
   )
 
   case class TpsOldDto(photos: Map[String, VerificationOld])
@@ -151,7 +178,7 @@ package object kawalc1 extends LazyLogging {
   )
 
   case class TpsInfo(
-      pendingUploads: Option[Map[String, Boolean]],
+      pendingUploads: Option[Map[String, Object]],
       idLokasi: String,
       pas2: Int,
       totalTps: Int,
@@ -178,14 +205,58 @@ package object kawalc1 extends LazyLogging {
       result: Kelurahan
   )
 
+  case class MaybeKelurahanResponse(
+      result: Option[Kelurahan]
+  )
+
   object Kelurahan {
+
+    private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
+      infos.flatMap { t =>
+        val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.flatMap {
+          case (key, value) if value.toString != "true" => Some(UploadedPhoto(value.toString, key))
+          case _                                        => None
+        })
+        val photos = pendingPhotos ++ t.uploadedPhoto
+        photos.map(p => t.copy(uploadedPhoto = Some(p)))
+      }
+
+    }
+
     def toTps(kelurahan: KelurahanResponse): Seq[SingleTpsDao] = {
+      (for {
+        (_, infos) <- kelurahan.result.aggregated
+      } yield {
+        val t = infos.head
+        SingleTpsDao(
+          kelurahanId = kelurahan.result.id.toLong,
+          tpsId = t.name.toInt,
+          name = kelurahan.result.names.mkString(", "),
+          idLokasi = t.idLokasi,
+          uid = t.uid,
+          updatedTs = Timestamp.from(Instant.ofEpochMilli(t.updateTs)),
+          uploadedPhotoId = t.uploadedPhoto.map(_.imageId),
+          uploadedPhotoUrl = t.uploadedPhoto.map(_.photoUrl),
+          dpt = t.dpt,
+          pas1 = Some(t.pas1),
+          pas2 = Some(t.pas2),
+          pas3 = Some(t.pas3),
+          anyPendingTps = t.anyPendingTps,
+          totalTps = t.totalTps,
+          totalPendingTps = t.totalPendingTps,
+          totalCompletedTps = t.totalCompletedTps,
+          totalErrorTps = t.totalErrorTps
+        )
+      }).toSeq
+    }
+
+    def toPhotoTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
       for {
         tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
-        t: TpsInfo                <- tps._2
+        t: TpsInfo                <- explodeForPhotos(tps._2)
         if t.uploadedPhoto.isDefined
       } yield {
-        SingleTpsDao(
+        SingleTpsPhotoDao(
           kelurahanId = kelurahan.result.id.toLong,
           tpsId = t.name.toInt,
           name = kelurahan.result.names.mkString(", "),

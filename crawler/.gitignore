@@ -4,3 +4,4 @@ crawler.iws
 *.db
 .bsp/
 target/
+logs/

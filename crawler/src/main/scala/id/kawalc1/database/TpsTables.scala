@@ -1,16 +1,19 @@
 package id.kawalc1.database
 
+import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1._
+import id.kawalc1.services.BlockingSupport
 import slick.dbio.Effect
-import slick.jdbc.PostgresProfile.api._
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
 import java.sql.Timestamp
+import scala.concurrent.ExecutionContext
+import id.kawalc1.database.CustomPostgresProfile.api._
 
-object TpsTables extends SlickValueEnumSupport {
-  val profile = slick.jdbc.PostgresProfile
+object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLogging {
+  val profile = id.kawalc1.database.CustomPostgresProfile
 
   class Kelurahan(tag: Tag) extends Table[KelurahanId](tag, "kelurahan") {
     def idKel = column[Long]("idkel", O.PrimaryKey)
@@ -21,7 +24,7 @@ object TpsTables extends SlickValueEnumSupport {
 
   val kelurahanQuery = TableQuery[Kelurahan]
 
-  class TpsTable(tag: Tag) extends Table[SingleTpsDao](tag, "tps") {
+  class TpsPhotoTable(tag: Tag) extends Table[SingleTpsPhotoDao](tag, "tps-photo") {
     def kelurahanId      = column[Long]("kelurahan_id")
     def tpsId            = column[Int]("tps_id")
     def name             = column[String]("name")
@@ -43,9 +46,10 @@ object TpsTables extends SlickValueEnumSupport {
     def totalErrorTps     = column[Int]("total_error_tps")
 
     // We need to see if these can be determined
-    def formType = column[Option[Short]]("form_type")
-    def plano    = column[Option[Short]]("plano")
-    def halaman  = column[Option[String]]("halaman")
+    def formType    = column[Option[Short]]("form_type")
+    def plano       = column[Option[Short]]("plano")
+    def halaman     = column[Option[String]]("halaman")
+    def lastUpdated = column[Timestamp]("last_updated")
 
     override def * =
       (kelurahanId,
@@ -67,10 +71,56 @@ object TpsTables extends SlickValueEnumSupport {
        totalErrorTps,
        formType,
        plano,
-       halaman) <> (SingleTpsDao.tupled, SingleTpsDao.unapply)
+       halaman,
+       lastUpdated) <> (SingleTpsPhotoDao.tupled, SingleTpsPhotoDao.unapply)
 
   }
 
+  val tpsPhotoQuery = TableQuery[TpsPhotoTable]
+
+  class TpsTable(tag: Tag) extends Table[SingleTpsDao](tag, "tps") {
+    def kelurahanId      = column[Long]("kelurahan_id")
+    def tpsId            = column[Int]("tps_id")
+    def name             = column[String]("name")
+    def idLokasi         = column[String]("id_lokasi", O.PrimaryKey)
+    def uid              = column[Option[String]]("uid")
+    def updatedTs        = column[Timestamp]("update_ts")
+    def uploadedPhotoId  = column[Option[String]]("uploaded_photo_id")
+    def uploadedPhotoUrl = column[Option[String]]("uploaded_photo_url")
+
+    def dpt  = column[Int]("dpt")
+    def pas1 = column[Option[Int]]("pas1")
+    def pas2 = column[Option[Int]]("pas2")
+    def pas3 = column[Option[Int]]("pas3")
+
+    def anyPendingTps     = column[Option[String]]("any_pending_tps")
+    def totalTps          = column[Int]("total_tps")
+    def totalPendingTps   = column[Int]("total_pending_tps")
+    def totalCompletedTps = column[Int]("total_completed_tps")
+    def totalErrorTps     = column[Int]("total_error_tps")
+    def lastUpdated       = column[Timestamp]("last_updated")
+
+    override def * =
+      (kelurahanId,
+       tpsId,
+       name,
+       idLokasi,
+       uid,
+       updatedTs,
+       uploadedPhotoId,
+       uploadedPhotoUrl,
+       dpt,
+       pas1,
+       pas2,
+       pas3,
+       anyPendingTps,
+       totalTps,
+       totalPendingTps,
+       totalCompletedTps,
+       totalErrorTps,
+       lastUpdated) <> (SingleTpsDao.tupled, SingleTpsDao.unapply)
+
+  }
   val tpsQuery = TableQuery[TpsTable]
 
   class TpsOldDao(tag: Tag) extends Table[SingleOldTps](tag, "tps-old") {
@@ -287,8 +337,19 @@ object TpsTables extends SlickValueEnumSupport {
 
   val tpsUnverifiedQuery = TableQuery[TpsUnverified]
 
-  def upsertTps(results: Seq[Seq[SingleTpsDao]]): Seq[FixedSqlAction[Int, NoStream, Effect.Write]] = {
-    results.flatten.map(tpsQuery.insertOrUpdate)
+  private val sedotDatabase = Database.forConfig("sedotDatabase")
+
+  def upsertTps(results: Seq[TpsBasedData])(implicit ex: ExecutionContext): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    val tpsData   = results.flatMap(_.plain)
+    val tpsInsert = tpsQuery.insertOrUpdateAll(tpsData)
+
+    val photosData   = results.flatMap(_.withPhoto)
+    val photosInsert = tpsPhotoQuery.insertOrUpdateAll(photosData)
+
+    val uploaded = sedotDatabase.run(tpsInsert).futureValue
+    logger.info(s"Uploaded $uploaded records into the sedot DB")
+
+    Seq(tpsInsert, photosInsert)
   }
 
 }

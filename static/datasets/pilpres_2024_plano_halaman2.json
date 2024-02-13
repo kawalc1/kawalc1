@@ -49,6 +49,10 @@
     {
       "name": "bubbleSheet3",
       "coordinates": [970, 1190, 944, 1076]
+    },
+    {
+      "name": "lokasi",
+      "coordinates": [62, 154, 162, 1042]
     }
   ],
     "referenceForm": "PPWP-2024-hal2-plano.jpg"
