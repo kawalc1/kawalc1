@@ -68,7 +68,7 @@ def write_string(file_path, file_name, string):
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)
     if extension.lower() == ".webp":
-        logging.error("writing .webp %s", os.path.abspath(file_path))
+        logging.info("writing .webp %s", os.path.abspath(file_path))
         fp = BytesIO()
         im_pil = Image.fromarray(image)
         im_pil.save(fp, Image.registered_extensions()['.webp'])

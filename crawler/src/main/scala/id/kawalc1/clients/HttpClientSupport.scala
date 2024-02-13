@@ -3,12 +3,13 @@ package id.kawalc1.clients
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Authorization, GenericHttpCredentials}
-import akka.http.scaladsl.{Http, HttpExt, HttpsConnectionContext}
+import akka.http.scaladsl.{ConnectionContext, Http, HttpExt, HttpsConnectionContext}
 import akka.stream.Materializer
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import id.kawalc1.Config.Application
 import org.json4s.Formats
+
 import org.json4s.native.Serialization.read
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,8 +25,7 @@ trait HttpClientSupport extends LazyLogging {
 
   implicit val system: ActorSystem
   implicit val mat: Materializer
-  lazy val http: HttpExt = Http()
-
+  lazy val http: HttpExt                      = Http()
   def SecurityContext: HttpsConnectionContext = http.defaultClientHttpsContext
 
   def parseJson[A: Manifest](responseBody: String)(implicit
@@ -46,14 +46,13 @@ trait HttpClientSupport extends LazyLogging {
     for {
       resp: HttpResponse <- {
         akka.pattern.retry(
-          attempt = () => http.singleRequest(request.withHeaders(authorization.toList), SecurityContext),
+          attempt = () => http.singleRequest(request.withHeaders(authorization.toList)),
           attempts = 5,
           delay = 2.seconds,
         )(mat.executionContext, system.scheduler)
 
       }
       str: String <- consumeEntity(resp.entity)
-      requestBody <- consumeEntity(request.entity)
     } yield {
       resp.status match {
         case code: StatusCode if code.isSuccess() => {
@@ -61,13 +60,13 @@ trait HttpClientSupport extends LazyLogging {
         }
         case errorCode =>
           logger.info(s"Request ${request.method.value} ${request.uri}, error: $errorCode")
-          logger.info(s"Req: $requestBody Resp: ${Await.result(consumeEntity(resp.entity), 10.seconds)}")
+          logger.info(s"Resp: $str")
           Left(Response(errorCode.intValue(), str))
       }
     }
   }
 
   private def consumeEntity(entity: HttpEntity)(implicit mat: Materializer): Future[String] =
-    entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.utf8String)
+    entity.toStrict(1.minute).flatMap(_.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.utf8String))
 
 }

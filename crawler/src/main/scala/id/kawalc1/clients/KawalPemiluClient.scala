@@ -63,8 +63,9 @@ class KawalPemiluClient(baseUrl: String)(implicit
             data <- getData(number, auth)
           } yield {
             data match {
-              case Left(value)  => Left(value)
-              case Right(value) => Right(KelurahanResponse(value.result.get))
+              case Left(value)                            => Left(value)
+              case Right(value) if value.result.isDefined => Right(KelurahanResponse(value.result.get))
+              case Right(_)                               => Left(Response(503, "Need to try later"))
             }
           }
       }
@@ -76,7 +77,6 @@ class KawalPemiluClient(baseUrl: String)(implicit
     execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number", Config.Application.userUid)))).map {
       case Left(value) if Seq(404, 500, 503).contains(value.code) =>
         logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
-        Thread.sleep(10 * 1000L)
         Right(MaybeKelurahanResponse(None))
       case Left(value)  => Left(value)
       case Right(value) => Right(value)
