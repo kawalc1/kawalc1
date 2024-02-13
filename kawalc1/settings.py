@@ -21,6 +21,7 @@ def __is_local():
     return False
     # return host_name.endswith(".local")
 
+
 def patch_https_connection_pool(**constructor_kwargs):
     """
     This allows to override the default parameters of the
@@ -39,14 +40,17 @@ def patch_https_connection_pool(**constructor_kwargs):
 
     poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
 
-POOL_SIZE=int(os.environ.get('POOL_SIZE', '64'))
+
+POOL_SIZE = int(os.environ.get('POOL_SIZE', '64'))
 patch_https_connection_pool(maxsize=POOL_SIZE)
 mimetypes.add_type('image/webp', '.webp')
 
 TEST_MODE = bool(os.environ.get('TEST_MODE', False))
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', TEST_MODE))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
-LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
+# LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
+LOCAL = False
+print(f"Local {LOCAL}")
 STORAGE_CLASS = 'kawalc1.storage.OverwriteStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
 print("Storing in", STORAGE_CLASS)
 
@@ -79,7 +83,6 @@ GS_BUCKET_NAME = 'kawalc1'
 GS_FILE_OVERWRITE = True
 GS_DEFAULT_ACL = 'publicRead'
 VERSION = 'v0.9.1-alpha'
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/

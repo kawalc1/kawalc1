@@ -12,7 +12,7 @@ import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 
 case class SubmitResponse(ok: Boolean)
-case class TpsId(id: String)
+case class TpsId(id: String, uid: String)
 case class GetResultPostBody(data: TpsId)
 class KawalPemiluClient(baseUrl: String)(implicit
                                          val system: ActorSystem,
@@ -72,8 +72,8 @@ class KawalPemiluClient(baseUrl: String)(implicit
   }
 
   private def getData(number: Long, auth: Authorization): Future[Either[Response, MaybeKelurahanResponse]] = {
-    implicit val authorization: Option[Authorization] = Some(auth)
-    execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number")))).map {
+    implicit val authorization: Option[Authorization] = None
+    execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number", Config.Application.userUid)))).map {
       case Left(value) if Seq(404, 500, 503).contains(value.code) =>
         logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
         Thread.sleep(10 * 1000L)

@@ -1,0 +1,15 @@
+version: "3"
+services:
+  service-1:
+    build: .
+  service-2:
+    build: .
+  load-balancer:
+    image: nginx:1.23-alpine
+    depends_on:
+      - service-1
+      - service-2
+    ports:
+      - 8080:8080
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
