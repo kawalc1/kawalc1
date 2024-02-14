@@ -36,12 +36,12 @@ class KawalPemiluClient(baseUrl: String)(implicit
 
   private val cache: Cache[String, Boolean] = LfuCache(defaultCachingSettings.withLfuCacheSettings(lfuCacheSettings))
 
-  private def avoidThunderingHerds(): Future[Boolean] = {
+  private def avoidThunderingHerds(seconds: Int): Future[Boolean] = {
     logger.info("Entering mutex...")
     cache.getOrLoad("mutex", _ => {
       Future {
-        logger.info("Waiting 10 seconds for rate limit to subside...")
-        Thread.sleep(10 * 1000L)
+        logger.info(s"Waiting ${seconds} seconds for rate limit to subside...")
+        Thread.sleep(seconds * 1000L)
         true
       }
     })
@@ -54,9 +54,13 @@ class KawalPemiluClient(baseUrl: String)(implicit
       finalResp <- resp match {
         case Left(value)                            => Future.successful(Left(value))
         case Right(value) if value.result.isDefined => Future.successful(Right(KelurahanResponse(value.result.get)))
-        case Right(_) =>
+        case Right(value) =>
           for {
-            thunderingHerds <- avoidThunderingHerds()
+            thunderingHerds <- {
+              logger.info(s"Empty result for $number")
+              val secondsToWait = if (value.error) { 10 } else { 1 }
+              avoidThunderingHerds(secondsToWait)
+            }
             auth <- authClient
               .refreshToken(force = thunderingHerds)
               .map(token => Authorization(OAuth2BearerToken(token.response.access_token)))
@@ -65,7 +69,9 @@ class KawalPemiluClient(baseUrl: String)(implicit
             data match {
               case Left(value)                            => Left(value)
               case Right(value) if value.result.isDefined => Right(KelurahanResponse(value.result.get))
-              case Right(_)                               => Left(Response(503, "Need to try later"))
+              case Right(_) =>
+                logger.info(s"Still empty for $number")
+                Left(Response(503, "Need to try later"))
             }
           }
       }
@@ -77,7 +83,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
     execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number", Config.Application.userUid)))).map {
       case Left(value) if Seq(404, 500, 503).contains(value.code) =>
         logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
-        Right(MaybeKelurahanResponse(None))
+        Right(MaybeKelurahanResponse(None, error = true))
       case Left(value)  => Left(value)
       case Right(value) => Right(value)
     }

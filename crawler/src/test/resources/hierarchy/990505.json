@@ -1,0 +1,64 @@
+{
+  "result": {
+    "names": [
+      "LUAR NEGERI",
+      "MALAYSIA",
+      "KJRI PENANG"
+    ],
+    "id": "990505",
+    "aggregated": {
+      "9905050001": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "9905050001",
+          "pas2": 0,
+          "totalTps": 110,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "name": "KSK",
+          "totalErrorTps": 0,
+          "totalJagaTps": 1,
+          "pas1": 0,
+          "totalPendingTps": 0,
+          "updateTs": 1707752477964
+        }
+      ],
+      "9905050003": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "9905050003",
+          "pas2": 0,
+          "totalTps": 5,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 0,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "POS",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "9905050002": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "9905050002",
+          "pas2": 0,
+          "totalTps": 10,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 0,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "TPS",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ]
+    },
+    "numWrites": 1,
+    "lastCachedTs": 1707840559499
+  }
+}

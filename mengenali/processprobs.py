@@ -97,7 +97,7 @@ def get_number_config_for_index(config, prob_index):
 
 def print_outcome(config, outcome_matrix, all_probabilities):
     outcomes = []
-    logging.info(outcome_matrix)
+    # logging.info(outcome_matrix)
     for outcome in outcome_matrix:
         numbers = outcome[0]
         confidence = outcome[1]
@@ -113,7 +113,7 @@ def print_outcome(config, outcome_matrix, all_probabilities):
             outcome[id] = res
         outcome["confidence"] = confidence
 
-        logging.info(outcome)
+        # logging.info(outcome)
         outcomes.append(outcome)
     return outcomes
 
@@ -234,10 +234,10 @@ def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
         probabilities = p[0]
         confidence = p[1]
         if numbers_add_up(probabilities, check_sums):
-            logging.info("numbers add up :-)")
+            # logging.info("numbers add up :-)")
             return p
         else:
-            logging.info("numbers don't add up :-(")
+            # logging.info("numbers don't add up :-(")
             return probabilities, confidence * .005
 
     bigger_than_zero = list(filter(lambda x: x[1] > 0, possibilities))

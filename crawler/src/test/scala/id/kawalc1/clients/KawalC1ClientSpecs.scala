@@ -12,12 +12,24 @@ import scala.io.Source
 class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
   "KawalC1Client" should {
 
+    "parse the `990505.json` response" in {
+      val response  = Source.fromURL(getClass.getResource("/hierarchy/990505.json")).mkString
+      val kelurahan = Serialization.read[KelurahanResponse](response)
+      val set       = kelurahan.result.aggregated
+      set.keySet.size shouldBe 3
+      set.head._1 shouldBe "9905050001"
+      val firstTps = set.head._2.head
+      firstTps.idLokasi shouldBe "9905050001"
+      firstTps.name shouldBe "KSK"
+      Kelurahan.toPhotoTps(kelurahan).length shouldBe 0
+    }
+
     "parse the `1101052008.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/hierarchy/1101052008.json")).mkString
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
       set.keySet.size shouldBe 3
-      set.head._1 shouldBe 1
+      set.head._1 shouldBe "1"
       val firstTps = set.head._2.head
       firstTps.idLokasi shouldBe "11010520081"
       firstTps.name shouldBe "1"
@@ -28,7 +40,7 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
       set.keySet.size shouldBe 3
-      set.head._1 shouldBe 1
+      set.head._1 shouldBe "1"
       val firstTps = set.head._2.head
       firstTps.idLokasi shouldBe "11010120011"
       firstTps.name shouldBe "1"
@@ -47,7 +59,7 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
       set.keySet.size shouldBe 2
-      set.head._1 shouldBe 1
+      set.head._1 shouldBe "1"
       val firstTps = set.head._2.head
       firstTps.idLokasi shouldBe "11010120021"
       firstTps.name shouldBe "1"
@@ -65,7 +77,7 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
       set.keySet.size shouldBe 4
-      set.head._1 shouldBe 1
+      set.head._1 shouldBe "1"
       val firstTps = set.head._2.head
       firstTps.idLokasi shouldBe "51710210031"
       firstTps.name shouldBe "1"

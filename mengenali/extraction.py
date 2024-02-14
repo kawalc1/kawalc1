@@ -344,7 +344,7 @@ def extract_deprecated(file_name, source_path, target_path, dataset_path, config
 
     result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)),
               "signatures": signature_result}
-    logging.info(result)
+    # logging.info(result)
 
     return result
 
@@ -444,6 +444,9 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
     roi = config["roi"]
     party_name = {}
     bubble_candidates = [-1] * 3
+
+    extracted_rois = []
+
     for region in roi:
         name = region["name"]
         digit = region["coordinates"]
@@ -451,6 +454,8 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
         roi_file = join(target_path, f'{base_file_name}~{name}{settings.TARGET_EXTENSION}')
         if store_rois:
             write_image(roi_file, roi_image)
+            roi_path = {f"{region['name']}": image_url(join(roi_file))}
+            extracted_rois.append(roi_path)
 
         if "bubble" in name:
             digit = extract_digits(roi_image)
@@ -504,7 +509,7 @@ def extract_rois_in_memory(file_name, target_path, dataset_path, config, aligned
 
     digit_path = head.replace("output/", "")
     result = {"numbers": numbers, "digitArea": image_url(join(target_path, digit_area_file)), "party": party_name,
-              "bubbleNumbers": bubble_candidates}
-    logging.info(result)
+              "bubbleNumbers": bubble_candidates, "extractedRoi": extracted_rois}
+    # logging.info(result)
 
     return result

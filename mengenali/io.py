@@ -14,6 +14,8 @@ import certifi
 from PIL import Image
 
 from django.core.files.storage import get_storage_class
+from gcloud.aio.storage import Storage
+
 
 from kawalc1 import settings
 

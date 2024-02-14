@@ -14,3 +14,4 @@ urllib3==1.26.6
 google-cloud-storage
 matplotlib==3.8.2
 imutils==0.5.4
+gcloud-aio-storage

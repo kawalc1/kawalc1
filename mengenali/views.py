@@ -91,7 +91,7 @@ def get_probabilities_result_parsable(request):
 def get_probabilities_result(request):
     json_data = json.loads(request.body.decode('utf-8'))
 
-    logging.info(str(json_data))
+    # logging.info(str(json_data))
 
     outcomes = processprobs.get_possible_outcomes_for_config(load_config(json_data["configFile"]),
                                                              json_data["probabilities"], settings.CATEGORIES_COUNT,

@@ -7,6 +7,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.util.UUID
 import scala.collection.immutable
+import scala.util.Try
 
 package object kawalc1 extends LazyLogging {
 
@@ -184,7 +185,7 @@ package object kawalc1 extends LazyLogging {
       totalTps: Int,
       pas3: Int,
       totalCompletedTps: Int,
-      dpt: Int,
+      dpt: Option[Int],
       totalPendingTps: Int,
       anyPendingTps: Option[String],
       uid: Option[String],
@@ -198,7 +199,7 @@ package object kawalc1 extends LazyLogging {
   case class Kelurahan(
       id: String,
       names: Seq[String],
-      aggregated: Map[Long, Seq[TpsInfo]]
+      aggregated: Map[String, Seq[TpsInfo]]
   )
 
   case class KelurahanResponse(
@@ -206,7 +207,8 @@ package object kawalc1 extends LazyLogging {
   )
 
   case class MaybeKelurahanResponse(
-      result: Option[Kelurahan]
+      result: Option[Kelurahan],
+      error: Boolean = false
   )
 
   object Kelurahan {
@@ -230,14 +232,14 @@ package object kawalc1 extends LazyLogging {
         val t = infos.head
         SingleTpsDao(
           kelurahanId = kelurahan.result.id.toLong,
-          tpsId = t.name.toInt,
+          tpsId = Try(t.name.toInt).getOrElse(t.idLokasi.last.toInt),
           name = kelurahan.result.names.mkString(", "),
           idLokasi = t.idLokasi,
           uid = t.uid,
           updatedTs = Timestamp.from(Instant.ofEpochMilli(t.updateTs)),
           uploadedPhotoId = t.uploadedPhoto.map(_.imageId),
           uploadedPhotoUrl = t.uploadedPhoto.map(_.photoUrl),
-          dpt = t.dpt,
+          dpt = t.dpt.getOrElse(0),
           pas1 = Some(t.pas1),
           pas2 = Some(t.pas2),
           pas3 = Some(t.pas3),
@@ -252,8 +254,8 @@ package object kawalc1 extends LazyLogging {
 
     def toPhotoTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
       for {
-        tps: (Long, Seq[TpsInfo]) <- kelurahan.result.aggregated
-        t: TpsInfo                <- explodeForPhotos(tps._2)
+        tps        <- kelurahan.result.aggregated
+        t: TpsInfo <- explodeForPhotos(tps._2)
         if t.uploadedPhoto.isDefined
       } yield {
         SingleTpsPhotoDao(
@@ -269,7 +271,7 @@ package object kawalc1 extends LazyLogging {
           uploadedPhotoUrl = t.uploadedPhoto
             .map(_.photoUrl)
             .getOrElse(throw new IllegalStateException(s"${t.idLokasi} ${t.name} does not have uploadedPhotoUrl")),
-          dpt = t.dpt,
+          dpt = t.dpt.getOrElse(0),
           pas1 = Some(t.pas1),
           pas2 = Some(t.pas2),
           pas3 = Some(t.pas3),

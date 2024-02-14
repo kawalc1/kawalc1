@@ -242,7 +242,12 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           implicit val refreshToken: String = maybeToken.getOrElse(throw new IllegalArgumentException("Refresh token for KP required"))
           implicit val authClient           = new OAuthClient("https://securetoken.googleapis.com/v1", refreshToken)
           authClient.refreshToken().futureValue
-          process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
+          var round = 0
+          while (true) {
+            process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
+            logger.info(s"Finished round $round")
+            round += 1
+          }
         case "align" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
           logger.info(s"Will align $howMany forms")
