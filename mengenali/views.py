@@ -268,8 +268,8 @@ def download(request, kelurahan, tps, filename):
 
         outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else {'confidence': 0}
         confidence = outcome["confidence"]
-        neural_numbers = outcome["neuralNumbers"]
-        bubble_numbers = outcome["bubbleNumbers"]
+        neural_numbers = outcome.get("neuralNumbers") if "neuralNumbers" in outcome else {}
+        bubble_numbers = outcome.get("bubbleNumbers") if "bubbleNumbers" in outcome else {}
 
         output['neuralNumbers'] = neural_numbers
         output['bubbleNumbers'] = bubble_numbers
