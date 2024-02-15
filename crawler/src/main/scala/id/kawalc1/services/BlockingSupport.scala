@@ -6,7 +6,7 @@ import scala.language.implicitConversions
 
 trait BlockingSupport {
 
-  def duration: FiniteDuration = 30.seconds
+  def duration: FiniteDuration = 300.seconds
 
   implicit def fh[T](f: Future[T]): Object {
     def futureValue: T

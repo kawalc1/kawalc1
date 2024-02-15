@@ -2,24 +2,24 @@ package id.kawalc1.clients
 
 import akka.actor.ActorSystem
 import akka.http.caching.LfuCache
-import akka.http.caching.scaladsl.{Cache, CachingSettings, LfuCacheSettings}
+import akka.http.caching.scaladsl.{ Cache, CachingSettings, LfuCacheSettings }
 import akka.http.scaladsl.client.RequestBuilding._
-import akka.http.scaladsl.model.headers.{Authorization, OAuth2BearerToken}
+import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.stream.Materializer
 import id.kawalc1._
 
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 case class SubmitResponse(ok: Boolean)
 case class TpsId(id: String, uid: String)
 case class GetResultPostBody(data: TpsId)
 class KawalPemiluClient(baseUrl: String)(implicit
-                                         val system: ActorSystem,
-                                         val mat: Materializer,
-                                         val ec: ExecutionContext)
-    extends HttpClientSupport
-    with JsonSupport {
+  val system: ActorSystem,
+  val mat: Materializer,
+  val ec: ExecutionContext)
+  extends HttpClientSupport
+  with JsonSupport {
 
   def getKelurahanOld(number: Long): Future[Either[Response, KelurahanOld]] = {
     implicit val authorization = None
@@ -52,7 +52,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
       auth <- authClient.refreshToken().map(token => Authorization(OAuth2BearerToken(token.response.access_token)))
       resp <- getData(number, auth)
       finalResp <- resp match {
-        case Left(value)                            => Future.successful(Left(value))
+        case Left(value) => Future.successful(Left(value))
         case Right(value) if value.result.isDefined => Future.successful(Right(KelurahanResponse(value.result.get)))
         case Right(value) =>
           for {
@@ -67,7 +67,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
             data <- getData(number, auth)
           } yield {
             data match {
-              case Left(value)                            => Left(value)
+              case Left(value) => Left(value)
               case Right(value) if value.result.isDefined => Right(KelurahanResponse(value.result.get))
               case Right(_) =>
                 logger.info(s"Still empty for $number")
@@ -84,7 +84,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
       case Left(value) if Seq(404, 500, 503).contains(value.code) =>
         logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
         Right(MaybeKelurahanResponse(None, error = true))
-      case Left(value)  => Left(value)
+      case Left(value) => Left(value)
       case Right(value) => Right(value)
     }
   }

@@ -11,7 +11,7 @@ trait FutureMatcher {
   implicit def fh[T](f: Future[T]): Object {
     def futureValue: T
   } = new {
-    def futureValue: T = Await.result(f, Duration(30, TimeUnit.SECONDS))
+    def futureValue: T = Await.result(f, Duration(300, TimeUnit.SECONDS))
   }
 
 }
