@@ -16,7 +16,6 @@ from PIL import Image
 from django.core.files.storage import get_storage_class
 from gcloud.aio.storage import Storage
 
-
 from kawalc1 import settings
 
 storage = get_storage_class(settings.STORAGE_CLASS)()
@@ -57,8 +56,10 @@ def read_file(file_path):
         except Exception as e:
             logging.error("Could not open %s \n %s", os.path.abspath(file_path), e)
 
+
 def open_file(path, flags):
     return storage.open(path, flags)
+
 
 def write_string(file_path, file_name, string):
     pathlib.Path(file_path).mkdir(parents=True, exist_ok=True)
@@ -66,6 +67,7 @@ def write_string(file_path, file_name, string):
     print(file_path)
     with open(full_path, "w") as text_file:
         text_file.write(string)
+
 
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)
@@ -81,5 +83,13 @@ def write_image(file_path, image):
         encoded, image = cv2.imencode(extension, image)
         storage.save(file_path, ContentFile(image))
 
+
+def write_json(file_path, json):
+    fp = BytesIO()
+    fp.write(json.encode('utf-8'))
+    storage.save(file_path, ContentFile(fp.getbuffer()))
+
+
 def image_url(file_path):
-    return file_path.replace("static/transformed", "../static/transformed") if settings.LOCAL else storage.url(file_path)
+    return file_path.replace("static/transformed", "../static/transformed") if settings.LOCAL else storage.url(
+        file_path)

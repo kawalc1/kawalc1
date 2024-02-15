@@ -1,0 +1,155 @@
+{
+  "result": {
+    "names": [
+      "PAPUA TENGAH",
+      "DEIYAI",
+      "TIGI BARAT",
+      "ONAGO"
+    ],
+    "id": "9408042004",
+    "aggregated": {
+      "1": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "94080420041",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 275,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707886911666
+        }
+      ],
+      "2": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "94080420042",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 273,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707886747546
+        }
+      ],
+      "3": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "94080420043",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 271,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "3",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707885961269
+        }
+      ],
+      "4": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "94080420044",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 277,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "4",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707886322853
+        }
+      ],
+      "5": [
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "94080420045",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 1,
+          "dpt": 267,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "uid": "2i3Hi2uB1ofMGLAhPxTfmvvMyx42",
+          "ouid": "LZFgSyghlaYfRff42t83BWVyzkz1",
+          "name": "5",
+          "totalErrorTps": 0,
+          "pas1": 267,
+          "updateTs": 1707887495469
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "94080420045",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 1,
+          "dpt": 267,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "94080420045",
+          "uid": "2i3Hi2uB1ofMGLAhPxTfmvvMyx42",
+          "anyLaporTps": "94080420045",
+          "uploadedPhoto": {
+            "photoUrl": "http://lh3.googleusercontent.com/koN23ofMIpdytJ2cmVY0Araj88ny0aRsEe5bVMogeSWM3FC-yIepTCSNnwbew6UMKVY4crlK_vhMoV_irJgmD4wUkoQ4v2OndsU5dg",
+            "lapor": "?",
+            "imageId": "rNWNu52aJHXDVKmVIhhT",
+            "laporResolved": true
+          },
+          "ouid": "LZFgSyghlaYfRff42t83BWVyzkz1",
+          "name": "5",
+          "totalErrorTps": 0,
+          "pas1": 267,
+          "updateTs": 1707886801394
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "94080420045",
+          "totalTps": 1,
+          "pas2": 0,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 267,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "94080420045",
+          "uploadedPhoto": {
+            "photoUrl": "http://lh3.googleusercontent.com/kvNkAD7Avm0sqnelIqb-RR9uKXVglnbyA2tg2IYwQ1x8xlYk8Hh4TBbrQo5OmP8VaG8J4SdOH3Ap1pegI4Se6I06sGrzFLzvctf3",
+            "lapor": "Bisa di hapus salah satu, karena double. Perhitungan jadi nya 2x di persentase total. Terimakasih",
+            "imageId": "ukr66utXx0fhf4gwzhb5",
+            "laporResolved": true,
+            "sirekap": true
+          },
+          "uid": "2cZmOxzD3phBaTg9eDOd3G2I7Hk1",
+          "ouid": "e3ncZ9n9EHOyZRTrFyM0y1rJCL42",
+          "name": "5",
+          "totalErrorTps": 0,
+          "pas1": 267,
+          "updateTs": 1707884420184
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1707887819151
+  }
+}

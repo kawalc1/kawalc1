@@ -28,10 +28,6 @@ def find_contours(thresholded_image):
     bubble_contours = []
     for c in countours:
         (x, y, w, h) = cv2.boundingRect(c)
-        ar = w / float(h)
-        # in order to label the contour as a question, region
-        # should be sufficiently wide, sufficiently tall, and
-        # have an aspect ratio approximately equal to 1
         if w >= 10 and h >= 10:
             bubble_contours.append(c)
     return bubble_contours
@@ -43,7 +39,6 @@ def extract_digits_from_path(path: Path):
 
 
 def extract_digits(gray):
-    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     kernel = np.ones((5, 5), np.uint8)
     closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
 

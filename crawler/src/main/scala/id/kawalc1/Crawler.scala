@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.language.reflectiveCalls
 
-case class BatchParams(start: Long, batchSize: Long, threads: Int, limit: Option[Int])
+case class BatchParams(start: Long, batchSize: Long, threads: Int, limit: Option[Int], offset: Int = 0)
 
 object Crawler extends App with LazyLogging with BlockingSupport with JsonSupport {
   override def duration: FiniteDuration = 1.hour
@@ -31,12 +31,11 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val conf   = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/hierarchy2")
+  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/h")
   val processor                 = new PhotoProcessor(kawalPemiluClient)
   val tpsDb                     = Database.forConfig("tpsDatabase")
   private val kelurahanDatabase = Database.forConfig("verificationResults")
   val resultsDatabase           = Database.forConfig("verificationResults")
-  private val sedotDatabase     = Database.forConfig("sedotDatabase")
 
   def process(phase: String,
               func: (CustomPostgresProfile.backend.Database, CustomPostgresProfile.backend.Database, KawalC1Client, BatchParams) => Long,
@@ -203,6 +202,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "detect" =>
           createDb(ResultsTables.detectionsQuery.schema, resultsDatabase, drop)
         case "fetch" =>
+          val sedotDatabase = Database.forConfig("sedotDatabase")
           createDb(TpsTables.tpsQuery.schema, sedotDatabase, drop)
           createDb(TpsTables.tpsPhotoQuery.schema, resultsDatabase, drop)
           createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
@@ -230,24 +230,30 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
       val limit         = c.Process.limit.toOption
       val maybeToken    = c.Process.refreshToken.toOption
       val service       = c.Process.service.toOption.getOrElse(Application.kawalC1UrlLocal)
-      val batchParams   = BatchParams(offset, batchSize, threads, limit)
+      val continuous    = c.Process.continuous.getOrElse(false)
+      val batchParams   = BatchParams(offset, batchSize, threads, limit, offset)
       val kawalC1Client = new KawalC1Client(service)
       val url           = new URL(service)
       logger.info(s"Starting $phase with ${Serialization.write(batchParams)}")
       phase match {
         case "test" =>
-          val howMany = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
+          val howMany = resultsDatabase.run(ResultsTables.tpsToDetectQuery(offset).result).futureValue.length
           println(s"This much: $howMany")
         case "fetch" =>
-          implicit val refreshToken: String = maybeToken.getOrElse(throw new IllegalArgumentException("Refresh token for KP required"))
-          implicit val authClient           = new OAuthClient("https://securetoken.googleapis.com/v1", refreshToken)
-          authClient.refreshToken().futureValue
-          var round = 0
-          while (true) {
+          var continue = true
+          var round    = 0
+          do {
+            implicit val refreshToken: String = maybeToken.getOrElse(throw new IllegalArgumentException("Refresh token for KP required"))
+            implicit val authClient           = new OAuthClient("https://securetoken.googleapis.com/v1", refreshToken)
+            authClient.refreshToken().futureValue
             process("fetch", processor.fetch, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
-            logger.info(s"Finished round $round")
-            round += 1
-          }
+            continue = continuous
+            if (continuous) {
+              round += 1
+              logger.info(s"Giving it a while... for round $round")
+              Thread.sleep(20000)
+            }
+          } while (continue)
         case "align" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToAlignQuery(Plano.NO).result).futureValue.length
           logger.info(s"Will align $howMany forms")
@@ -259,10 +265,18 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "presidential" =>
           process("presidential", processor.processProbabilities, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "detect" =>
-          val outputFile = new File(s"batches/detections-${LocalDateTime.now()}-${url.getHost}.csv")
-          val howMany    = resultsDatabase.run(ResultsTables.tpsToDetectQuery(Plano.NO).result).futureValue.length
-          println(s"Will detect: $howMany")
-          process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+          var continue = true
+          do {
+            val outputFile = new File(s"batches/detections-${LocalDateTime.now()}-${url.getHost}.csv")
+            val howMany    = resultsDatabase.run(ResultsTables.tpsToDetectQuery(offset).result).futureValue.length
+            println(s"Will detect: $howMany")
+            process("detections", processor.processDetections, resultsDatabase, resultsDatabase, kawalC1Client, batchParams)
+            continue = continuous
+            if (continuous) {
+              logger.info("Giving it a while...")
+              Thread.sleep(20000)
+            }
+          } while (continue)
         //        case "tps-unprocessed" =>
         //          implicit val pw = new PrintWriter(new File(s"batches/felix-${LocalDateTime.now()}-${url.getHost}.csv"))
         //          val howMany = resultsDatabase.run(TpsTables.tpsUnverifiedQuery.result).futureValue.length

@@ -20,7 +20,7 @@ apt install -y openssl
 apt install docker-compose
 
 # Replace "<X" with your actual IP address
-IP_ADDRESS="<X>"
+IP_ADDRESS="43.252.138.94"
 
 # Set the document root location
 DOCUMENT_ROOT="/var/www/html"

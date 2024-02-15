@@ -94,7 +94,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       sourceDb = sourceDb,
       targetDb = targetDb,
       client = client,
-      query = TpsTables.kelurahanQuery.sortBy(_.idKel), //.filter(x => x.idKel === 1101012001L || x.idKel === 1101012002L),
+      query = TpsTables.kelurahanQuery.sortBy(_.idKel.desc), //.filter(x => x.idKel === 5107052009L || x.idKel === 1101012002L),
       process = fetchTps,
       insert = TpsTables.upsertTps,
       params = params
@@ -150,7 +150,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     batchTransform[SingleTpsPhotoDao, DetectionResult, TpsPhotoTable](sourceDb,
                                                                       targetDb,
                                                                       client,
-                                                                      ResultsTables.tpsToDetectQuery(Plano.NO),
+                                                                      ResultsTables.tpsToDetectQuery(params.offset),
                                                                       streamDetections,
                                                                       ResultsTables.upsertDetections,
                                                                       params)
