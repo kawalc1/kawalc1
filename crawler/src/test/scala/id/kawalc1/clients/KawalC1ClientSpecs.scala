@@ -2,7 +2,7 @@ package id.kawalc1.clients
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import id.kawalc1
-import id.kawalc1.{Kelurahan, KelurahanOld, KelurahanResponse, PresidentialLembar2, SingleSum}
+import id.kawalc1.{Kelurahan, KelurahanOld, KelurahanResponse, Plano, PresidentialLembar2, SingleSum}
 import org.json4s.native.Serialization
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
@@ -16,12 +16,22 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val response  = Source.fromURL(getClass.getResource("/hierarchy/9408042004.json")).mkString
       val kelurahan = Serialization.read[KelurahanResponse](response)
       val set       = kelurahan.result.aggregated
-      set.keySet.size shouldBe 3
-      set.head._1 shouldBe "9905050001"
+      set.keySet.size shouldBe 5
+      set.head._1 shouldBe "4"
       val firstTps = set.head._2.head
-      firstTps.idLokasi shouldBe "9905050001"
-      firstTps.name shouldBe "KSK"
-      Kelurahan.toPhotoTps(kelurahan).length shouldBe 0
+      firstTps.idLokasi shouldBe "94080420044"
+      firstTps.name shouldBe "4"
+      val photos = Kelurahan.toPhotoTps(kelurahan)
+      photos.length shouldBe 2
+
+      val firstPhoto = photos.head
+      firstPhoto.uploadedPhotoId shouldBe "rNWNu52aJHXDVKmVIhhT"
+      Plano.withValue(firstPhoto.plano.get) shouldBe Plano.YES
+
+      val secondPhoto = photos.tail.head
+      secondPhoto.uploadedPhotoId shouldBe "ukr66utXx0fhf4gwzhb5"
+      Plano.withValue(secondPhoto.plano.get) shouldBe Plano.NO
+
     }
 
     "parse the `990505.json` response" in {

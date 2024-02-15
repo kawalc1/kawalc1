@@ -175,7 +175,8 @@ package object kawalc1 extends LazyLogging {
 
   case class UploadedPhoto(
       photoUrl: String,
-      imageId: String
+      imageId: String,
+      sirekap: Option[Boolean]
   )
 
   case class TpsInfo(
@@ -216,7 +217,7 @@ package object kawalc1 extends LazyLogging {
     private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
       infos.flatMap { t =>
         val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.flatMap {
-          case (key, value) if value.toString != "true" => Some(UploadedPhoto(value.toString, key))
+          case (key, value) if value.toString != "true" => Some(UploadedPhoto(value.toString, key, None))
           case _                                        => None
         })
         val photos = pendingPhotos ++ t.uploadedPhoto
@@ -281,7 +282,15 @@ package object kawalc1 extends LazyLogging {
           totalCompletedTps = t.totalCompletedTps,
           totalErrorTps = t.totalErrorTps,
           formType = None,
-          plano = None,
+          plano = {
+            val sirekap = t.uploadedPhoto.flatMap(_.sirekap).getOrElse(false)
+            val plano = if (sirekap) {
+              Plano.NO
+            } else {
+              Plano.YES
+            }
+            Some(plano.value)
+          },
           halaman = None
         )
       }
