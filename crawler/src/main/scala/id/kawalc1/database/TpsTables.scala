@@ -348,7 +348,7 @@ object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLog
     val photosInsert = tpsPhotoQuery.insertOrUpdateAll(photosData)
 
     val uploaded = sedotDatabase.run(tpsInsert)
-    logger.info(s"Uploaded $uploaded records into the sedot DB")
+    logger.info(s"Uploaded ${tpsData.size} records into the sedot DB")
 
     Seq(tpsInsert, photosInsert)
   }

@@ -18,7 +18,7 @@ from django.conf import settings
 from datetime import datetime
 
 from mengenali.image_classifier import detect_most_similar
-from mengenali.io import write_string, read_image, write_image
+from mengenali.io import write_string, read_image, write_image, write_json
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
@@ -195,6 +195,7 @@ def extract_roi(request, kelurahan, tps, filename):
 def download(request, kelurahan, tps, filename):
     config_file = request.GET.get('configFile', 'digit_config_pilpres_2019.json').lower()
     matcher = request.GET.get('featureAlgorithm', 'brisk').lower()
+    tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
 
     try:
         maybe_extract_digits = json.loads(request.GET.get('extractDigits', 'true').lower())
@@ -233,7 +234,6 @@ def download(request, kelurahan, tps, filename):
         logging.info("1: Align  %s", (datetime.now() - start_lap).total_seconds())
 
         lap = datetime.now()
-        tps_dir = path.join(settings.TRANSFORMED_DIR, f'transformed/{kelurahan}/{tps}/')
         file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
 
         loaded_config = load_config(config_file)
@@ -296,6 +296,7 @@ def download(request, kelurahan, tps, filename):
         trace = ''.join(traceback.TracebackException.from_exception(e).format())
         output = {'transformedUrl': None, 'success': False, 'exception': f'{trace}'}
 
+    write_json(f"{tps_dir}/response.json", json.dumps(output))
     return JsonResponse(output)
 
 
