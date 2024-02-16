@@ -85,6 +85,7 @@ def write_image(file_path, image):
 
 
 def write_json(file_path, json):
+    logging.info(f"writing json {file_path}")
     fp = BytesIO()
     fp.write(json.encode('utf-8'))
     storage.save(file_path, ContentFile(fp.getbuffer()))
