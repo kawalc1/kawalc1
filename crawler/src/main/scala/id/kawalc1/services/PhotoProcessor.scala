@@ -94,7 +94,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       sourceDb = sourceDb,
       targetDb = targetDb,
       client = client,
-      query = TpsTables.kelurahanQuery.sortBy(_.idKel.desc), //.filter(x => x.idKel === 5107052009L || x.idKel === 1101012002L),
+      query = TpsTables.kelurahanQuery.sortBy(_.idKel.desc), //.filter(x => x.idKel === 3173041007L),
       process = fetchTps,
       insert = TpsTables.upsertTps,
       params = params

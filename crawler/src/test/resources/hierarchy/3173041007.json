@@ -1,0 +1,118 @@
+{
+  "result": {
+    "names": [
+      "DKI JAKARTA",
+      "KOTA JAKARTA BARAT",
+      "TAMBORA",
+      "ANGKE"
+    ],
+    "id": "3173041007",
+    "aggregated": {
+      "2": [
+        {
+          "pendingUploads": {},
+          "totalKpuTps": 1,
+          "totalLaporTps": 0,
+          "idLokasi": "31730410072",
+          "pas2": 89,
+          "totalTps": 1,
+          "pas3": 23,
+          "totalCompletedTps": 1,
+          "dpt": 277,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "ouid": "kpu_uid",
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 89,
+          "updateTs": 1708080324621
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "31730410072",
+          "pas2": 89,
+          "totalTps": 1,
+          "pas3": 23,
+          "totalCompletedTps": 1,
+          "dpt": 277,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "uploadedPhoto": {
+            "kpuData": {
+              "status_adm": true,
+              "administrasi": {
+                "pengguna_total_j": 205,
+                "pengguna_non_dpt_l": 0,
+                "suara_total": 205,
+                "pengguna_non_dpt_j": 0,
+                "pengguna_non_dpt_p": 0,
+                "pemilih_dpt_p": 142,
+                "pemilih_dpt_l": 135,
+                "pengguna_dpt_l": 101,
+                "pemilih_dpt_j": 277,
+                "pengguna_dptb_p": 1,
+                "pengguna_dpt_j": 204,
+                "suara_tidak_sah": 4,
+                "suara_sah": 201,
+                "pengguna_total_p": 104,
+                "pengguna_dpt_p": 103,
+                "pengguna_dptb_j": 1,
+                "pengguna_dptb_l": 0,
+                "pengguna_total_l": 101
+              },
+              "images": [
+                "https://sirekap-obj-formc.kpu.go.id/b550/pemilu/ppwp/31/73/04/10/07/3173041007002-20240214-155619--a933cdc4-9522-48df-b69b-2e58ba6ef498.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/b550/pemilu/ppwp/31/73/04/10/07/3173041007002-20240214-155056--0163d18a-0d79-472e-a8bf-2a6c1786cede.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/b550/pemilu/ppwp/31/73/04/10/07/3173041007002-20240214-194637--8c837d3f-c14a-4776-8637-70f8d3e3de24.jpg"
+              ],
+              "psu": null,
+              "status_suara": true,
+              "chart": {
+                "100025": 89,
+                "100026": 89,
+                "100027": 23,
+                "null": null
+              },
+              "ts": "2024-02-15 00:41:44"
+            },
+            "photoUrl": "http://lh3.googleusercontent.com/9VJwKrHgBgOqJdSRhTn5eaqzrgRK0rqA07-l8WR0wLLv1I03kB1bNtVcDUoi8ivK3iPnJkyIoOP_VXm4eOBWIzk7ynjebCdqaQk8",
+            "imageId": "t132HpVYDRZXSyReRu5q"
+          },
+          "ouid": "kpu_uid",
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 89,
+          "updateTs": 1708070309170
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "31730410072",
+          "pas2": 89,
+          "totalTps": 1,
+          "pas3": 23,
+          "totalCompletedTps": 0,
+          "dpt": 277,
+          "totalJagaTps": 1,
+          "totalPendingTps": 1,
+          "anyPendingTps": "31730410072",
+          "uid": "wpxvKlSugrP3nTjG8Tk8pZ8bVdT2",
+          "uploadedPhoto": {
+            "photoUrl": "http://lh3.googleusercontent.com/eazc7bp5DQ0lclWgGVT_zTgPYOs90PHM6_Y1W0fPszxj3sQwU8oIcP5b6RCU1mEdhNmFN3GNaE-AqT3olNFTkyUMw6oymT3pzOnLy_U",
+            "imageId": "fscl0Nami6cmicH1n93i"
+          },
+          "ouid": "nIT5iLKim9hw8YiU3WzEfzMLdkS2",
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 89,
+          "updateTs": 1707937039818
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1708080978885
+  }
+}

@@ -237,15 +237,15 @@ def download(request, kelurahan, tps, filename):
         file_path = f'{tps_dir}/{filename}{settings.TARGET_EXTENSION}' if settings.LOCAL else a['transformedUri']
 
         loaded_config = load_config(config_file)
-        b = extraction.extract_rois_in_memory(file_path, path.join(tps_dir, 'extracted'),
-                                              settings.STATIC_DIR, loaded_config, aligned_image, False,
-                                              True) if similarity > 1.0 else {"numbers": []}
+        extracted_numbers = extraction.extract_rois_in_memory(file_path, path.join(tps_dir, 'extracted'),
+                                                              settings.STATIC_DIR, loaded_config, aligned_image, False,
+                                                              True) if similarity > 1.0 else {"numbers": []}
 
         logging.info("2: Extract  %s", (datetime.now() - lap).total_seconds())
         lap = datetime.now()
 
         probabilities = []
-        for number in b["numbers"]:
+        for number in extracted_numbers["numbers"]:
             probability_set = {"id": number["id"]}
             number_probabilities = []
 
@@ -254,26 +254,37 @@ def download(request, kelurahan, tps, filename):
             probability_set["probabilitiesForNumber"] = number_probabilities
             probabilities.insert(0, probability_set)
 
-        c = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
-                                                          settings.CATEGORIES_COUNT,
-                                                          print_outcome) if calculate_numbers else {}
+        calculated_outcomes = processprobs.get_possible_outcomes_for_config(loaded_config, probabilities,
+                                                                            settings.CATEGORIES_COUNT,
+                                                                            print_outcome) if calculate_numbers else {}
         logging.info("3: Probs  %s", (datetime.now() - lap).total_seconds())
 
         if calculate_numbers:
             # del b['numbers']
             # del b['signatures']
-            b['probabilityMatrix'] = c
+            extracted_numbers['probabilityMatrix'] = calculated_outcomes
 
-        output = {**a, **b}
+        output = {**a, **extracted_numbers}
 
-        outcome = get_outcome(output, b["bubbleNumbers"], config_file) if similarity > 1.0 else {'confidence': 0}
+        outcome = get_outcome(output, extracted_numbers["bubbleNumbers"], config_file) if similarity > 1.0 else {
+            'confidence': 0}
         confidence = outcome["confidence"]
         neural_numbers = outcome.get("neuralNumbers") if "neuralNumbers" in outcome else {}
         bubble_numbers = outcome.get("bubbleNumbers") if "bubbleNumbers" in outcome else {}
 
         output['neuralNumbers'] = neural_numbers
         output['bubbleNumbers'] = bubble_numbers
-        output['outcome'] = neural_numbers if confidence > 0.6 else bubble_numbers
+
+        outcome = neural_numbers if confidence > 0.6 else bubble_numbers
+        output['outcome'] = outcome
+        extracted_roi = extracted_numbers["extractedRoi"]
+        output['summary'] = {
+            'pas1': outcome['anies'],
+            'pas2': outcome['prabowo'],
+            'pas3': outcome['ganjar'],
+            'roiNumbers': [x.get("paslon") for x in extracted_roi if "paslon" in x][0],
+            'roiHeading': [x.get("lokasi") for x in extracted_roi if "lokasi" in x][0]
+        }
 
         output['success'] = bool(outcome['confidence'] > 0.8)
 

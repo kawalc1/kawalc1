@@ -2,7 +2,7 @@ package id.kawalc1.clients
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import id.kawalc1
-import id.kawalc1.{Kelurahan, KelurahanOld, KelurahanResponse, Plano, PresidentialLembar2, SingleSum}
+import id.kawalc1.{FormType, Kelurahan, KelurahanOld, KelurahanResponse, Plano, PresidentialLembar2, SingleSum}
 import org.json4s.native.Serialization
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
@@ -11,6 +11,29 @@ import scala.io.Source
 
 class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
   "KawalC1Client" should {
+
+    "parse the `3173041007.json` response" in {
+      val response  = Source.fromURL(getClass.getResource("/hierarchy/3173041007.json")).mkString
+      val kelurahan = Serialization.read[KelurahanResponse](response)
+      val set       = kelurahan.result.aggregated
+      set.keySet.size shouldBe 1
+      set.head._1 shouldBe "2"
+      val firstTps = set.head._2.head
+      firstTps.idLokasi shouldBe "31730410072"
+      firstTps.name shouldBe "2"
+      val photos = Kelurahan.toPhotoTps(kelurahan)
+      photos.length shouldBe 2
+
+      val firstPhoto = photos.head
+      firstPhoto.uploadedPhotoId shouldBe "t132HpVYDRZXSyReRu5q"
+      Plano.withValue(firstPhoto.plano.get) shouldBe Plano.YES
+      FormType.withValue(firstPhoto.formType.get) shouldBe FormType.KPU
+
+      val secondPhoto = photos.tail.head
+      secondPhoto.uploadedPhotoId shouldBe "fscl0Nami6cmicH1n93i"
+      Plano.withValue(secondPhoto.plano.get) shouldBe Plano.YES
+      secondPhoto.formType shouldBe None
+    }
 
     "parse the `9408042004.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/hierarchy/9408042004.json")).mkString
@@ -27,11 +50,12 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       val firstPhoto = photos.head
       firstPhoto.uploadedPhotoId shouldBe "rNWNu52aJHXDVKmVIhhT"
       Plano.withValue(firstPhoto.plano.get) shouldBe Plano.YES
+      firstPhoto.formType shouldBe None
 
       val secondPhoto = photos.tail.head
       secondPhoto.uploadedPhotoId shouldBe "ukr66utXx0fhf4gwzhb5"
-      Plano.withValue(secondPhoto.plano.get) shouldBe Plano.NO
-
+      Plano.withValue(secondPhoto.plano.get) shouldBe Plano.YES
+      secondPhoto.formType shouldBe None
     }
 
     "parse the `990505.json` response" in {

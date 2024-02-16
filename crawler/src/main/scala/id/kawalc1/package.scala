@@ -173,10 +173,14 @@ package object kawalc1 extends LazyLogging {
       data: Map[Int, TpsOldDto]
   )
 
+  case class KpuData(
+      ts: String
+  )
+
   case class UploadedPhoto(
       photoUrl: String,
       imageId: String,
-      sirekap: Option[Boolean]
+      kpuData: Option[KpuData]
   )
 
   case class TpsInfo(
@@ -281,16 +285,8 @@ package object kawalc1 extends LazyLogging {
           totalPendingTps = t.totalPendingTps,
           totalCompletedTps = t.totalCompletedTps,
           totalErrorTps = t.totalErrorTps,
-          formType = None,
-          plano = {
-            val sirekap = t.uploadedPhoto.flatMap(_.sirekap).getOrElse(false)
-            val plano = if (sirekap) {
-              Plano.NO
-            } else {
-              Plano.YES
-            }
-            Some(plano.value)
-          },
+          formType = t.uploadedPhoto.flatMap(_.kpuData).map(_ => FormType.KPU.value),
+          plano = Some(Plano.YES.value),
           halaman = None
         )
       }
@@ -357,6 +353,8 @@ package object kawalc1 extends LazyLogging {
   sealed abstract class FormType(val value: Short) extends ShortEnumEntry
 
   case object FormType extends ShortEnum[FormType] {
+
+    case object KPU extends FormType(0)
 
     // Full blown until digitized.
     case object PPWP extends FormType(1)
