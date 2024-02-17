@@ -129,8 +129,7 @@ def get_outcome(output, bubbleNumbers, config_file):
         bubble_numbers = {
             'anies': bubbleNumbers[0],
             'prabowo': bubbleNumbers[1],
-            'ganjar': bubbleNumbers[2],
-            'confidence': confidence,
+            'ganjar': bubbleNumbers[2]
         }
         return {
             "neuralNumbers": neural_numbers,
@@ -286,7 +285,7 @@ def download(request, kelurahan, tps, filename):
             'roiHeading': [x.get("lokasi") for x in extracted_roi if "lokasi" in x][0]
         }
 
-        output['success'] = bool(outcome['confidence'] > 0.8)
+        output['success'] = bool(confidence > 0.8)
 
         output['duration'] = (datetime.now() - start_lap).total_seconds()
         output['configFile'] = config_file

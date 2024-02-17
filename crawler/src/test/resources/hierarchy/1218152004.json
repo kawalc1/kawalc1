@@ -1,0 +1,498 @@
+{
+  "result": {
+    "names": [
+      "SUMATERA UTARA",
+      "SERDANG BEDAGAI",
+      "SEI BAMBAN",
+      "GEMPOLAN"
+    ],
+    "id": "1218152004",
+    "aggregated": {
+      "1": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "12181520041",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 223,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "1",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707920051264
+        }
+      ],
+      "2": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "12181520042",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 242,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "2",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "3": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "12181520043",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 228,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "3",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "4": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "12181520044",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 234,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "4",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "5": [
+        {
+          "pendingUploads": {},
+          "totalKpuTps": 1,
+          "totalLaporTps": 0,
+          "idLokasi": "12181520045",
+          "pas2": 97,
+          "totalTps": 1,
+          "pas3": 62,
+          "totalCompletedTps": 1,
+          "dpt": 232,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "ouid": "kpu_uid",
+          "name": "5",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1708121558489
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "12181520045",
+          "pas2": 97,
+          "totalTps": 1,
+          "pas3": 62,
+          "totalCompletedTps": 0,
+          "dpt": 232,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "uploadedPhoto": {
+            "kpuData": {
+              "status_adm": false,
+              "administrasi": null,
+              "images": [
+                "https://sirekap-obj-formc.kpu.go.id/8bc5/pemilu/ppwp/12/18/15/20/04/1218152004005-20240214-230606--f2ae5074-352f-4265-8c65-bbfb5c1d0c37.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/8bc5/pemilu/ppwp/12/18/15/20/04/1218152004005-20240214-230823--ed5c2755-9967-4685-b973-feb745322873.jpg",
+                null
+              ],
+              "psu": null,
+              "status_suara": true,
+              "chart": {
+                "100025": 0,
+                "100026": 97,
+                "100027": 62,
+                "null": null
+              },
+              "ts": "2024-02-16 01:00:27"
+            },
+            "photoUrl": "http://lh3.googleusercontent.com/6K2p_NYq_6tZGX7pUq0M6G35r1zJ74y_riXAqz-I_5PiiJeAiksjHAiUECFv4PcoIox7lZqzoWLpatuy9HfrFy2vUqceMJJZu6outg",
+            "imageId": "mJi2m1NvqVOdOWKQ44qa",
+            "samBot": {
+              "similarity": 0.00031955904677655856,
+              "configFile": "pilpres_2024_plano_halaman2.json",
+              "bubbleNumbers": {},
+              "hash": "17450096214787920213",
+              "neuralNumbers": {},
+              "outcome": {}
+            }
+          },
+          "ouid": "kpu_uid",
+          "name": "5",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1708121558489
+        }
+      ],
+      "6": [
+        {
+          "pendingUploads": {},
+          "totalKpuTps": 1,
+          "totalLaporTps": 0,
+          "idLokasi": "12181520046",
+          "pas2": 76,
+          "totalTps": 1,
+          "pas3": 81,
+          "totalCompletedTps": 1,
+          "dpt": 202,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "ouid": "kpu_uid",
+          "name": "6",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1708121574729
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "12181520046",
+          "pas2": 76,
+          "totalTps": 1,
+          "pas3": 81,
+          "totalCompletedTps": 0,
+          "dpt": 202,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "uploadedPhoto": {
+            "kpuData": {
+              "status_adm": false,
+              "administrasi": null,
+              "images": [
+                "https://sirekap-obj-formc.kpu.go.id/cea1/pemilu/ppwp/12/18/15/20/04/1218152004006-20240215-071421--aa5c8a42-bb4f-48ba-b4cf-410de07421d0.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/cea1/pemilu/ppwp/12/18/15/20/04/1218152004006-20240215-071427--aefb215e-c59f-4332-8888-f47dd390ad1e.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/cea1/pemilu/ppwp/12/18/15/20/04/1218152004006-20240215-071432--4d6c1de9-5bd6-41d9-b817-09e35e7a86b5.jpg"
+              ],
+              "psu": null,
+              "status_suara": true,
+              "chart": {
+                "100025": 0,
+                "100026": 76,
+                "100027": 81,
+                "null": null
+              },
+              "ts": "2024-02-16 01:00:27"
+            },
+            "photoUrl": "http://lh3.googleusercontent.com/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg",
+            "imageId": "5w0DhkalBUUQDcBn8vXK",
+            "samBot": {
+              "transformedUrl": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280.webp",
+              "similarity": 36.019359836293575,
+              "configFile": "pilpres_2024_plano_halaman2.json",
+              "extractedRoi": [
+                {
+                  "paslon": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~paslon.webp"
+                },
+                {
+                  "bubbleSheet1": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~bubbleSheet1.webp"
+                },
+                {
+                  "bubbleSheet2": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~bubbleSheet2.webp"
+                },
+                {
+                  "bubbleSheet3": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~bubbleSheet3.webp"
+                },
+                {
+                  "lokasi": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~lokasi.webp"
+                }
+              ],
+              "digitArea": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/6/extracted/O_y246l2asR23jYrveEgkYaKE3mLhiLgVv0PwSqzlQuRwLPF7cQwMjseRX0ZPn5WnHPGLgLG3B_mIYZcP3zuAcWXZR1P0ZP-3_hVMg%3Ds1280~digit-area.webp",
+              "bubbleNumbers": {
+                "anies": 153,
+                "prabowo": 98,
+                "confidence": 0.23645355157704723,
+                "ganjar": 900
+              },
+              "hash": "13182803097179622185",
+              "neuralNumbers": {
+                "anies": 5,
+                "prabowo": 75,
+                "confidence": 0.23645355157704723,
+                "ganjar": 81
+              },
+              "outcome": {
+                "anies": 153,
+                "prabowo": 98,
+                "confidence": 0.23645355157704723,
+                "ganjar": 900
+              }
+            }
+          },
+          "ouid": "kpu_uid",
+          "name": "6",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1708121574729
+        }
+      ],
+      "7": [
+        {
+          "pendingUploads": {},
+          "totalKpuTps": 1,
+          "totalLaporTps": 0,
+          "idLokasi": "12181520047",
+          "pas2": 98,
+          "totalTps": 1,
+          "pas3": 61,
+          "totalCompletedTps": 1,
+          "dpt": 211,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "ouid": "kpu_uid",
+          "name": "7",
+          "totalErrorTps": 0,
+          "pas1": 3,
+          "updateTs": 1708121588515
+        },
+        {
+          "pendingUploads": {},
+          "totalLaporTps": 0,
+          "idLokasi": "12181520047",
+          "pas2": 98,
+          "totalTps": 1,
+          "pas3": 61,
+          "totalCompletedTps": 0,
+          "dpt": 211,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "uid": "kpu_uid",
+          "uploadedPhoto": {
+            "kpuData": {
+              "status_adm": false,
+              "administrasi": null,
+              "images": [
+                "https://sirekap-obj-formc.kpu.go.id/479c/pemilu/ppwp/12/18/15/20/04/1218152004007-20240214-220459--1183d311-9ace-4e0a-9a26-b3eb3560e846.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/479c/pemilu/ppwp/12/18/15/20/04/1218152004007-20240214-191616--9c86d1fe-425b-4d4b-8acc-330f68f84f99.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/479c/pemilu/ppwp/12/18/15/20/04/1218152004007-20240214-220614--299a551f-99cf-49e2-b519-434f766357c5.jpg"
+              ],
+              "psu": null,
+              "status_suara": true,
+              "chart": {
+                "100025": 3,
+                "100026": 98,
+                "100027": 61,
+                "null": null
+              },
+              "ts": "2024-02-16 01:00:27"
+            },
+            "photoUrl": "http://lh3.googleusercontent.com/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q",
+            "imageId": "Irj9CMGDiYAF2humOX9G",
+            "samBot": {
+              "transformedUrl": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280.webp",
+              "similarity": 28.431252314089715,
+              "configFile": "pilpres_2024_plano_halaman2.json",
+              "extractedRoi": [
+                {
+                  "paslon": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~paslon.webp"
+                },
+                {
+                  "bubbleSheet1": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~bubbleSheet1.webp"
+                },
+                {
+                  "bubbleSheet2": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~bubbleSheet2.webp"
+                },
+                {
+                  "bubbleSheet3": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~bubbleSheet3.webp"
+                },
+                {
+                  "lokasi": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~lokasi.webp"
+                }
+              ],
+              "digitArea": "https://storage.googleapis.com/kawalc1/static/2024/transformed/1218152004/7/extracted/xnW-7DN21gD8eBoMcYe8xTJReCDbWmbHvN0szpwFoYPt20XWzP2azJn_Nrtxn_XRwGX8wjvk_0TSiGD8T0B1Bs2i726LIMBEuyjF7Q%3Ds1280~digit-area.webp",
+              "bubbleNumbers": {
+                "anies": 3,
+                "prabowo": 98,
+                "confidence": 0.1500331967465242,
+                "ganjar": 72
+              },
+              "hash": "12939768939687548342",
+              "neuralNumbers": {
+                "anies": 7,
+                "prabowo": 55,
+                "confidence": 0.1500331967465242,
+                "ganjar": 55
+              },
+              "outcome": {
+                "anies": 3,
+                "prabowo": 98,
+                "confidence": 0.1500331967465242,
+                "ganjar": 72
+              }
+            }
+          },
+          "ouid": "kpu_uid",
+          "name": "7",
+          "totalErrorTps": 0,
+          "pas1": 3,
+          "updateTs": 1708121588515
+        }
+      ],
+      "8": [
+        {
+          "pendingUploads": {
+            "ftlJvIjij2DUgR7OxnIb": "http://lh3.googleusercontent.com/6QllfxDSBZHWCXa-FvyW_jkv0Qf6yAaIWBNB9I3spxGC8EP1Jm2nsVKYwb6a09ZZ4ZXTIYmwE2Li8TkyFjA6NNWnQZYsTv2ApzKJoA"
+          },
+          "totalLaporTps": 0,
+          "idLokasi": "12181520048",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 235,
+          "totalJagaTps": 0,
+          "totalPendingTps": 1,
+          "anyPendingTps": "12181520048",
+          "name": "8",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707915291992
+        }
+      ],
+      "9": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "12181520049",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 202,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "9",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "10": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200410",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 194,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "10",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "11": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200411",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 196,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "11",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "12": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200412",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 162,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "12",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "13": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200413",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 144,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "13",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "14": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200414",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 190,
+          "totalJagaTps": 0,
+          "totalPendingTps": 0,
+          "name": "14",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 0
+        }
+      ],
+      "15": [
+        {
+          "totalLaporTps": 0,
+          "idLokasi": "121815200415",
+          "pas2": 0,
+          "totalTps": 1,
+          "pas3": 0,
+          "totalCompletedTps": 0,
+          "dpt": 57,
+          "totalJagaTps": 1,
+          "totalPendingTps": 0,
+          "name": "15",
+          "totalErrorTps": 0,
+          "pas1": 0,
+          "updateTs": 1707904291323
+        }
+      ]
+    },
+    "numWrites": 0,
+    "lastCachedTs": 1708133541485
+  }
+}
