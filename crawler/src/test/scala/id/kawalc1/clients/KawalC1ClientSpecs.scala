@@ -28,11 +28,16 @@ class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with
       firstPhoto.uploadedPhotoId shouldBe "t132HpVYDRZXSyReRu5q"
       Plano.withValue(firstPhoto.plano.get) shouldBe Plano.YES
       FormType.withValue(firstPhoto.formType.get) shouldBe FormType.KPU
+      firstPhoto.pas2 shouldBe Some(123)
+      firstPhoto.pas2Agg shouldBe Some(89)
 
       val secondPhoto = photos.tail.head
       secondPhoto.uploadedPhotoId shouldBe "fscl0Nami6cmicH1n93i"
       Plano.withValue(secondPhoto.plano.get) shouldBe Plano.YES
       secondPhoto.formType shouldBe None
+      secondPhoto.pas2 shouldBe Some(356)
+      secondPhoto.pas2Agg shouldBe Some(89)
+
     }
 
     "parse the `9408042004.json` response" in {

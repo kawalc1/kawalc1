@@ -4,6 +4,7 @@ import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1
 import id.kawalc1._
 import id.kawalc1.database.CustomPostgresProfile.api._
+import id.kawalc1.services.BlockingSupport
 import slick.dbio.Effect
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
@@ -72,7 +73,7 @@ case class DetectionResult(kelurahan: Long,
                            roi: Option[String],
                            response: String)
 
-object ResultsTables extends SlickValueEnumSupport {
+object ResultsTables extends SlickValueEnumSupport with BlockingSupport {
   val profile = id.kawalc1.database.CustomPostgresProfile
 
   class DetectionResults(tag: Tag) extends Table[DetectionResult](tag, "detections") {
@@ -330,7 +331,10 @@ object ResultsTables extends SlickValueEnumSupport {
     Seq(presidentialResultsQuery.insertOrUpdateAll(results))
   }
 
+  private val sedotDatabase = Database.forConfig("sedotDatabase")
   def upsertDetections(results: Seq[DetectionResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
-    Seq(detectionsQuery.insertOrUpdateAll(results))
+    val detectionsInsert = detectionsQuery.insertOrUpdateAll(results)
+    sedotDatabase.run(detectionsInsert).futureValue
+    Seq(detectionsInsert)
   }
 }

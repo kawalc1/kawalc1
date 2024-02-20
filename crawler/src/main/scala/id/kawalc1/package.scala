@@ -2,6 +2,8 @@ package id
 
 import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.{ShortEnum, ShortEnumEntry}
+import id.kawalc1.clients.JsonSupport
+import org.json4s.native.Serialization
 
 import java.sql.Timestamp
 import java.time.Instant
@@ -9,7 +11,7 @@ import java.util.UUID
 import scala.collection.immutable
 import scala.util.Try
 
-package object kawalc1 extends LazyLogging {
+package object kawalc1 extends LazyLogging with JsonSupport {
 
   def formTypeToConfig(formType: FormType, plano: Option[Plano], halaman: Option[String]): String = (formType, plano, halaman) match {
     case (FormType.PPWP, Some(Plano.YES), Some("1")) =>
@@ -127,6 +129,9 @@ package object kawalc1 extends LazyLogging {
       pas1: Option[Int],
       pas2: Option[Int],
       pas3: Option[Int],
+      pas1Agg: Option[Int],
+      pas2Agg: Option[Int],
+      pas3Agg: Option[Int],
       anyPendingTps: Option[String],
       totalTps: Int,
       totalPendingTps: Int,
@@ -183,6 +188,12 @@ package object kawalc1 extends LazyLogging {
       kpuData: Option[KpuData]
   )
 
+  case class AggregateResult(
+      pas1: Int,
+      pas2: Int,
+      pas3: Int
+  )
+
   case class TpsInfo(
       pendingUploads: Option[Map[String, Object]],
       idLokasi: String,
@@ -198,7 +209,8 @@ package object kawalc1 extends LazyLogging {
       name: String,
       totalErrorTps: Int,
       pas1: Int,
-      updateTs: Long
+      updateTs: Long,
+      aggregateResult: Option[AggregateResult]
   )
 
   case class Kelurahan(
@@ -219,13 +231,25 @@ package object kawalc1 extends LazyLogging {
   object Kelurahan {
 
     private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
-      infos.flatMap { t =>
+      val aggregate = infos.head
+      val aggToStore = if (aggregate.totalCompletedTps > 0) {
+        Some(AggregateResult(aggregate.pas1, aggregate.pas2, aggregate.pas3))
+      } else {
+        None
+      }
+
+//      println("AGG " + Serialization.write(aggregate))
+      infos.flatMap { t: TpsInfo =>
         val pendingPhotos: Seq[UploadedPhoto] = t.pendingUploads.toSeq.flatMap(_.flatMap {
           case (key, value) if value.toString != "true" => Some(UploadedPhoto(value.toString, key, None))
           case _                                        => None
         })
-        val photos = pendingPhotos ++ t.uploadedPhoto
-        photos.map(p => t.copy(uploadedPhoto = Some(p)))
+        val photos: Seq[UploadedPhoto] = pendingPhotos ++ t.uploadedPhoto
+
+        val exploded = photos.map(p => t.copy(uploadedPhoto = Some(p), aggregateResult = aggToStore))
+//        println(Serialization.write(exploded))
+//        println(s"RES: ${t.pas1}, ${t.pas2}, ${t.pas3}")
+        exploded
       }
 
     }
@@ -259,8 +283,8 @@ package object kawalc1 extends LazyLogging {
 
     def toPhotoTps(kelurahan: KelurahanResponse): Seq[SingleTpsPhotoDao] = {
       for {
-        tps        <- kelurahan.result.aggregated
-        t: TpsInfo <- explodeForPhotos(tps._2)
+        tps: (String, Seq[TpsInfo]) <- kelurahan.result.aggregated
+        t: TpsInfo                  <- explodeForPhotos(tps._2)
         if t.uploadedPhoto.isDefined
       } yield {
         SingleTpsPhotoDao(
@@ -280,6 +304,9 @@ package object kawalc1 extends LazyLogging {
           pas1 = Some(t.pas1),
           pas2 = Some(t.pas2),
           pas3 = Some(t.pas3),
+          pas1Agg = t.aggregateResult.map(_.pas1),
+          pas2Agg = t.aggregateResult.map(_.pas2),
+          pas3Agg = t.aggregateResult.map(_.pas3),
           anyPendingTps = t.anyPendingTps,
           totalTps = t.totalTps,
           totalPendingTps = t.totalPendingTps,

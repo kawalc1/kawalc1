@@ -4,9 +4,8 @@ SELECT distinct p.kelurahan, p.tps,
                 p.pas2 AS "bot-pas2", t.pas2,
                 p.jumlah AS "bot-jumlah", t.pas1 + t.pas2 AS "jumlah",
                 -1 as "jumlah-sah",
-                p.tidak_sah AS "bot-tidak-sah", "tSah" as "tidak-sah",
+                p.tidak_sah AS "bot-tidak-sah",
                 t.pas1 = p.pas1 AND t.pas2 = p.pas2 as "pasmatch",
-                "tSah" = p.tidak_sah AS "tidak-sah-match",
                 p.hash,
                 p.aligned,
                 p.roi,
@@ -14,13 +13,9 @@ SELECT distinct p.kelurahan, p.tps,
                 p.confidence_tidak_sah,
                 p.photo,
                 p.config,
-                p.php_jumlah AS "bot-php",
-                t.jum AS "php",
-                p.php_jumlah = t.jum as "php-match",
-                t.error AS error,
                 similarity
 FROM detections AS p
-         INNER JOIN tps AS t ON p.photo = t.photo
+         INNER JOIN "tps-photo" AS t ON p.photo = t.uploaded_photo_id
          inner join (SELECT a.*
                      FROM duplicates a
                               JOIN (SELECT duplicates.hash, COUNT(*)

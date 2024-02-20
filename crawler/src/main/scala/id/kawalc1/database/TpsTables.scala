@@ -12,6 +12,9 @@ import java.sql.Timestamp
 import scala.concurrent.ExecutionContext
 import id.kawalc1.database.CustomPostgresProfile.api._
 
+import slick.collection.heterogeneous.{HList, HCons, HNil}
+import slick.collection.heterogeneous.syntax._
+
 object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLogging {
   val profile = id.kawalc1.database.CustomPostgresProfile
 
@@ -39,6 +42,10 @@ object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLog
     def pas2 = column[Option[Int]]("pas2")
     def pas3 = column[Option[Int]]("pas3")
 
+    def pas1Agg = column[Option[Int]]("pas1_agg")
+    def pas2Agg = column[Option[Int]]("pas2_agg")
+    def pas3Agg = column[Option[Int]]("pas3_agg")
+
     def anyPendingTps     = column[Option[String]]("any_pending_tps")
     def totalTps          = column[Int]("total_tps")
     def totalPendingTps   = column[Int]("total_pending_tps")
@@ -52,27 +59,30 @@ object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLog
     def lastUpdated = column[Timestamp]("last_updated")
 
     override def * =
-      (kelurahanId,
-       tpsId,
-       name,
-       idLokasi,
-       uid,
-       updatedTs,
-       uploadedPhotoId,
-       uploadedPhotoUrl,
-       dpt,
-       pas1,
-       pas2,
-       pas3,
-       anyPendingTps,
-       totalTps,
-       totalPendingTps,
-       totalCompletedTps,
-       totalErrorTps,
-       formType,
-       plano,
-       halaman,
-       lastUpdated) <> (SingleTpsPhotoDao.tupled, SingleTpsPhotoDao.unapply)
+      (kelurahanId ::
+        tpsId ::
+        name ::
+        idLokasi ::
+        uid ::
+        updatedTs ::
+        uploadedPhotoId ::
+        uploadedPhotoUrl ::
+        dpt ::
+        pas1 ::
+        pas2 ::
+        pas3 ::
+        pas1Agg ::
+        pas2Agg ::
+        pas3Agg ::
+        anyPendingTps ::
+        totalTps ::
+        totalPendingTps ::
+        totalCompletedTps ::
+        totalErrorTps ::
+        formType ::
+        plano ::
+        halaman ::
+        lastUpdated :: HNil).mapTo[SingleTpsPhotoDao]
 
   }
 
@@ -347,7 +357,7 @@ object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLog
     println(s"PLAIN: ${tpsData.size}, PHOTOS: ${photosData.size}")
     val photosInsert = tpsPhotoQuery.insertOrUpdateAll(photosData)
 
-    val uploaded = sedotDatabase.run(tpsInsert)
+    val uploaded = sedotDatabase.run(tpsInsert).futureValue
     logger.info(s"Uploaded ${tpsData.size} records into the sedot DB")
 
     Seq(tpsInsert, photosInsert)
