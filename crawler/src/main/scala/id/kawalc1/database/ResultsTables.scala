@@ -302,12 +302,11 @@ object ResultsTables extends SlickValueEnumSupport with BlockingSupport {
   def tpsToDetectQuery(offset: Int): Query[TpsTables.TpsPhotoTable, kawalc1.SingleTpsPhotoDao, Seq] = {
     val joined = for {
       (a: TpsTables.TpsPhotoTable, b: Rep[Option[DetectionResults]]) <- (TpsTables.tpsPhotoQuery joinLeft detectionsQuery on (_.uploadedPhotoId === _.photo))
+        .sortBy(_._1.kelurahanId)
     } yield (a, b)
     joined
       .filter { case (a, b) => b.isEmpty }
-      .drop(offset)
       .map(_._1)
-      .filter(x => x.formType.isEmpty)
   }
 
   def tpsToRoiQuery = {

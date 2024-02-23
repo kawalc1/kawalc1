@@ -59,6 +59,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
       val nextBatch = query.drop(start).take(params.batchSize)
       val items     = sourceDb.run(nextBatch.result).futureValue
       numberOfItems = items.length
+      logger.info(s"Will process #$numberOfItems items from ${items.headOption.map(_.toString)}")
       val inserted = transform(sourceDb, targetDb, items, process, insert, params.threads, client).futureValue
       logger.info(s"Inserted batch $start - ${start + params.batchSize}. # of items: ${inserted.map(_.getOrElse(0)).sum}")
       start += params.batchSize
@@ -301,7 +302,7 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
 
   def processAndMapSingleDetection(tps: SingleTpsPhotoDao, client: KawalC1Client): Future[DetectionResult] = {
     processSingleDetection(tps, client).map(toDetectionResult).map { x =>
-      logger.info(s"${x.kelurahan}, ${x.confidence
+      logger.info(s"${x.kelurahan}, ${x.tps}, ${x.confidence
         .map(a => s"conf: $a,")
         .getOrElse("")} ${x.similarity.map(a => s"similarity: $a, ").getOrElse("")}${x.pas1.map(p => s"pas1: $p, ").getOrElse("")}${x.pas2
         .map(p => s"pas2: $p, ")

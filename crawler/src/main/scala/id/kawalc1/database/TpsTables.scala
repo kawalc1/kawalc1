@@ -3,17 +3,15 @@ package id.kawalc1.database
 import com.typesafe.scalalogging.LazyLogging
 import enumeratum.values.SlickValueEnumSupport
 import id.kawalc1._
+import id.kawalc1.database.CustomPostgresProfile.api._
 import id.kawalc1.services.BlockingSupport
+import slick.collection.heterogeneous.HNil
 import slick.dbio.Effect
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
 import java.sql.Timestamp
 import scala.concurrent.ExecutionContext
-import id.kawalc1.database.CustomPostgresProfile.api._
-
-import slick.collection.heterogeneous.{HList, HCons, HNil}
-import slick.collection.heterogeneous.syntax._
 
 object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLogging {
   val profile = id.kawalc1.database.CustomPostgresProfile

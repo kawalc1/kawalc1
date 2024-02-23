@@ -30,6 +30,11 @@
         <appender-ref ref="FILE"/>
     </root>
 
+    <logger name="slick.jdbc.JdbcBackend.statement"  level="INFO" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+
     <logger name="slick.jdbc" level="INFO">
         <appender-ref ref="STDOUT"/>
     </logger>
