@@ -25,10 +25,21 @@ def is_url(file_path):
     return parse.urlparse(file_path).scheme in ('http', 'https',)
 
 
-def _to_image(input_stream):
+def _to_grayscale_image(input_stream):
     image = np.asarray(bytearray(input_stream.read()), dtype="uint8")
     input_stream.close()
     return cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
+
+
+def _to_color_image(input_stream):
+    pil_image = Image.open(BytesIO(input_stream.read()))
+    input_stream.close()
+    return pil_image.convert('RGB')
+
+
+def read_color_image(file_path):
+    file = read_file(file_path)
+    return _to_color_image(file)
 
 
 def _from_webp(input_stream):
@@ -42,7 +53,7 @@ def read_image(file_path):
     file = read_file(file_path)
     if file_extension.lower() == ".webp":
         return _from_webp(file)
-    return _to_image(file)
+    return _to_grayscale_image(file)
 
 
 def read_file(file_path):
@@ -72,7 +83,7 @@ def write_string(file_path, file_name, string):
 def write_image(file_path, image):
     file, extension = path.splitext(file_path)
     if extension.lower() == ".webp":
-        logging.info("writing .webp %s", os.path.abspath(file_path))
+        logging.info("writing .webp %s", file_path)
         fp = BytesIO()
         im_pil = Image.fromarray(image)
         im_pil.save(fp, Image.registered_extensions()['.webp'])
@@ -82,6 +93,14 @@ def write_image(file_path, image):
         logging.info("writing jpeg %s %s", file_path, extension)
         encoded, image = cv2.imencode(extension, image)
         storage.save(file_path, ContentFile(image))
+
+
+def write_color_image(file_path, image):
+    logging.info("writing .webp %s", file_path)
+    fp = BytesIO()
+    image.save(fp, 'webp')
+
+    storage.save(file_path, ContentFile(fp.getbuffer()))
 
 
 def write_json(file_path, json):

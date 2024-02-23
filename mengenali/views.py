@@ -3,6 +3,8 @@ import json
 import logging
 import traceback
 from os import path
+from pathlib import Path
+from time import sleep
 
 from django.core.files.storage import default_storage
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseNotAllowed, JsonResponse
@@ -18,7 +20,8 @@ from django.conf import settings
 from datetime import datetime
 
 from mengenali.image_classifier import detect_most_similar
-from mengenali.io import write_string, read_image, write_image, write_json
+from mengenali.io import write_string, read_image, write_image, write_json, read_color_image, write_color_image, \
+    image_url
 from mengenali.processprobs import print_outcome, print_outcome_parsable
 from mengenali.registration import write_transformed_image
 
@@ -189,6 +192,19 @@ def extract_roi(request, kelurahan, tps, filename):
 
     write_image(target_image, tps_roi)
     return JsonResponse({})
+
+
+def download_original(request, kelurahan, tps):
+    filename = request.GET.get('url') + '=s1280'
+
+    image = read_color_image(filename)
+
+    target_image = path.join(settings.TRANSFORMED_DIR,
+                             f'transformed/{kelurahan}/{tps}/{Path(filename).name}.original.webp')
+    write_color_image(target_image, image)
+
+    print(f"{kelurahan}, {tps}, {filename}, write: {target_image}")
+    return JsonResponse({'url': image_url(target_image)})
 
 
 def download(request, kelurahan, tps, filename):
