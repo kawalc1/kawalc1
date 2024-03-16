@@ -42,7 +42,7 @@ def click_and_crop(event, x, y, flags, param):
 if __name__ == '__main__':
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2024-hal3-plano.png")
+    ap.add_argument("-i", "--image", help="Path to the image", default="./static/datasets/PPWP-2024-hal2-plano.png")
     args = vars(ap.parse_args())
 
     # load the image, clone it, and setup the mouse callback function

@@ -198,16 +198,16 @@ package object kawalc1 extends LazyLogging with JsonSupport {
       pendingUploads: Option[Map[String, Object]],
       idLokasi: String,
       pas2: Int,
-      totalTps: Int,
+      totalTps: Option[Int],
       pas3: Int,
-      totalCompletedTps: Int,
+      totalCompletedTps: Option[Int],
       dpt: Option[Int],
-      totalPendingTps: Int,
+      totalPendingTps: Option[Int],
       anyPendingTps: Option[String],
       uid: Option[String],
       uploadedPhoto: Option[UploadedPhoto],
       name: String,
-      totalErrorTps: Int,
+      totalErrorTps: Option[Int],
       pas1: Int,
       updateTs: Long,
       aggregateResult: Option[AggregateResult]
@@ -232,7 +232,7 @@ package object kawalc1 extends LazyLogging with JsonSupport {
 
     private def explodeForPhotos(infos: Seq[TpsInfo]): Seq[TpsInfo] = {
       val aggregate = infos.head
-      val aggToStore = if (aggregate.totalCompletedTps > 0) {
+      val aggToStore = if (aggregate.totalCompletedTps.getOrElse(0) > 0) {
         Some(AggregateResult(aggregate.pas1, aggregate.pas2, aggregate.pas3))
       } else {
         None
@@ -273,10 +273,10 @@ package object kawalc1 extends LazyLogging with JsonSupport {
           pas2 = Some(t.pas2),
           pas3 = Some(t.pas3),
           anyPendingTps = t.anyPendingTps,
-          totalTps = t.totalTps,
-          totalPendingTps = t.totalPendingTps,
-          totalCompletedTps = t.totalCompletedTps,
-          totalErrorTps = t.totalErrorTps
+          totalTps = t.totalTps.getOrElse(-1),
+          totalPendingTps = t.totalPendingTps.getOrElse(-1),
+          totalCompletedTps = t.totalCompletedTps.getOrElse(-1),
+          totalErrorTps = t.totalErrorTps.getOrElse(-1)
         )
       }).toSeq
     }
@@ -308,10 +308,10 @@ package object kawalc1 extends LazyLogging with JsonSupport {
           pas2Agg = t.aggregateResult.map(_.pas2),
           pas3Agg = t.aggregateResult.map(_.pas3),
           anyPendingTps = t.anyPendingTps,
-          totalTps = t.totalTps,
-          totalPendingTps = t.totalPendingTps,
-          totalCompletedTps = t.totalCompletedTps,
-          totalErrorTps = t.totalErrorTps,
+          totalTps = t.totalTps.getOrElse(-1),
+          totalPendingTps = t.totalPendingTps.getOrElse(-1),
+          totalCompletedTps = t.totalCompletedTps.getOrElse(-1),
+          totalErrorTps = t.totalErrorTps.getOrElse(-1),
           formType = t.uploadedPhoto.flatMap(_.kpuData).map(_ => FormType.KPU.value),
           plano = Some(Plano.YES.value),
           halaman = None

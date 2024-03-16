@@ -2,7 +2,6 @@ import itertools
 import logging
 import numpy as np
 
-NUMBER_COUNT = 4
 DIGITS_PER_NUMBER = 3
 X_INDEX = 10
 
@@ -200,14 +199,22 @@ def get_individual_numbers(numbers, checksums):
 
 def get_numbers(check_sums, all_probabilities, categories_count):
     all_numbers = []
+    counts_as_zero = ([0.0] * categories_count)
+    counts_as_zero[0] = 1.0
     for j, extract in enumerate(all_probabilities):
-        for i, probabilities in enumerate(extract["probabilitiesForNumber"]):
+        probabilities = extract["probabilitiesForNumber"]
+        print(f"LEN: {len(probabilities)}")
+        print(f"{counts_as_zero}")
+        print(f"{probabilities}")
+
+        for i, probabilities in enumerate(probabilities):
             if len(probabilities) == 0:
-                counts_as_zero = ([0.0] * categories_count)
-                counts_as_zero[0] = 1.0
+                all_numbers = all_numbers + counts_as_zero
+            elif len(probabilities) == 2:
                 all_numbers = all_numbers + counts_as_zero
             else:
                 all_numbers = all_numbers + probabilities
+    print("ALL")
     return get_outcome_matrix(check_sums, np.asarray(all_numbers), categories_count, len(all_probabilities))
 
 
@@ -221,6 +228,7 @@ def numbers_add_up(probabilities, sigma_total):
 
 
 def get_outcome_matrix(check_sums, all_squares, categories_count, number_count):
+    print(check_sums, all_squares, categories_count, number_count)
     all_numbers_matrix = all_squares.reshape(number_count, DIGITS_PER_NUMBER, categories_count)
 
     def matrix_to_number(digit_confidence_matrix):

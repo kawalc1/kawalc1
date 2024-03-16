@@ -19,6 +19,8 @@ case class Numbers(id: String, shortName: String, displayName: String, extracted
 
 case class Extraction(numbers: Seq[Numbers], digitArea: String)
 
+case class DownloadResult(url: String)
+
 case class Probabilities(id: String, probabilitiesForNumber: Seq[Seq[Double]])
 
 case class ProbabilitiesRequest(configFile: String, probabilities: Seq[Probabilities])
@@ -55,6 +57,12 @@ class KawalC1Client(baseUrl: String)(implicit
               "configFile"       -> formConfig,
               "featureAlgorithm" -> featureAlgorithm))
     execute[Transform](Get(url))
+  }
+
+  def downloadOriginal(kelurahan: Long, tps: Int, photoUrl: String): Future[Either[Response, DownloadResult]] = {
+    val url = Uri(s"$baseUrl/downloadOriginal/$kelurahan/$tps")
+      .withQuery(Query("url" -> photoUrl))
+    execute[DownloadResult](Get(url))
   }
 
   def extractNumbers(kelurahan: Long, tps: Int, photoUrl: String, formConfig: String): Future[Either[Response, Extraction]] = {

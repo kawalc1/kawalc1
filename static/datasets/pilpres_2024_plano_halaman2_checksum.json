@@ -1,0 +1,78 @@
+{
+    "numbers": [
+        {
+            "id": "0",
+            "shortName": "anies01",
+            "displayName": "Anies",
+            "digitCoordinates": [
+              [286,316, 864,890],
+              [284,316, 890,916]
+            ]
+        },
+      {
+        "id": "1",
+        "shortName": "anies02",
+        "displayName": "Anies",
+        "digitCoordinates": [
+          [316,350, 866,890],
+          [316,350, 890,916]
+        ]
+      },
+      {
+        "id": "2",
+        "shortName": "anies03",
+        "displayName": "Anies",
+        "digitCoordinates": [
+          [350,382, 866,890],
+          [350,384, 890,916]
+        ]
+      },
+      {
+        "id": "3",
+        "shortName": "anies04",
+        "displayName": "Anies",
+        "digitCoordinates": [
+          [382,414, 866,892],
+          [382,416, 890,916]
+        ]
+      },
+      {
+        "id": "4",
+        "shortName": "aniesSum",
+        "displayName": "Anies Sum",
+        "digitCoordinates": [
+          [298,340, 938,978],
+          [298,338, 990,1032],
+          [298,336, 1040,1082]
+        ]
+      }
+    ],
+    "checkSums": [
+      {"sigma": ["0", "1", "2", "3"],
+        "total": "4"}
+
+    ],
+  "roi": [
+    {
+      "name": "paslon",
+      "coordinates": [234, 1214, 844, 1106]
+    },
+    {
+      "name": "bubbleSheet1",
+      "coordinates": [344, 568, 946, 1076]
+    },
+    {
+      "name": "bubbleSheet2",
+      "coordinates": [658, 880, 948, 1076]
+    },
+    {
+      "name": "bubbleSheet3",
+      "coordinates": [970, 1190, 944, 1076]
+    },
+    {
+      "name": "lokasi",
+      "coordinates": [62, 154, 162, 1042]
+    }
+  ],
+    "referenceForm": "PPWP-2024-hal2-plano.jpg"
+}

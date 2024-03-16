@@ -95,12 +95,15 @@ def write_image(file_path, image):
         storage.save(file_path, ContentFile(image))
 
 
+
 def write_color_image(file_path, image):
     logging.info("writing .webp %s", file_path)
     fp = BytesIO()
     image.save(fp, 'webp')
-
-    storage.save(file_path, ContentFile(fp.getbuffer()))
+    content = ContentFile(fp.getbuffer())
+    local_storage = get_storage_class('kawalc1.storage.OverwriteStorage')()
+    created_path = local_storage.save(file_path, content)
+    storage.save(file_path, content)
 
 
 def write_json(file_path, json):

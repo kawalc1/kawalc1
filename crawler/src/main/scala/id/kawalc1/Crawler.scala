@@ -31,7 +31,7 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val conf = new CrawlerConf(args.toSeq)
   val myTool = new Tool(conf)
 
-  private val kawalPemiluClient = new KawalPemiluClient("https://us-central1-kp24-fd486.cloudfunctions.net/h")
+  private val kawalPemiluClient = new KawalPemiluClient("https://kp24-fd486.et.r.appspot.com/h")
   val processor = new PhotoProcessor(kawalPemiluClient)
   val tpsDb = Database.forConfig("tpsDatabase")
   private val kelurahanDatabase = Database.forConfig("verificationResults")
@@ -240,6 +240,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
         case "test" =>
           val howMany = resultsDatabase.run(ResultsTables.tpsToDetectQuery(offset).result).futureValue.length
           println(s"This much: $howMany")
+        case "download-original" =>
+          process("download-original", processor.downloadOriginal, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "fetch" =>
           var continue = true
           var round = 0

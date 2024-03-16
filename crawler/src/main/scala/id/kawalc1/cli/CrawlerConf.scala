@@ -53,5 +53,6 @@ object CrawlerConf {
       "presidential",
       "detect",
       "submit",
-      "tps-unprocessed")
+      "tps-unprocessed",
+      "download-original")
 }

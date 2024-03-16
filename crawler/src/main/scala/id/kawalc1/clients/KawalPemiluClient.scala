@@ -4,6 +4,8 @@ import akka.actor.ActorSystem
 import akka.http.caching.LfuCache
 import akka.http.caching.scaladsl.{ Cache, CachingSettings, LfuCacheSettings }
 import akka.http.scaladsl.client.RequestBuilding._
+import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.stream.Materializer
 import id.kawalc1._
@@ -80,7 +82,7 @@ class KawalPemiluClient(baseUrl: String)(implicit
 
   private def getData(number: Long, auth: Authorization): Future[Either[Response, MaybeKelurahanResponse]] = {
     implicit val authorization: Option[Authorization] = None
-    execute[MaybeKelurahanResponse](Post(s"$baseUrl", GetResultPostBody(TpsId(s"$number", Config.Application.userUid)))).map {
+    execute[MaybeKelurahanResponse](Get(Uri(s"$baseUrl").withQuery(Query("id" -> number.toString)))).map {
       case Left(value) if Seq(404, 500, 503).contains(value.code) =>
         logger.info(s"Got ${value.code} for tpsId: $number ${value.response}")
         Right(MaybeKelurahanResponse(None, error = true))

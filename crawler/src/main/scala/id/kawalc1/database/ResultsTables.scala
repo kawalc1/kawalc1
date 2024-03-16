@@ -333,7 +333,7 @@ object ResultsTables extends SlickValueEnumSupport with BlockingSupport {
   private val sedotDatabase = Database.forConfig("sedotDatabase")
   def upsertDetections(results: Seq[DetectionResult]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
     val detectionsInsert = detectionsQuery.insertOrUpdateAll(results)
-    sedotDatabase.run(detectionsInsert).futureValue
+    //    sedotDatabase.run(detectionsInsert).futureValue
     Seq(detectionsInsert)
   }
 }

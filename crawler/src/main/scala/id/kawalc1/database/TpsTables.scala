@@ -6,7 +6,7 @@ import id.kawalc1._
 import id.kawalc1.database.CustomPostgresProfile.api._
 import id.kawalc1.services.BlockingSupport
 import slick.collection.heterogeneous.HNil
-import slick.dbio.Effect
+import slick.dbio.{DBIO, Effect}
 import slick.lifted.Tag
 import slick.sql.FixedSqlAction
 
@@ -355,7 +355,7 @@ object TpsTables extends SlickValueEnumSupport with BlockingSupport with LazyLog
     println(s"PLAIN: ${tpsData.size}, PHOTOS: ${photosData.size}")
     val photosInsert = tpsPhotoQuery.insertOrUpdateAll(photosData)
 
-    val uploaded = sedotDatabase.run(tpsInsert).futureValue
+    val uploaded = sedotDatabase.run(DBIO.sequence(Seq(tpsInsert, photosInsert))).futureValue
     logger.info(s"Uploaded ${tpsData.size} records into the sedot DB")
 
     Seq(tpsInsert, photosInsert)

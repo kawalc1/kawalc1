@@ -202,8 +202,6 @@ def download_original(request, kelurahan, tps):
     target_image = path.join(settings.TRANSFORMED_DIR,
                              f'transformed/{kelurahan}/{tps}/{Path(filename).name}.original.webp')
     write_color_image(target_image, image)
-
-    print(f"{kelurahan}, {tps}, {filename}, write: {target_image}")
     return JsonResponse({'url': image_url(target_image)})
 
 

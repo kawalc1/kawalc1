@@ -12,6 +12,29 @@ import scala.io.Source
 class KawalRC1CliRentSpecs extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with JsonSupport {
   "KawalC1Client" should {
 
+    "parse the `9671101003.json` response" in {
+      val response  = Source.fromURL(getClass.getResource("/hierarchy/9671101003.json")).mkString
+      val kelurahan = Serialization.read[KelurahanResponse](response)
+      val set       = kelurahan.result.aggregated
+      set.keySet.size shouldBe 1
+      set.head._1 shouldBe "4"
+      val firstTps = set.head._2.head
+      firstTps.idLokasi shouldBe "96711010034"
+      firstTps.name shouldBe "4"
+      val photos = Kelurahan.toPhotoTps(kelurahan)
+      photos.length shouldBe 2
+
+      val firstPhoto = photos.head
+      firstPhoto.uploadedPhotoId shouldBe "KmhfLGxXVZ8DpUchkVBW"
+      Plano.withValue(firstPhoto.plano.get) shouldBe Plano.YES
+      FormType.withValue(firstPhoto.formType.get) shouldBe FormType.KPU
+      firstPhoto.pas2 shouldBe Some(67)
+      firstPhoto.pas2Agg shouldBe Some(67)
+
+      val secondPhoto = photos.tail.head
+      secondPhoto.uploadedPhotoId shouldBe "DE8dJrzeE09sYKN4vQ6N"
+    }
+
     "parse the `3173041007.json` response" in {
       val response  = Source.fromURL(getClass.getResource("/hierarchy/3173041007.json")).mkString
       val kelurahan = Serialization.read[KelurahanResponse](response)

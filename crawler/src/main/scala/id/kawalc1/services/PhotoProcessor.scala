@@ -90,7 +90,6 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
             targetDb: CustomPostgresProfile.backend.Database,
             client: KawalC1Client,
             params: BatchParams)(implicit authClient: OAuthClient): Long = {
-
     batchTransform[KelurahanId, TpsBasedData, KelurahanTable](
       sourceDb = sourceDb,
       targetDb = targetDb,
@@ -102,9 +101,49 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
+  def downloadOriginal(sourceDb: CustomPostgresProfile.backend.Database,
+                       targetDb: CustomPostgresProfile.backend.Database,
+                       client: KawalC1Client,
+                       params: BatchParams): Long = {
+
+    batchTransform[SingleTpsPhotoDao, Option[DownloadResult], TpsPhotoTable](
+      sourceDb = sourceDb,
+      targetDb = targetDb,
+      client = client,
+      query = TpsTables.tpsPhotoQuery.sortBy(_.kelurahanId.desc), //.filter(x => x.idKel === 3173041007L),
+      process = downloadOriginal,
+      insert = unitUpsert,
+      params = params
+    )
+  }
+
+  private def unitUpsert(toUpsert: Seq[Option[DownloadResult]]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    println(s"Process ${toUpsert.flatten.length} items")
+    Seq()
+  }
+
   def fetchTps(kelurahan: Seq[KelurahanId], threads: Int, client: KawalC1Client)(implicit
                                                                                  authClient: OAuthClient): Future[Seq[TpsBasedData]] = {
     streamResults(kelurahan, getSingleLurah, threads, client)
+  }
+
+  def downloadOriginal(kelurahan: Seq[SingleTpsPhotoDao], threads: Int, client: KawalC1Client): Future[Seq[Option[DownloadResult]]] = {
+    streamResults(kelurahan, downloadSinglePhoto, threads, client)
+  }
+
+  private def downloadSinglePhoto(photo: SingleTpsPhotoDao, kawalC1Client: KawalC1Client) = {
+    for {
+      result <- kawalC1Client.downloadOriginal(photo.kelurahanId, photo.tpsId, photo.uploadedPhotoUrl)
+    } yield {
+      result match {
+        case Left(value) =>
+          println(s"Download for ${photo.uploadedPhotoUrl} failed with ${value.code} ${value.response}")
+          None
+        case Right(value) =>
+          println(s"${value.url}")
+          Some(value)
+      }
+    }
   }
 
   private def getSingleLurah(number: KelurahanId, _kawalC1Client: KawalC1Client)(implicit

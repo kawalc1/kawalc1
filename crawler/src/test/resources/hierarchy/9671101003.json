@@ -1,0 +1,89 @@
+{
+  "result": {
+    "aggregated": {
+      "4": [
+        {
+          "anyLaporTps": "96711010034",
+          "dpt": 237,
+          "idLokasi": "96711010034",
+          "name": "4",
+          "ouid": "kpu_uid",
+          "pas1": 3,
+          "pas2": 67,
+          "pas3": 163,
+          "pendingUploads": {},
+          "totalCompletedTps": 1,
+          "totalErrorTps": 0,
+          "totalJagaTps": 0,
+          "totalKpuTps": 1,
+          "totalLaporTps": 2,
+          "totalPendingTps": 0,
+          "totalSamBotErrorTps": 0,
+          "totalTps": 1,
+          "uid": "kpu_uid",
+          "updateTs": 1708792583101
+        },
+        {
+          "idLokasi": "96711010034",
+          "name": "4",
+          "ouid": "kpu_uid",
+          "pas1": 3,
+          "pas2": 67,
+          "pas3": 163,
+          "uid": "kpu_uid",
+          "updateTs": 1708792583101,
+          "uploadedPhoto": {
+            "imageId": "KmhfLGxXVZ8DpUchkVBW",
+            "kpuData": {
+              "administrasi": null,
+              "chart": {
+                "100025": 3,
+                "100026": 67,
+                "100027": 163,
+                "null": null
+              },
+              "images": [
+                "https://sirekap-obj-formc.kpu.go.id/fd22/pemilu/ppwp/96/71/10/10/03/9671101003004-20240215-044304--4c83aba0-af7c-4254-8d80-5c130a91fb1c.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/fd22/pemilu/ppwp/96/71/10/10/03/9671101003004-20240214-220952--26f7f082-0ffc-4950-b49e-23eeb1365be1.jpg",
+                "https://sirekap-obj-formc.kpu.go.id/fd22/pemilu/ppwp/96/71/10/10/03/9671101003004-20240215-044514--71a97429-5f44-4a91-9f06-7179d5799c76.jpg"
+              ],
+              "mode": "hhcw",
+              "psu": null,
+              "status_adm": false,
+              "status_suara": true,
+              "ts": "2024-02-24 23:00:00"
+            },
+            "photoUrl": "http://lh3.googleusercontent.com/Q4FPLmnLvqjBiYxl8pbLqHSUTdSnxSyHLA-EpgQNyz0Q_He1o437rOrvNu6hE7sDIXCmKS2HLMFmAD2aKBcyv9MrNyqcJDZPQiR3"
+          }
+        },
+        {
+          "idLokasi": "96711010034",
+          "name": "4",
+          "ouid": "3kdZ1RzWRjZeG6Q5EySLZQKaPM63",
+          "pas1": 3,
+          "pas2": 67,
+          "pas3": 163,
+          "uid": "XXbrfMdfGxYXA2hTUWtIaIcrT2O2",
+          "updateTs": 1708022883151,
+          "uploadedPhoto": {
+            "imageId": "DE8dJrzeE09sYKN4vQ6N",
+            "lapor": "Nggak ada c_1",
+            "laporResolved": false,
+            "photoUrl": "http://lh3.googleusercontent.com/ucjUMUOH79y5ayXOMOx-8B5SP3iK-J48ZbApY77PmgfgY4w57B40cGRxJuo-Jm5z6gLHM-F1Ma0kS1RVz9BRyiYtttyaEPKV99hS"
+          }
+        }
+      ]
+    },
+    "id": "9671101003",
+    "lastCachedTs": 1709126704236,
+    "lastRecomputedTs": 1708792583966,
+    "names": [
+      "PAPUA BARAT DAYA",
+      "KOTA SORONG",
+      "MALADUM MES",
+      "SAOKA"
+    ],
+    "numWrites": 0,
+    "size": 3048
+  }
+}
