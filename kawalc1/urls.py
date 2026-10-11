@@ -14,13 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from mengenali.views import download, transform, extract_upload, get_probabilities_result, custom, align, extract_tps, \
     get_probabilities_result_parsable, extract_roi, download_original
 from django.http import HttpResponseRedirect
+from django.urls import path
+from django.views.generic import RedirectView
+from django.templatetags.static import static
 
 
 urlpatterns = [
+    path("favicon.ico", RedirectView.as_view(url=static("favicon.ico"), permanent=True)),
     path('admin/', admin.site.urls),
     path('', lambda x: HttpResponseRedirect("/static/index.html")),
     path('download/<int:kelurahan>/<int:tps>/<str:filename>', download),
