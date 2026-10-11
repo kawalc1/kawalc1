@@ -18,8 +18,7 @@ def __is_local():
     import socket
     host_name = socket.gethostname()
     print("local hostname: ", host_name)
-    return False
-    # return host_name.endswith(".local")
+    return host_name.endswith(".local")
 
 
 def patch_https_connection_pool(**constructor_kwargs):
@@ -50,7 +49,6 @@ print("FORCE_LOCAL_FILE_SYSTEM env var", os.environ.get('FORCE_LOCAL_FILE_SYSTEM
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', TEST_MODE))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
-LOCAL = False
 print(f"Local {LOCAL}")
 STORAGE_CLASS = 'kawalc1.storage.OverwriteStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
 print("Storing in", STORAGE_CLASS)
