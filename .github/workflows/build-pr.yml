@@ -1,7 +1,7 @@
 name: build-pr
 on:
   push:
-    branches-ignore: [ 'main' ]
+    branches-ignore: [ 'master' ]
 jobs:
   docker:
     runs-on: ubuntu-latest
