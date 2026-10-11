@@ -46,6 +46,7 @@ patch_https_connection_pool(maxsize=POOL_SIZE)
 mimetypes.add_type('image/webp', '.webp')
 
 TEST_MODE = bool(os.environ.get('TEST_MODE', False))
+print("FORCE_LOCAL_FILE_SYSTEM env var", os.environ.get('FORCE_LOCAL_FILE_SYSTEM'))
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', TEST_MODE))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
 LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
