@@ -50,7 +50,7 @@ app.config(function($translateProvider) {
 	$translateProvider.translations('en', {
 		HEADLINE: 'Guarding C1',
 		TITLE: 'Guarding C1 - Automatic Verification of Election Forms',
-		VERSION: 'Version 1.2 - February 16, 2019',
+		VERSION: 'Version 1.4 - 11 Oct, 2026',
 		INTRODUCTION: 'This application counts election form results',
 		INTRODUCTION_TRYIT: 'Try with ',
 		INTRODUCTION_TRYIT_LINK_1 : 'form 1',
@@ -93,7 +93,7 @@ app.config(function($translateProvider) {
 	}).translations('id', {
 		HEADLINE: 'Kawal C1',
 		TITLE: 'Kawal C1 - Verifikasi Formulir Secara Otomatis',
-		VERSION: 'Versi 1.3 - 20 Jan, 2024',
+		VERSION: 'Versi 1.4 - 11 Oct, 2026',
 		INTRODUCTION: 'Aplikasi ini menghitung otomatis formulir C1',
 		INTRODUCTION_TRYIT: 'Coba dengan ',
 		INTRODUCTION_TRYIT_LINK_1 : 'formulir 1',
