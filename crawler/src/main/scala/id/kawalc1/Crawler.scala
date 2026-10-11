@@ -32,7 +32,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
   val myTool = new Tool(conf)
 
   private val kawalPemiluClient = new KawalPemiluClient("https://kp24-fd486.et.r.appspot.com/h")
-  val processor = new PhotoProcessor(kawalPemiluClient)
+  private val sirekapClient = new SirekapClient("https://sirekap-obj-data.kpu.go.id/pemilu/hhcw/pdpr")
+  val processor = new PhotoProcessor(kawalPemiluClient, sirekapClient)
   val tpsDb = Database.forConfig("tpsDatabase")
   private val kelurahanDatabase = Database.forConfig("verificationResults")
   val resultsDatabase = Database.forConfig("verificationResults")
@@ -208,6 +209,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           createDb(TpsTables.tpsQuery.schema, sedotDatabase, drop)
           createDb(TpsTables.tpsPhotoQuery.schema, resultsDatabase, drop)
           createDb(TpsTables.tpsQuery.schema, resultsDatabase, drop)
+        case "download-dpr" =>
+          createDb(ResultsTables.dprPhotosQuery.schema, resultsDatabase, drop)
         case "align" =>
           createDb(ResultsTables.alignResultsQuery.schema, resultsDatabase, drop)
         case "extract" =>
@@ -242,6 +245,8 @@ object Crawler extends App with LazyLogging with BlockingSupport with JsonSuppor
           println(s"This much: $howMany")
         case "download-original" =>
           process("download-original", processor.downloadOriginal, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
+        case "download-dpr" =>
+          process("download-dpr", processor.downloadDprImages, kelurahanDatabase, resultsDatabase, kawalC1Client, batchParams)
         case "fetch" =>
           var continue = true
           var round = 0

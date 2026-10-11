@@ -1,13 +1,15 @@
 package id.kawalc1.services
 
 import akka.NotUsed
+import akka.http.scaladsl.client.RequestBuilding.Get
+import akka.http.scaladsl.{Http, HttpExt}
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Source => StreamSource}
 import id.kawalc1._
 import id.kawalc1.clients._
 import id.kawalc1.database.CustomPostgresProfile.api._
 import id.kawalc1.database.ResultsTables.{AlignResults, ExtractResults}
-import id.kawalc1.database.TpsTables.{TpsPhotoTable, Kelurahan => KelurahanTable}
+import id.kawalc1.database.TpsTables.{TpsPhotoTable, TpsTable, Kelurahan => KelurahanTable}
 import id.kawalc1.database._
 import org.json4s.native.Serialization
 import slick.dbio.{DBIO, Effect, NoStream}
@@ -21,9 +23,9 @@ case class AlignedPicture(url: String, imageSize: Int)
 
 case class CombiResult(kelurahan: Long, tps: Int, photo: String, responseCode: Int, responseBody: String, response: CombiResponse)
 
-class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
-                                                           val ex: ExecutionContext,
-                                                           mat: Materializer)
+class PhotoProcessor(kawalPemiluClient: KawalPemiluClient, sirekapClient: SirekapClient)(implicit
+                                                                                         val ex: ExecutionContext,
+                                                                                         mat: Materializer)
     extends JsonSupport
     with BlockingSupport {
   override def duration: FiniteDuration = 1.hour
@@ -117,6 +119,27 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
     )
   }
 
+  def downloadDprImages(sourceDb: CustomPostgresProfile.backend.Database,
+                        targetDb: CustomPostgresProfile.backend.Database,
+                        client: KawalC1Client,
+                        params: BatchParams): Long = {
+
+    batchTransform[SingleTpsDao, DprResult, TpsTable](
+      sourceDb = sourceDb,
+      targetDb = targetDb,
+      client = client,
+      query = TpsTables.tpsQuery.filter(_.kelurahanId < 9901010001L).sortBy(_.kelurahanId.asc), //.filter(x => x.idKel === 3173041007L),
+      process = downloadDprPhotos,
+      insert = ResultsTables.upsertDprPhotos,
+      params = params
+    )
+  }
+
+  private def upsertDpr(toUpsert: Seq[Option[DprResult]]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
+    println(s"Process ${toUpsert.flatten.length} items")
+    Seq()
+  }
+
   private def unitUpsert(toUpsert: Seq[Option[DownloadResult]]): Seq[FixedSqlAction[Option[Int], NoStream, Effect.Write]] = {
     println(s"Process ${toUpsert.flatten.length} items")
     Seq()
@@ -155,6 +178,23 @@ class PhotoProcessor(kawalPemiluClient: KawalPemiluClient)(implicit
         case Right(kel) => TpsBasedData(withPhoto = Kelurahan.toPhotoTps(kel), plain = Kelurahan.toTps(kel))
         case Left(_)    => TpsBasedData(Seq(), Seq())
       }
+  }
+
+  def downloadDprPhotos(kelurahan: Seq[SingleTpsDao], threads: Int, client: KawalC1Client): Future[Seq[DprResult]] = {
+    streamResults(kelurahan, getSingleDprLurah, threads, client).map(_.flatten)
+  }
+
+  private def getSingleDprLurah(number: SingleTpsDao, _kawalC1Client: KawalC1Client): Future[Seq[DprResult]] = {
+    for {
+      dpResult <- sirekapClient.get(number.kelurahanId, number.tpsId)
+      downloaded <- dpResult match {
+        case Left(value) =>
+          println(s"Download for ${number.idLokasi} failed with ${value.code}")
+          Future.successful(Seq())
+        case Right(value) =>
+          sirekapClient.downloadImages(value).map(Seq(_))
+      }
+    } yield downloaded
   }
 
   def extract(sourceDb: CustomPostgresProfile.backend.Database,

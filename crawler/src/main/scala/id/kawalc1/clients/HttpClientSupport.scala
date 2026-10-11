@@ -60,7 +60,9 @@ trait HttpClientSupport extends LazyLogging {
         }
         case errorCode =>
           logger.info(s"Request ${request.method.value} ${request.uri}, error: $errorCode")
-          logger.info(s"Resp: $str")
+          if (errorCode != StatusCodes.NotFound) {
+            logger.info(s"Resp: $str")
+          }
           Left(Response(errorCode.intValue(), str))
       }
     }

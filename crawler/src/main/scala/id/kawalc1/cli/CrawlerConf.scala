@@ -54,5 +54,6 @@ object CrawlerConf {
       "detect",
       "submit",
       "tps-unprocessed",
-      "download-original")
+      "download-original",
+      "download-dpr")
 }
