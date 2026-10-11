@@ -20,6 +20,6 @@ jobs:
         with:
           push: true
           tags: sjappelodorus/kawalc1:latest
-          build-args: GIT_HASH=${{ env.GIT_HASH }}
+          build-args: GIT_HASH=${{ github.SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
