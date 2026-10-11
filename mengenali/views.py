@@ -339,8 +339,8 @@ def transform(request):
             matching_config_file, reference_form = detect_matching_config_file_from_image(
                 filename) if detect_matching_config else config_file, get_reference_form(config_file)
 
-            result = registration.process_file(None, 1, settings.STATIC_DIR, filename, reference_form,
-                                               matching_config_file, "brisk")
+            result, binary = registration.process_file(None, 1, settings.STATIC_DIR, filename, reference_form,
+                                               matching_config_file, "akaze")
             output = json.loads(result)
             output["configFile"] = matching_config_file
         except Exception as e:

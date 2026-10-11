@@ -48,8 +48,8 @@ mimetypes.add_type('image/webp', '.webp')
 TEST_MODE = bool(os.environ.get('TEST_MODE', False))
 FORCE_LOCAL_FILE_SYSTEM = bool(os.environ.get('FORCE_LOCAL_FILE_SYSTEM', TEST_MODE))
 print("Forced Local", str(FORCE_LOCAL_FILE_SYSTEM))
-# LOCAL = bool(FORCE_LOCAL_FILE_SYSTEM) or __is_local()
-LOCAL = False
+LOCAL = FORCE_LOCAL_FILE_SYSTEM or __is_local()
+# LOCAL = True
 print(f"Local {LOCAL}")
 STORAGE_CLASS = 'kawalc1.storage.OverwriteStorage' if LOCAL else 'storages.backends.gcloud.GoogleCloudStorage'
 print("Storing in", STORAGE_CLASS)

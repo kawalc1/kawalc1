@@ -326,8 +326,8 @@ def process_file(result_writer, count, root, file_name, reference_form_path, con
     output_path = join(root, 'transformed')
 
     func = ""
-    # if feature_algorithm == "akaze":
-    #     func = register_image_akaze
+    if feature_algorithm == "akaze":
+        func = register_image_akaze
     # if feature_algorithm == "sift":
     #     func = register_image_sift
     if feature_algorithm == "brisk":
