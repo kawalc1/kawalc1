@@ -40,7 +40,7 @@ def patch_https_connection_pool(**constructor_kwargs):
 
     poolmanager.pool_classes_by_scheme['https'] = MyHTTPSConnectionPool
 
-
+print("Git hash: ", os.environ.get('GIT_HASH', 'unknown'))
 POOL_SIZE = int(os.environ.get('POOL_SIZE', '64'))
 patch_https_connection_pool(maxsize=POOL_SIZE)
 mimetypes.add_type('image/webp', '.webp')

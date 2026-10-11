@@ -8,6 +8,9 @@ RUN mkdir /kawalc1
 
 WORKDIR /kawalc1
 
+ARG GIT_HASH=unknown
+ENV GIT_HASH=${GIT_HASH}
+
 ADD requirements.txt /kawalc1/requirements.txt
 RUN pip install -r requirements.txt
 
